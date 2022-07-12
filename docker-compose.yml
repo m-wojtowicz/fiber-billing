@@ -1,8 +1,39 @@
 version: '3'
 services:
-  fiber-billing-frontend:
-    image: fiber-billing-frontend:latest
-    environment:
-      PORT: 3000
+
+  fiber-billing-db:
+    image: "postgres:14.4-alpine"
+    container_name: "fiber-billing-db"
+    volumes:
+      - fiber-billing-data:/var/lib/postgresql/data
     ports:
-      - 3000:3000
+      - 5432:5432
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=fiber-billing
+      - POSTGRES_USER=fiber-billing
+      - POSTGRES_PASSWORD=fiber-billing
+
+  fiber-billing-backend:
+    build: ./backend
+    container_name: fiber-billing-backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://fiber-billing-db:5432/fiber-billing
+      - SPRING_DATASOURCE_USERNAME=fiber-billing
+      - SPRING_DATASOURCE_PASSWORD=fiber-billing
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - 8080:8080
+    depends_on:
+      - fiber-billing-db 
+
+  fiber-billing-frontend:
+    build: ./frontend
+    container_name: fiber-billing-frontend
+    ports:
+      - 4200:80
+    depends_on:
+      - fiber-billing-backend
+
+volumes:
+  fiber-billing-data:

@@ -8,17 +8,20 @@ Docker Desktop:
 
 <https://www.docker.com/products/docker-desktop/>
 
-# Budowanie
-
-```ps1
-docker build --file=frontend/Dockerfile -t fiber-billing-frontend .
-```
-
 # Uruchamianie
 
-```ps1
-docker-compose -f docker-compose.yml up
+W Katalogu głównym projektu:
+
+```
+docker-compose up -d
 ```
 
-Fontend domyślnie uruchamiany na porcie 3000.
-<http://127.0.0.1:3000>
+Uruchamia bazę danych, backend i frontend.
+
+Baza danych dostępna na porcie 5432.
+
+Backend dostępny na porcie 8080.
+
+Fontend dostępny na porcie 4200.
+
+<http://127.0.0.1:4200>

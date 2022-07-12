@@ -1,26 +1,22 @@
-FROM node:lts-alpine
-
-# Prerequisite
-RUN npm install -g http-server
+FROM node:lts-alpine as build-stage
 
 # Change dir
 RUN mkdir -p /app
 WORKDIR /app
 
 # Packages
-COPY frontend/package*.json ./
+COPY package*.json .
 RUN npm install
 
 # Copy source
-COPY frontend/ .
+COPY . .
 
 # Build source
 RUN npm run build
 
-# $PORT is variable in docker compose
-EXPOSE $PORT
-ENV NUXT_HOST=0.0.0.0
-ENV NUXT_PORT=$PORT
-ENV PROXY_API=$PROXY_API
-ENV PROXY_LOGIN=$PROXY_LOGIN
-CMD [ "http-server", "dist" ]
+# Production
+FROM nginx:stable-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+CMD [ "nginx", "-g", "daemon off;" ]
