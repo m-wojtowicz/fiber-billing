@@ -1,0 +1,56 @@
+<script setup>
+import { ref } from "vue";
+import axios from "axios";
+
+const loginInput = ref("");
+const passwordInput = ref("");
+
+async function checkData(login, password) {
+  if (login === "login" && password === "123") {
+    console.log(login + " " + password);
+    let result = await axios.get("http://localhost:8080/");
+    console.log(result.data);
+  }
+}
+</script>
+
+<template>
+  <main>
+    <h1>Welcome to our application</h1>
+      <el-input class="logging-input" v-model="loginInput" placeholder="Login" />
+      <el-input
+        class="logging-input"
+        v-model="passwordInput"
+        type="password"
+        placeholder="Password"
+        show-password
+      />
+      <el-button
+        class="logging-button"
+        color="#00bd7e"
+        @click="checkData(loginInput, passwordInput)"
+        >Login</el-button
+      >
+  </main>
+</template>
+
+<style>
+main{
+  display: grid;
+  text-align: center;
+}
+
+h1{
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+}
+
+.logging-input,
+.logging-button{
+  margin: 10px 0px;
+}
+
+.logging-input{
+  max-width: 100%;
+}
+</style>
