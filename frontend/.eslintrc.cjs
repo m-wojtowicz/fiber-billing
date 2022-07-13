@@ -8,4 +8,7 @@ module.exports = {
     "eslint:recommended",
     "@vue/eslint-config-prettier",
   ],
+  rules: {
+    "prettier/prettier": ["error", { endOfLine: "off" }],
+  },
 };
