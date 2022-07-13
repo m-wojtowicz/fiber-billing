@@ -1,13 +1,15 @@
 <script setup>
 import { ref } from "vue";
-import router from "../router";
+import axios from "axios";
+
 const loginInput = ref("");
 const passwordInput = ref("");
 
-function checkData(login, password) {
+async function checkData(login, password) {
   if (login === "login" && password === "123") {
-    // router.replace({name: "home"})
     console.log(login + " " + password);
+    let result = await axios.get("http://localhost:8080/");
+    console.log(result.data);
   }
 }
 </script>
