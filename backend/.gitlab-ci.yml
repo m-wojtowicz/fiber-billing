@@ -3,6 +3,7 @@ stages:
   - test
 
 build-job:
+  image: maven:3.8.3-openjdk-17
   stage: build
   script: "mvn clean package -B"
   artifacts:
@@ -10,6 +11,7 @@ build-job:
       - target/*.jar
 
 test-job:
+  image: maven:3.8.3-openjdk-17
   stage: test
   script: "mvn test"
   artifacts:
