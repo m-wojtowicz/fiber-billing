@@ -1,0 +1,3 @@
+backend:
+  trigger:
+    include: backend/.gitlab-ci.yml 
