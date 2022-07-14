@@ -16,6 +16,14 @@ W Katalogu głównym projektu:
 docker-compose up -d
 ```
 
+Przy zamykaniu:
+
+```
+docker-compose down --rmi all
+```
+
+**Bez flagi `--rmi all` Docker nie będzie usuwał starych obrazów!**
+
 Uruchamia bazę danych, backend i frontend.
 
 Baza danych dostępna na porcie 5432.
