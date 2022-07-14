@@ -6,16 +6,16 @@ build-job:
   image: maven:3.8.3-openjdk-17
   stage: build
   script: 
-    - "mvn clean package -B"
+    - "mvn -f backend package -B"
   artifacts:
     paths:
-      - target/*.jar
+      - backend/target/*.jar
 
 test-job:
   image: maven:3.8.3-openjdk-17
   stage: test
   script: 
-    - "mvn test"
+    - "mvn -f backend test"
   artifacts:
     paths:
-      - target/*.jar
+      - backend/target/*.jar
