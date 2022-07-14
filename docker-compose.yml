@@ -4,15 +4,23 @@ services:
   fiber-billing-db:
     image: "postgres:14.4-alpine"
     container_name: "fiber-billing-db"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      interval: 10s
+      timeout: 40s
+      retries: 10
     volumes:
       - fiber-billing-data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d/
     ports:
       - 5432:5432
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
-      - POSTGRES_DB=fiber-billing
-      - POSTGRES_USER=fiber-billing
-      - POSTGRES_PASSWORD=fiber-billing
+      - APP_DB_NAME=fiber-billing
+      - APP_DB_USER=fiber-billing
+      - APP_DB_PASSWORD=fiber-billing
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
 
   fiber-billing-backend:
     build: ./backend
