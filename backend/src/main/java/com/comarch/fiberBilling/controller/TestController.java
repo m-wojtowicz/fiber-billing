@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @GetMapping("/")
-    @CrossOrigin("http://localhost:3000/")
+    @CrossOrigin("http://localhost:4200/")
     public String index(){
         System.out.println("Success");
         return "Success";
