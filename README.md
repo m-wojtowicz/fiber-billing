@@ -18,7 +18,7 @@ docker-compose up -d
 
 Uruchamia bazę danych, backend i frontend.
 
-Baza danych dostępna na porcie 5432. Połączenie kombinacją login:hasło `fiber-billing:fiber_billing`.
+Baza danych dostępna na porcie 5432. Połączenie kombinacją login:hasło `fiber-billing:fiber-billing`.
 
 Backend dostępny na porcie 8080.
 
