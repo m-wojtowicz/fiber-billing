@@ -38,6 +38,28 @@ docker-compose down --rmi all
 
 **Bez flagi `--rmi all` Docker nie będzie usuwał starych obrazów!**
 
+# Backup
+
+W pierwszej kolejności należy usunąć kontenery zapisujące do bazy danych:
+
+```
+docker-compose down
+```
+
+Aby utworzyć kopię zapasową należy uruchomić usługę `backup`:
+
+```
+docker-compose run --rm backup
+```
+
+Utworzy ona backup bazy danych: `backup/data.tar.bz2`.
+
+Aby przywrócić backup z tej lokalizacji należy uruchomić usługę `restore`:
+
+```
+docker-compose run --rm restore
+```
+
 # Problemy
 
 Przy zmianach w skryptach bazy danych należy usunąć volume zawierający starą wersję bazy danych. Komenda:

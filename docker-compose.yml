@@ -53,6 +53,29 @@ services:
     depends_on:
       - fiber-billing-backend
 
+  backup:
+    image: alpine
+    tty: false
+    environment:
+      - TARGET=data
+    volumes:
+      - ./backup:/backup
+      - data:/volume
+    command: sh -c "tar -cjf /backup/$${TARGET}.tar.bz2 -C /volume ./"
+    profiles:
+      - backups
+
+  restore:
+    image: alpine
+    environment:
+      - SOURCE=data
+    volumes:
+      - ./backup:/backup
+      - data:/volume
+    command: sh -c "rm -rf /volume/* /volume/..?* /volume/.[!.]* ; tar -C /volume/ -xjf /backup/$${SOURCE}.tar.bz2"
+    profiles:
+      - backups
+
 volumes:
   data:
     driver: local
