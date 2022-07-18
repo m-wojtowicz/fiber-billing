@@ -6,11 +6,27 @@ const loginInput = ref("");
 const passwordInput = ref("");
 
 async function checkData(login, password) {
-  if (login === "login" && password === "123") {
-    console.log(login + " " + password);
-    let result = await axios.get("http://localhost:8080/");
-    console.log(result.data);
+  
+  // console.log(login + ' ' + password)
+  let params = {
+    grant_type: "password",
+    username: login,
+    password: password,
+    client_id: "test"
   }
+
+  const data = Object.keys(params)
+  .map((key)=>`${key}=${encodeURIComponent(params[key])}`)
+  .join('&');
+
+  const options = {
+    method: "POST",
+    headers: {"content-type": "application/x-www-form-urlencoded"},
+    data,
+    url: "http://localhost:8080/realms/myrealm/protocol/openid-connect/token"
+  }
+
+axios(options).then(r => console.log(r)).catch(err=>console.log(err));
 }
 </script>
 
