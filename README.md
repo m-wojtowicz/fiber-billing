@@ -20,7 +20,7 @@ Uruchamia bazę danych, backend i frontend.
 
 Baza danych dostępna na porcie 5432. Połączenie kombinacją login:hasło `fiber-billing:fiber-billing`.
 
-Keycloak dostępny na porcie 8080. Panel administratora dostępny na porcie 28080.
+Keycloak dostępny na porcie 8080. Panel administratora dostępny na porcie 8080.
 
 Backend dostępny na porcie 8000.
 
