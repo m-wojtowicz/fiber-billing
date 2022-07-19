@@ -6,13 +6,12 @@ const loginInput = ref("");
 const passwordInput = ref("");
 
 async function checkData(login, password) {
-  
-  // console.log(login + ' ' + password)
+
   let params = {
     grant_type: "password",
     username: login,
     password: password,
-    client_id: "test"
+    client_id: "fiber-billing"
   }
 
   const data = Object.keys(params)
@@ -23,7 +22,7 @@ async function checkData(login, password) {
     method: "POST",
     headers: {"content-type": "application/x-www-form-urlencoded"},
     data,
-    url: "http://localhost:8080/realms/myrealm/protocol/openid-connect/token"
+    url: "http://localhost:8080/auth/realms/fiber-billing/protocol/openid-connect/token"
   }
 
 axios(options).then(r => console.log(r)).catch(err=>console.log(err));
