@@ -3,24 +3,35 @@ import LoginView from "./views/LoginView.vue";
 </script>
 
 <template>
-  <LoginView/>
+  <div id="main-container">
+    <LoginView/>
+  </div>
+  <footer class="ftr"/>
 </template>
 
 <style>
 @import "@/assets/base.css";
 
 #app {
+  height:100vh; 
+  margin:0;
+  display:flex; 
+  flex-direction:column; 
+}
+
+#main-container {
   max-width: 1280px;
+  width: 35%;
   margin: 0 auto;
   padding: 2rem;
 
-  /* font-weight: normal; */
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+footer{
+  margin-top:auto; 
+  width: 100%;
+  height: 175px;
+  background-image: url("../src/assets/weaves.svg");
+  background-size: cover;
 }
 </style>
