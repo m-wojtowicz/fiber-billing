@@ -4,7 +4,7 @@ import LoginView from "./views/LoginView.vue";
 
 <template>
   <div id="main-container">
-    <LoginView/>
+    <router-view></router-view>
   </div>
   <footer class="ftr"/>
 </template>

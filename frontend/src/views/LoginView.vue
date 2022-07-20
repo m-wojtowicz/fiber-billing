@@ -30,7 +30,7 @@ axios(options).then(r => console.log(r)).catch(err=>console.log(err));
 </script>
 
 <template>
-  <div id="main">
+  <main>
     <h1>Login</h1>
     <hr class="divider"/>
     <el-input 
@@ -46,19 +46,15 @@ axios(options).then(r => console.log(r)).catch(err=>console.log(err));
       placeholder="Password"
       show-password
     />
-    <el-button
-      class="logging-button"
-      color="#1976D2"
-      size="large" 
-      @click="checkData(loginInput, passwordInput)"
-      >LOGIN</el-button
-    >
-    <p>Not registered? Create account</p>
-  </div>
+    <q-btn class="logging-button" style="color: #FF0080" label="Login" @click="checkData(loginInput, passwordInput)"></q-btn>
+
+    <p>Not registered? <router-link class="router" :to="{ name: 'home' }"> Create account </router-link></p>
+  </main>
+  <router-view></router-view>
 </template>
 
 <style>
-#main{
+main{
   padding: 20px;
   display: grid;
   background-color: #64B5F6;
@@ -98,5 +94,14 @@ p {
 .logging-button {
   font-size: large;
   font-weight: bold;
+}
+
+.router {
+  text-decoration: none;
+  color: #1976D2
+}
+
+.router:hover{
+  color: #023e8a;
 }
 </style>
