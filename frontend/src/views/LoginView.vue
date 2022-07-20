@@ -4,6 +4,7 @@ import axios from "axios";
 
 const loginInput = ref("");
 const passwordInput = ref("");
+const isPwd = ref(true);
 
 async function checkData(login, password) {
 
@@ -33,33 +34,51 @@ axios(options).then(r => console.log(r)).catch(err=>console.log(err));
   <main>
     <h1>Login</h1>
     <hr class="divider"/>
-    <el-input 
-      size="large" 
-      class="logging-input" 
+    <q-input
+      class="loggin-input"
+      rounded
+      outlined
+      bg-color="white"
       v-model="loginInput" 
-      placeholder="Login" />
-    <el-input
-      class="logging-input"
-      v-model="passwordInput"
-      size="large"
-      type="password"
-      placeholder="Password"
-      show-password
+      placeholder="Login"
     />
-    <q-btn class="logging-button" style="color: #FF0080" label="Login" @click="checkData(loginInput, passwordInput)"></q-btn>
+
+    <q-input class="loggin-input"
+      rounded
+      outlined
+      bg-color="white"
+      v-model="passwordInput" 
+      :type="isPwd ? 'password' : 'text'"
+      placeholder="Password">
+        <template v-slot:append>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isPwd = !isPwd"
+          />
+        </template>
+      </q-input>
+
+    <q-btn
+      label="Login" 
+      rounded 
+      class="logging-button shadow-5"
+      @click="checkData(loginInput, passwordInput)"
+    />
 
     <p>Not registered? <router-link class="router" :to="{ name: 'home' }"> Create account </router-link></p>
   </main>
   <router-view></router-view>
 </template>
 
-<style>
+<style scoped>
 main{
   padding: 20px;
   display: grid;
   background-color: #64B5F6;
   box-shadow: 10px 10px 5px lightblue;
   border-radius: 15px;
+  min-width: 300px;
 }
 
 h1{
@@ -82,18 +101,16 @@ p {
   border-top: 3px solid #FFFFFF;
 }
 
-.logging-input,
-.logging-button{
-  margin: 5% auto 0 auto;
-}
-
-.logging-input{
-  max-width: 70%;
-}
-
 .logging-button {
   font-size: large;
-  font-weight: bold;
+  margin: 5% auto 0 auto;
+  color: white;
+  background-color: #1976D2;
+}
+
+.loggin-input {
+  margin: 5% 15% 0 15%;
+  font-size: large;
 }
 
 .router {
