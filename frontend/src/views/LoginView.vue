@@ -66,7 +66,7 @@ axios(options).then(r => console.log(r)).catch(err=>console.log(err));
       @click="checkData(loginInput, passwordInput)"
     />
 
-    <p>Not registered? <router-link class="router" :to="{ name: 'home' }"> Create account </router-link></p>
+    <p>Not registered? <router-link class="router" :to="{ name: 'register' }"> Create account </router-link></p>
   </main>
   <router-view></router-view>
 </template>
@@ -79,6 +79,7 @@ main{
   box-shadow: 10px 10px 5px lightblue;
   border-radius: 15px;
   min-width: 300px;
+  width: 574px;
 }
 
 h1{

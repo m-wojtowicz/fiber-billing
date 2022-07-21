@@ -236,15 +236,15 @@
       </template>
     </q-stepper>
     <p class="q-mx-xl q-mt-lg">
-      Alredy registered? 
+      Already registered? 
       <router-link class="router" :to="{ name: 'login' }">
-       Sing in
+       Sign in
       </router-link>
     </p>
   </main>
 </template>
 
-<style>
+<style scoped>
 
   main{
     padding: 20px;
