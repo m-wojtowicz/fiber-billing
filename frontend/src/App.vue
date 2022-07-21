@@ -1,26 +1,180 @@
-<script setup>
-import LoginView from "./views/LoginView.vue";
+<script>
+import { ref } from "vue";
+
+export default {
+  setup() {
+    return {
+      drawer: ref(false),
+      link: ref(""),
+    };
+  },
+};
 </script>
 
 <template>
-  <LoginView/>
+  <q-layout view="hHh LpR lFf">
+    <q-header elevated>
+      <q-toolbar id="toolbar">
+        <q-btn
+          flat
+          @click="drawer = !drawer"
+          round
+          dense
+          icon="menu"
+          size="25px"
+        />
+
+        <q-btn flat dense :to="{ name: 'home' }" @click="link = 'home'">
+          <img src="@/assets/logo.svg" height="50" />
+        </q-btn>
+
+        <q-btn
+          flat
+          round
+          dense
+          icon="person"
+          size="25px"
+          :to="{ name: 'user' }"
+          @click="link = 'user'"
+        />
+      </q-toolbar>
+    </q-header>
+
+    <q-drawer
+      v-model="drawer"
+      :width="292"
+      :breakpoint="500"
+      overlay
+      elevated
+      behavior="desktop"
+      id="drawer"
+    >
+      <q-scroll-area class="fit">
+        <q-list>
+          <q-item
+            clickable
+            :active="link === 'products'"
+            @click="link = 'products'"
+            active-class="selected-link"
+            :to="{ name: 'products' }"
+            v-ripple
+          >
+            <q-item-section avatar>
+              <q-icon name="inventory_2" />
+            </q-item-section>
+            <q-item-section>My products</q-item-section>
+          </q-item>
+
+          <q-item
+            clickable
+            :active="link === 'orders'"
+            @click="link = 'orders'"
+            active-class="selected-link"
+            :to="{ name: 'orders' }"
+            v-ripple
+          >
+            <q-item-section avatar>
+              <q-icon name="receipt_long" />
+            </q-item-section>
+            <q-item-section>My orders</q-item-section>
+          </q-item>
+
+          <q-item
+            clickable
+            :active="link === 'account'"
+            @click="link = 'account'"
+            active-class="selected-link"
+            :to="{ name: 'account' }"
+            v-ripple
+          >
+            <q-item-section avatar>
+              <q-icon name="account_balance" />
+            </q-item-section>
+            <q-item-section>Check account balance</q-item-section>
+          </q-item>
+
+          <q-separator spaced />
+
+          <q-item
+            clickable
+            :active="link === 'terminate'"
+            @click="link = 'terminate'"
+            active-class="selected-link"
+            :to="{ name: 'terminate' }"
+            v-ripple
+          >
+            <q-item-section avatar>
+              <q-icon name="phonelink_erase" />
+            </q-item-section>
+            <q-item-section>Terminate existing service</q-item-section>
+          </q-item>
+
+          <q-item
+            clickable
+            :active="link === 'change'"
+            @click="link = 'change'"
+            active-class="selected-link"
+            :to="{ name: 'change' }"
+            v-ripple
+          >
+            <q-item-section avatar>
+              <q-icon name="phonelink_setup" />
+            </q-item-section>
+            <q-item-section>Change existing service</q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
+    </q-drawer>
+
+    <q-page-container>
+      <q-page class="home-page column justify-center items-center" style="background: none">
+        <router-view />
+      </q-page>
+    </q-page-container>
+
+    <q-footer borderless id="footer">
+      <q-img src="@/assets/weaves.svg" />
+    </q-footer>
+  </q-layout>
 </template>
 
-<style>
-@import "@/assets/base.css";
+<style lang="sass">
+@import "@/assets/base.css"
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+#app
+  height: 100vh
+  margin: 0
+  display: flex
+  flex-direction: column
 
-  /* font-weight: normal; */
-}
+#toolbar
+  left: 0px
+  top: 0px
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+  align-items: center
+  padding: 0px 30px
+  background: $primary
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-}
+#drawer
+  background: $secondary
+
+#main-container
+  max-width: 1280px
+  width: 35%
+  margin: 0 auto
+  padding: 2rem
+
+#footer
+  background: none
+  z-index: -1
+
+#content
+  align-items: center
+  display: flex
+
+.selected-link
+  color: black
+  background: $selected
 </style>

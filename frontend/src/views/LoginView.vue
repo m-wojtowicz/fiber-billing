@@ -4,6 +4,7 @@ import axios from "axios";
 
 const loginInput = ref("");
 const passwordInput = ref("");
+const isPwd = ref(true);
 
 async function checkData(login, password) {
 
@@ -31,41 +32,94 @@ axios(options).then(r => console.log(r)).catch(err=>console.log(err));
 
 <template>
   <main>
-    <h1>Welcome to our application</h1>
-      <el-input class="logging-input" v-model="loginInput" placeholder="Login" />
-      <el-input
-        class="logging-input"
-        v-model="passwordInput"
-        type="password"
-        placeholder="Password"
-        show-password
-      />
-      <el-button
-        class="logging-button"
-        color="#00bd7e"
-        @click="checkData(loginInput, passwordInput)"
-        >Login</el-button
-      >
+    <h1>Login</h1>
+    <hr class="divider"/>
+    <q-input
+      class="loggin-input"
+      rounded
+      outlined
+      bg-color="white"
+      v-model="loginInput" 
+      placeholder="Login"
+    />
+
+    <q-input class="loggin-input"
+      rounded
+      outlined
+      bg-color="white"
+      v-model="passwordInput" 
+      :type="isPwd ? 'password' : 'text'"
+      placeholder="Password">
+        <template v-slot:append>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isPwd = !isPwd"
+          />
+        </template>
+      </q-input>
+
+    <q-btn
+      label="Login" 
+      rounded 
+      class="logging-button shadow-5"
+      @click="checkData(loginInput, passwordInput)"
+    />
+
+    <p>Not registered? <router-link class="router" :to="{ name: 'register' }"> Create account </router-link></p>
   </main>
+  <router-view></router-view>
 </template>
 
-<style>
+<style scoped>
 main{
+  padding: 20px;
   display: grid;
-  text-align: center;
+  background-color: #64B5F6;
+  box-shadow: 10px 10px 5px lightblue;
+  border-radius: 15px;
+  min-width: 300px;
+  width: 574px;
 }
 
 h1{
+  margin-top: 7%;
+  font-size: 60px;
+  font-weight: bold;
+  margin-left: 15%;
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: rgb(255, 255, 255);
 }
 
-.logging-input,
-.logging-button{
-  margin: 10px 0px;
+p {
+  margin: 7% auto 7% 15%;
 }
 
-.logging-input{
-  max-width: 100%;
+.divider {
+  width: 170px;
+  margin-left: 15%;
+  border: 0;
+  border-top: 3px solid #FFFFFF;
+}
+
+.logging-button {
+  font-size: large;
+  margin: 5% auto 0 auto;
+  color: white;
+  background-color: #1976D2;
+}
+
+.loggin-input {
+  margin: 5% 15% 0 15%;
+  font-size: large;
+}
+
+.router {
+  text-decoration: none;
+  color: #1976D2
+}
+
+.router:hover{
+  color: #023e8a;
 }
 </style>
