@@ -9,6 +9,6 @@ module.exports = {
     "@vue/eslint-config-prettier",
   ],
   rules: {
-    "prettier/prettier": ["error", { endOfLine: "off" }],
+    "prettier/prettier": ["error", { endOfLine: "lf" }],
   },
 };
