@@ -127,7 +127,10 @@ export default {
     </q-drawer>
 
     <q-page-container>
-      <q-page class="home-page column justify-center items-center" style="background: none">
+      <q-page
+        class="home-page column justify-center items-center"
+        style="background: none"
+      >
         <router-view />
       </q-page>
     </q-page-container>
