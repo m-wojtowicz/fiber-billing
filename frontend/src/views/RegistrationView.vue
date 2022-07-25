@@ -58,6 +58,13 @@ async function register() {
     email: "test@test.com",
     enabled: "true",
     username: "app-user",
+    credentials: [
+      {
+        type: "password",
+        value: "test123",
+        temporary: false,
+      },
+    ],
   };
 
   const options = {
