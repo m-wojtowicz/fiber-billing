@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import axios from "axios";
 
 const step = ref(1);
 
@@ -24,6 +25,55 @@ const streetNumber = ref("");
 const houseNuber = ref("");
 const zipCode = ref("");
 const postOffice = ref("");
+let access_token = "";
+
+async function getToken() {
+  let params = {
+    grant_type: "client_credentials",
+    client_id: "admin-cli",
+    client_secret: "kGNEDI8CQphsw42oSzPk6Y1vVByAVmVo",
+  };
+
+  const data = Object.keys(params)
+    .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+    .join("&");
+
+  const options = {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    data,
+    url: "http://localhost:8080/auth/realms/master/protocol/openid-connect/token",
+  };
+
+  axios(options)
+    .then((r) => (access_token = r.data.access_token))
+    .catch((err) => console.log(err));
+  console.log(access_token);
+}
+
+async function register() {
+  let data = {
+    firstName: "Sergey",
+    lastName: "Kargopolov",
+    email: "test@test.com",
+    enabled: "true",
+    username: "app-user",
+  };
+
+  const options = {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+    data,
+    url: "http://localhost:8080/auth/admin/realms/fiber-billing/users",
+  };
+
+  axios(options)
+    .then((r) => console.log(r))
+    .catch((err) => console.log(err));
+}
 </script>
 
 <template>
@@ -215,7 +265,7 @@ const postOffice = ref("");
           />
           <q-btn
             v-if="step == 3"
-            @click="$refs.stepper.next()"
+            @click="getToken"
             color="primary"
             label="Finish"
           />
@@ -223,7 +273,7 @@ const postOffice = ref("");
             v-if="step > 1"
             flat
             color="primary"
-            @click="$refs.stepper.previous()"
+            @click="register"
             label="Back"
             class="q-ml-sm"
           />
