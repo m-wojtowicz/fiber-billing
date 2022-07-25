@@ -11,4 +11,7 @@ module.exports = {
   rules: {
     "prettier/prettier": ["error", { endOfLine: "lf" }],
   },
+  parserOptions: {
+    ecmaVersion: 2020,
+  },
 };
