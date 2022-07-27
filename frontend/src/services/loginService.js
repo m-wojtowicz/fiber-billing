@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const loginService = async (login, password) => {
+export const getLoginToken = async (login, password) => {
   let params = {
     grant_type: "password",
     username: login,
