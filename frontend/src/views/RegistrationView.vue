@@ -1,30 +1,37 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import axios from "axios";
+import { storeToRefs } from "pinia";
+import { registerStore } from "../stores/register";
+import ClientTypeChooser from "../components/ClientTypeChooser.vue";
+import UserDataForm from "../components/UserDataForm.vue";
+import AddressFormVue from "../components/AddressForm.vue";
+
+const register = registerStore();
+const { clientType, name, surname, email, login, password, repetPassword } =
+  storeToRefs(register);
 
 const step = ref(1);
 
-// step 1
-const clientType = ref("");
+const validateUserData = computed(() => {
+  if (
+    name.value !== "" &&
+    name.value.length < 46 &&
+    surname.value !== "" &&
+    surname.value.length < 46 &&
+    email.value !== "" &&
+    email.value.length < 46 &&
+    email.value.match(/\S+@\S+\.\S+/) &&
+    login.value !== "" &&
+    password.value !== "" &&
+    repetPassword.value !== "" &&
+    email.value.match(/\S+@\S+\.\S+/) &&
+    password.value === repetPassword.value
+  )
+    return true;
+  else return false;
+});
 
-// step 2
-const name = ref("");
-const surname = ref("");
-const email = ref("");
-const registrationLoginInput = ref("");
-const registrationPasswordInput = ref("");
-const registrationRepeadPasswordInput = ref("");
-
-const isPwd = ref(true);
-const isRPwd = ref(true);
-
-// step 3
-const country = ref("");
-const street = ref("");
-const streetNumber = ref("");
-const houseNuber = ref("");
-const zipCode = ref("");
-const postOffice = ref("");
 let access_token = "";
 
 async function getToken() {
@@ -48,10 +55,9 @@ async function getToken() {
   axios(options)
     .then((r) => (access_token = r.data.access_token))
     .catch((err) => console.log(err));
-  console.log(access_token);
 }
 
-async function register() {
+async function registration() {
   let data = {
     firstName: "Sergey",
     lastName: "Kargopolov",
@@ -100,159 +106,15 @@ async function register() {
       class="q-mx-xl q-my-md"
     >
       <q-step :name="1" title="Client type" icon="settings" :done="step > 1">
-        <div class="q-gutter-sm row justify-center">
-          <q-radio
-            v-model="clientType"
-            checked-icon="task_alt"
-            unchecked-icon="panorama_fish_eye"
-            val="regular"
-            label="Regular"
-          />
-          <q-radio
-            v-model="clientType"
-            checked-icon="task_alt"
-            unchecked-icon="panorama_fish_eye"
-            val="business"
-            label="Business"
-          />
-        </div>
+        <ClientTypeChooser />
       </q-step>
 
       <q-step :name="2" title="User data" icon="person" :done="step > 2">
-        <q-input
-          v-if="clientType == 'regular'"
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="name"
-          placeholder="Name"
-        />
-
-        <q-input
-          v-if="clientType == 'regular'"
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="surname"
-          placeholder="Surname"
-        />
-
-        <q-input
-          v-if="clientType == 'business'"
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="surname"
-          placeholder="Company name"
-        />
-
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="email"
-          placeholder="Email"
-        />
-
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="registrationLoginInput"
-          placeholder="Login"
-        />
-
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="registrationPasswordInput"
-          :type="isPwd ? 'password' : 'text'"
-          placeholder="Password"
-        >
-          <template v-slot:append>
-            <q-icon
-              :name="isPwd ? 'visibility_off' : 'visibility'"
-              class="cursor-pointer"
-              @click="isPwd = !isPwd"
-            />
-          </template>
-        </q-input>
-
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="registrationRepeadPasswordInput"
-          :type="isRPwd ? 'password' : 'text'"
-          placeholder="Repeat password"
-        >
-          <template v-slot:append>
-            <q-icon
-              :name="isRPwd ? 'visibility_off' : 'visibility'"
-              class="cursor-pointer"
-              @click="isRPwd = !isRPwd"
-            />
-          </template>
-        </q-input>
+        <UserDataForm />
       </q-step>
 
       <q-step :name="3" title="Address" icon="home">
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="country"
-          placeholder="Country"
-        />
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="street"
-          placeholder="Street"
-        />
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="streetNumber"
-          placeholder="Street number"
-        />
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="houseNuber"
-          placeholder="House number"
-        />
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="zipCode"
-          placeholder="ZIP code"
-        />
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="postOffice"
-          placeholder="Post office"
-        />
+        <AddressFormVue />
       </q-step>
 
       <template v-slot:navigation>
@@ -269,10 +131,11 @@ async function register() {
             @click="$refs.stepper.next()"
             color="primary"
             label="Continue"
+            :disable="!validateUserData"
           />
           <q-btn
             v-if="step == 3"
-            @click="getToken"
+            @click="$refs.stepper.next()"
             color="primary"
             label="Finish"
           />
@@ -280,7 +143,7 @@ async function register() {
             v-if="step > 1"
             flat
             color="primary"
-            @click="register"
+            @click="$refs.stepper.previous()"
             label="Back"
             class="q-ml-sm"
           />
@@ -327,7 +190,7 @@ h1 {
 }
 
 .login-details-inputs {
-  margin-top: 5%;
+  margin-top: 2%;
   font-size: large;
 }
 
