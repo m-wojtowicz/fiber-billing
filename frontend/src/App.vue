@@ -12,7 +12,7 @@ export default {
 </script>
 
 <template>
-  <q-layout view="hHh LpR lFf">
+  <q-layout view="hHh LpR lff" container>
     <q-header elevated>
       <q-toolbar id="toolbar">
         <q-btn

@@ -161,7 +161,7 @@ async function registration() {
 
 <style scoped>
 main {
-  padding: 20px;
+  padding: 0 60px 0 60px;
   display: grid;
   background-color: #64b5f6;
   box-shadow: 10px 10px 5px lightblue;
@@ -170,7 +170,6 @@ main {
 }
 
 h1 {
-  margin-top: 7%;
   font-size: 60px;
   font-weight: bold;
   text-decoration: none;
