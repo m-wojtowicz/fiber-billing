@@ -29,10 +29,10 @@ public class ClientData {
     private String emailAddress;
     @Column(name = "PHONE_NUMBER", nullable = false)
     private int phoneNumber;
-    @JoinColumn(name = "ID_ADDRESS", nullable = false)
-    @OneToOne
+    @JoinColumn(name = "ID_ADDRESS", referencedColumnName = "ID", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
-    @JoinColumn(name = "ID_USER", nullable = false)
-    @OneToOne
+    @JoinColumn(name = "ID_USER", referencedColumnName = "ID", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
 }

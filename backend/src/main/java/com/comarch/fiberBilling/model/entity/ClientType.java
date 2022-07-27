@@ -3,6 +3,7 @@ package com.comarch.fiberBilling.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,4 +18,6 @@ public class ClientType {
     private long id;
     @Column(name = "TYPE", length = 20, nullable = false)
     private String type;
+    @OneToMany(mappedBy = "clientType")
+    private Set<User> users;
 }

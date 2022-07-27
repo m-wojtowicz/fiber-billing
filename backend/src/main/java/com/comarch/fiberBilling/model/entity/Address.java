@@ -27,4 +27,6 @@ public class Address {
     private String postOffice;
     @Column(name = "CITY", length = 45, nullable = false)
     private String city;
+    @OneToOne(mappedBy = "address")
+    private ClientData clientData;
 }

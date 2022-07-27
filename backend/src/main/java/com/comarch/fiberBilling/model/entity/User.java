@@ -17,8 +17,9 @@ public class User {
     private long id;
     @Column(name = "LOGIN", length = 45, nullable = false)
     private String login;
-
     @JoinColumn(name = "ID_CLIENT_TYPE", nullable = false)
     @ManyToOne
     private ClientType clientType;
+    @OneToOne(mappedBy = "user")
+    private ClientData clientData;
 }
