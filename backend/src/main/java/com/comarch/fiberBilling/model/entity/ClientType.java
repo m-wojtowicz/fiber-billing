@@ -18,6 +18,6 @@ public class ClientType {
     private long id;
     @Column(name = "TYPE", length = 20, nullable = false)
     private String type;
-    @OneToMany(mappedBy = "clientType")
+    @OneToMany(mappedBy = "clientType", cascade = CascadeType.ALL)
     private Set<User> users;
 }
