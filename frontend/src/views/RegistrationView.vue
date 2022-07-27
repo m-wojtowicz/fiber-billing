@@ -5,6 +5,7 @@ import { storeToRefs } from "pinia";
 import { registerStore } from "../stores/register";
 import ClientTypeChooser from "../components/ClientTypeChooser.vue";
 import UserDataForm from "../components/UserDataForm.vue";
+import AddressFormVue from "../components/AddressForm.vue";
 
 const register = registerStore();
 const { clientType, name, surname, email, login, password, repetPassword } =
@@ -15,8 +16,12 @@ const step = ref(1);
 const validateUserData = computed(() => {
   if (
     name.value !== "" &&
+    name.value.length < 46 &&
     surname.value !== "" &&
+    surname.value.length < 46 &&
     email.value !== "" &&
+    email.value.length < 46 &&
+    email.value.match(/\S+@\S+\.\S+/) &&
     login.value !== "" &&
     password.value !== "" &&
     repetPassword.value !== "" &&
@@ -26,14 +31,6 @@ const validateUserData = computed(() => {
     return true;
   else return false;
 });
-
-// step 3
-const country = ref("");
-const street = ref("");
-const streetNumber = ref("");
-const houseNuber = ref("");
-const zipCode = ref("");
-const postOffice = ref("");
 
 let access_token = "";
 
@@ -117,54 +114,7 @@ async function registration() {
       </q-step>
 
       <q-step :name="3" title="Address" icon="home">
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="country"
-          placeholder="Country"
-        />
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="street"
-          placeholder="Street"
-        />
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="streetNumber"
-          placeholder="Street number"
-        />
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="houseNuber"
-          placeholder="House number"
-        />
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="zipCode"
-          placeholder="ZIP code"
-        />
-        <q-input
-          class="login-details-inputs"
-          rounded
-          outlined
-          bg-color="white"
-          v-model="postOffice"
-          placeholder="Post office"
-        />
+        <AddressFormVue />
       </q-step>
 
       <template v-slot:navigation>

@@ -1,6 +1,12 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
+import { registerStore } from "../stores/register";
+
+const register = registerStore();
+onMounted(() => {
+  register.reset();
+});
 
 const loginInput = ref("");
 const passwordInput = ref("");

@@ -53,7 +53,7 @@ watch([password, repetPassword], () => {
     rounded
     outlined
     bg-color="white"
-    v-model="surname"
+    v-model="name"
     placeholder="Company name"
     :rules="[
       (val) => !!val || 'Field is required',
@@ -71,7 +71,7 @@ watch([password, repetPassword], () => {
     :rules="[
       (val) => !!val || 'Field is required',
       (val) => val.length < 46 || 'Please use maximum 45 character',
-      (val) => val.match(/\S+@\S+\.\S+/) || 'Not valid email',
+      (val) => val.match(/\S+@\S+\.\S+/) || 'Invalid email',
     ]"
   />
 
