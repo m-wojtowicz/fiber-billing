@@ -1,5 +1,6 @@
 <script>
 import { ref } from "vue";
+import Navbar from "./components/Navbar.vue";
 
 export default {
   setup() {
@@ -8,36 +9,14 @@ export default {
       link: ref(""),
     };
   },
+  components: { Navbar },
 };
 </script>
 
 <template>
   <q-layout view="hHh LpR lff" container>
     <q-header elevated>
-      <q-toolbar id="toolbar">
-        <q-btn
-          flat
-          @click="drawer = !drawer"
-          round
-          dense
-          icon="menu"
-          size="25px"
-        />
-
-        <q-btn flat dense :to="{ name: 'home' }" @click="link = 'home'">
-          <img src="@/assets/logo.svg" height="50" />
-        </q-btn>
-
-        <q-btn
-          flat
-          round
-          dense
-          icon="person"
-          size="25px"
-          :to="{ name: 'user' }"
-          @click="link = 'user'"
-        />
-      </q-toolbar>
+      <Navbar />
     </q-header>
 
     <q-drawer
@@ -149,16 +128,6 @@ export default {
   margin: 0
   display: flex
   flex-direction: column
-
-#toolbar
-  left: 0px
-  top: 0px
-  display: flex
-  flex-direction: row
-  justify-content: space-between
-  align-items: center
-  padding: 0px 30px
-  background: $primary
 
 #drawer
   background: $secondary

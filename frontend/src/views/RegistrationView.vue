@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
-import axios from "axios";
+import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { registerStore } from "../stores/register";
 import ClientTypeChooser from "../components/ClientTypeChooser.vue";
@@ -13,11 +14,21 @@ import {
   registerClientData,
 } from "../services/registerService";
 
+const router = useRouter();
+
 const register = registerStore();
 const { clientType, name, surname, email, login, password, repetPassword } =
   storeToRefs(register);
 
 const step = ref(1);
+const $q = useQuasar();
+
+$q.notify.setDefaults({
+  position: "bottom",
+  timeout: 2000,
+  textColor: "white",
+  actions: [{ icon: "close", color: "white" }],
+});
 
 const validateUserData = computed(() => {
   if (
@@ -57,12 +68,30 @@ const registerScript = async () => {
   let user = {};
   let address = {};
   try {
-    await registerKeycloak();
     await registerUser().then((r) => (user = r.data));
     await registerAddress().then((r) => (address = r.data));
     await registerClientData(user, address).then((r) => console.log(r.data));
+    await registerKeycloak();
+
+    $q.notify({
+      message: "Successfuly registered. You can login now.",
+      type: "positive",
+    });
+
+    router.replace({ name: "login" });
   } catch (err) {
-    console.log(err);
+    let message = err.message;
+
+    if (err.response.data.errorMessage !== undefined)
+      message = err.response.data.errorMessage;
+    if (err.response.data.error !== undefined)
+      message = err.response.data.error;
+
+    $q.notify({
+      message: `${message}`,
+      caption: `${err.code}`,
+      type: "negative",
+    });
   }
 };
 </script>
