@@ -5,6 +5,15 @@ export const userStore = defineStore({
   state: () => ({
     login: "",
     password: "",
-    token: {},
+    token: {
+      access_token: "",
+      expires_in: null,
+      "not-before-policy": null,
+      refresh_expires_in: null,
+      refresh_token: "",
+      scope: "",
+      session_state: "",
+      token_type: "",
+    },
   }),
 });

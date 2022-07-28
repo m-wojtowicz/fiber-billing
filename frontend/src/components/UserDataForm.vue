@@ -14,7 +14,6 @@ const isPwdSame = ref("Passwords don't match");
 watch([password, repetPassword], () => {
   if (password.value === repetPassword.value) isPwdSame.value = true;
   else isPwdSame.value = "Passwords don't match";
-  console.log(password.value + " " + repetPassword.value + isPwdSame.value);
 });
 </script>
 

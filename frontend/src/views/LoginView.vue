@@ -45,13 +45,11 @@ const checkData = () => {
     });
 };
 
-const isEmpty = (obj) => {
-  return Object.keys(obj).length === 0;
-};
-
 watch(token, () => {
+  if (token.access_token !== "") {
     console.log("elo");
     router.replace({ name: "home" });
+  }
 });
 </script>
 
