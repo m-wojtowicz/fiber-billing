@@ -1,19 +1,8 @@
-<script setup>
-import { userStore } from "../stores/userStore";
-
-const user = userStore();
-</script>
+<script setup></script>
 
 <template>
   <q-toolbar id="toolbar">
-    <q-btn
-      flat
-      @click="drawer = !drawer"
-      round
-      dense
-      icon="menu"
-      size="25px"
-    />
+    <q-btn flat @click="drawer = !drawer" round dense icon="menu" size="25px" />
 
     <q-btn flat dense :to="{ name: 'home' }" @click="link = 'home'">
       <img src="@/assets/logo.svg" height="50" />

@@ -24,7 +24,7 @@ const step = ref(1);
 const $q = useQuasar();
 
 $q.notify.setDefaults({
-  position: "bottom",
+  position: "top-right",
   timeout: 2000,
   textColor: "white",
   actions: [{ icon: "close", color: "white" }],

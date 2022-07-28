@@ -49,6 +49,11 @@ watch(token, () => {
   if (token.access_token !== "") {
     console.log("elo");
     router.replace({ name: "home" });
+
+    $q.notify({
+      message: "Successfuly logged in.",
+      type: "positive",
+    });
   }
 });
 </script>
@@ -59,21 +64,19 @@ watch(token, () => {
     <hr class="divider" />
     <q-input
       class="loggin-input"
-      rounded
       outlined
       bg-color="white"
       v-model="login"
-      placeholder="Login"
+      label="Login"
     />
 
     <q-input
       class="loggin-input"
-      rounded
       outlined
       bg-color="white"
       v-model="password"
       :type="isPwd ? 'password' : 'text'"
-      placeholder="Password"
+      label="Password"
     >
       <template v-slot:append>
         <q-icon

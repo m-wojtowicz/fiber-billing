@@ -21,11 +21,10 @@ watch([password, repetPassword], () => {
   <q-input
     v-if="register.clientType == 'regular'"
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="name"
-    placeholder="Name"
+    label="Name"
     :rules="[
       (val) => !!val || 'Field is required',
       (val) => val.length < 46 || 'Please use maximum 45 character',
@@ -35,11 +34,10 @@ watch([password, repetPassword], () => {
   <q-input
     v-if="register.clientType == 'regular'"
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="surname"
-    placeholder="Surname"
+    label="Surname"
     :rules="[
       (val) => !!val || 'Field is required',
       (val) => val.length < 46 || 'Please use maximum 45 character',
@@ -49,11 +47,10 @@ watch([password, repetPassword], () => {
   <q-input
     v-if="register.clientType == 'business'"
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="name"
-    placeholder="Company name"
+    label="Company name"
     :rules="[
       (val) => !!val || 'Field is required',
       (val) => val.length < 46 || 'Please use maximum 45 character',
@@ -62,11 +59,10 @@ watch([password, repetPassword], () => {
 
   <q-input
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="email"
-    placeholder="Email"
+    label="Email"
     :rules="[
       (val) => !!val || 'Field is required',
       (val) => val.length < 46 || 'Please use maximum 45 character',
@@ -76,22 +72,20 @@ watch([password, repetPassword], () => {
 
   <q-input
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="login"
-    placeholder="Login"
+    label="Login"
     :rules="[(val) => !!val || 'Field is required']"
   />
 
   <q-input
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="password"
     :type="isPwd ? 'password' : 'text'"
-    placeholder="Password"
+    label="Password"
     :rules="[(val) => !!val || 'Field is required']"
   >
     <template v-slot:append>
@@ -105,12 +99,11 @@ watch([password, repetPassword], () => {
 
   <q-input
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="repetPassword"
     :type="isRPwd ? 'password' : 'text'"
-    placeholder="Repeat password"
+    label="Repeat password"
     reactive-rules
     :rules="[(val) => !!val || 'Field is required', () => isPwdSame]"
   >

@@ -66,9 +66,7 @@ export const registerUser = async () => {
     clientType: clientType,
   };
 
-  return axios
-    .post(url + "/user", userData)
-    .catch((err) => console.log(err));
+  return axios.post(url + "/user", userData).catch((err) => console.log(err));
 };
 
 export const registerAddress = async () => {

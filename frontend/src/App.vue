@@ -1,6 +1,6 @@
 <script>
 import { ref } from "vue";
-import Navbar from "./components/Navbar.vue";
+import NavBar from "./components/NavBar.vue";
 
 export default {
   setup() {
@@ -9,14 +9,14 @@ export default {
       link: ref(""),
     };
   },
-  components: { Navbar },
+  components: { NavBar },
 };
 </script>
 
 <template>
   <q-layout view="hHh LpR lff" container>
     <q-header elevated>
-      <Navbar />
+      <NavBar />
     </q-header>
 
     <q-drawer
