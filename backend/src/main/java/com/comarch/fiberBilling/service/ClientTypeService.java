@@ -9,4 +9,6 @@ public interface ClientTypeService {
     ResponseEntity<List<ClientTypeDTO>> getAll();
 
     ResponseEntity getClientTypeById(String clientTypeId);
+
+    ResponseEntity getClientTypeByName(String clientTypeName);
 }

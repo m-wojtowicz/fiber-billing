@@ -40,8 +40,20 @@ public class ClientTypeController {
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
             @ApiResponse(responseCode = "404", description = "ID not found", content = @Content)
     })
-    @GetMapping(value = "/{clientTypeId}")
+    @GetMapping(value = "/id/{clientTypeId}")
     public ResponseEntity getClientTypeById(@PathVariable("clientTypeId") String clientTypeId) {
         return clientTypeService.getClientTypeById(clientTypeId);
+    }
+
+    @Operation(summary = "Get client type by name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client type", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientTypeDTO.class))}
+            ),
+            @ApiResponse(responseCode = "404", description = "ClientType not found", content = @Content)
+    })
+    @GetMapping(value = "/name/{clientTypeName}")
+    public ResponseEntity getClientTypeByName(@PathVariable("clientTypeName") String clientTypeName) {
+        return clientTypeService.getClientTypeByName(clientTypeName);
     }
 }

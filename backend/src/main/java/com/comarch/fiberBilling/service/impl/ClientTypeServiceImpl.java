@@ -7,6 +7,7 @@ import com.comarch.fiberBilling.repository.ClientTypeRepository;
 import com.comarch.fiberBilling.service.ClientTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,17 @@ public class ClientTypeServiceImpl implements ClientTypeService {
 
         ClientTypeDTO clientTypeDTO = clientTypeMapper.clientTypeToClientTypeDto(clientType.get());
 
+        return ResponseEntity.ok(clientTypeDTO);
+    }
+
+    @Override
+    public ResponseEntity getClientTypeByName(String clientTypeName) {
+        List<ClientType> clientType = clientTypeRepository.findByType(clientTypeName);
+        if (clientType.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ClientType not found");
+        }
+
+        ClientTypeDTO clientTypeDTO = clientTypeMapper.clientTypeToClientTypeDto(clientType.get(0));
         return ResponseEntity.ok(clientTypeDTO);
     }
 }

@@ -6,6 +6,12 @@ import { registerStore } from "../stores/register";
 import ClientTypeChooser from "../components/ClientTypeChooser.vue";
 import UserDataForm from "../components/UserDataForm.vue";
 import AddressFormVue from "../components/AddressForm.vue";
+import {
+  registerKeycloak,
+  registerUser,
+  registerAddress,
+  registerClientData,
+} from "../services/registerService";
 
 const register = registerStore();
 const { clientType, name, surname, email, login, password, repetPassword } =
@@ -15,6 +21,7 @@ const step = ref(1);
 
 const validateUserData = computed(() => {
   if (
+    clientType.value === "regular" &&
     name.value !== "" &&
     name.value.length < 46 &&
     surname.value !== "" &&
@@ -29,64 +36,35 @@ const validateUserData = computed(() => {
     password.value === repetPassword.value
   )
     return true;
+  else if (
+    clientType.value === "business" &&
+    name.value !== "" &&
+    name.value.length < 46 &&
+    email.value !== "" &&
+    email.value.length < 46 &&
+    email.value.match(/\S+@\S+\.\S+/) &&
+    login.value !== "" &&
+    password.value !== "" &&
+    repetPassword.value !== "" &&
+    email.value.match(/\S+@\S+\.\S+/) &&
+    password.value === repetPassword.value
+  )
+    return true;
   else return false;
 });
 
-let access_token = "";
-
-async function getToken() {
-  let params = {
-    grant_type: "client_credentials",
-    client_id: "admin-cli",
-    client_secret: "kGNEDI8CQphsw42oSzPk6Y1vVByAVmVo",
-  };
-
-  const data = Object.keys(params)
-    .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-    .join("&");
-
-  const options = {
-    method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    data,
-    url: "http://localhost:8080/auth/realms/master/protocol/openid-connect/token",
-  };
-
-  axios(options)
-    .then((r) => (access_token = r.data.access_token))
-    .catch((err) => console.log(err));
-}
-
-async function registration() {
-  let data = {
-    firstName: "Sergey",
-    lastName: "Kargopolov",
-    email: "test@test.com",
-    enabled: "true",
-    username: "app-user",
-    credentials: [
-      {
-        type: "password",
-        value: "test123",
-        temporary: false,
-      },
-    ],
-  };
-
-  const options = {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      Authorization: `Bearer ${access_token}`,
-    },
-    data,
-    url: "http://localhost:8080/auth/admin/realms/fiber-billing/users",
-  };
-
-  axios(options)
-    .then((r) => console.log(r))
-    .catch((err) => console.log(err));
-}
+const registerScript = async () => {
+  let user = {};
+  let address = {};
+  try {
+    await registerKeycloak();
+    await registerUser().then((r) => (user = r.data));
+    await registerAddress().then((r) => (address = r.data));
+    await registerClientData(user, address).then((r) => console.log(r.data));
+  } catch (err) {
+    console.log(err);
+  }
+};
 </script>
 
 <template>
@@ -135,7 +113,7 @@ async function registration() {
           />
           <q-btn
             v-if="step == 3"
-            @click="$refs.stepper.next()"
+            @click="registerScript()"
             color="primary"
             label="Finish"
           />

@@ -129,7 +129,7 @@ export default {
     <q-page-container>
       <q-page
         class="home-page column justify-center items-center"
-        style="background: none"
+        style="background: none; padding-top: 1%"
       >
         <router-view />
       </q-page>
