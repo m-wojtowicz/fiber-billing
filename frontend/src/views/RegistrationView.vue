@@ -1,20 +1,38 @@
 <script setup>
 import { ref, computed } from "vue";
-import axios from "axios";
+import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { registerStore } from "../stores/register";
 import ClientTypeChooser from "../components/ClientTypeChooser.vue";
 import UserDataForm from "../components/UserDataForm.vue";
 import AddressFormVue from "../components/AddressForm.vue";
+import {
+  registerKeycloak,
+  registerUser,
+  registerAddress,
+  registerClientData,
+} from "../services/registerService";
+
+const router = useRouter();
 
 const register = registerStore();
 const { clientType, name, surname, email, login, password, repetPassword } =
   storeToRefs(register);
 
 const step = ref(1);
+const $q = useQuasar();
+
+$q.notify.setDefaults({
+  position: "top-right",
+  timeout: 2000,
+  textColor: "white",
+  actions: [{ icon: "close", color: "white" }],
+});
 
 const validateUserData = computed(() => {
   if (
+    clientType.value === "regular" &&
     name.value !== "" &&
     name.value.length < 46 &&
     surname.value !== "" &&
@@ -29,64 +47,53 @@ const validateUserData = computed(() => {
     password.value === repetPassword.value
   )
     return true;
+  else if (
+    clientType.value === "business" &&
+    name.value !== "" &&
+    name.value.length < 46 &&
+    email.value !== "" &&
+    email.value.length < 46 &&
+    email.value.match(/\S+@\S+\.\S+/) &&
+    login.value !== "" &&
+    password.value !== "" &&
+    repetPassword.value !== "" &&
+    email.value.match(/\S+@\S+\.\S+/) &&
+    password.value === repetPassword.value
+  )
+    return true;
   else return false;
 });
 
-let access_token = "";
+const registerScript = async () => {
+  let user = {};
+  let address = {};
+  try {
+    await registerUser().then((r) => (user = r.data));
+    await registerAddress().then((r) => (address = r.data));
+    await registerClientData(user, address).then((r) => console.log(r.data));
+    await registerKeycloak();
 
-async function getToken() {
-  let params = {
-    grant_type: "client_credentials",
-    client_id: "admin-cli",
-    client_secret: "kGNEDI8CQphsw42oSzPk6Y1vVByAVmVo",
-  };
+    $q.notify({
+      message: "Successfuly registered. You can login now.",
+      type: "positive",
+    });
 
-  const data = Object.keys(params)
-    .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-    .join("&");
+    router.replace({ name: "login" });
+  } catch (err) {
+    let message = err.message;
 
-  const options = {
-    method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    data,
-    url: "http://localhost:8080/auth/realms/master/protocol/openid-connect/token",
-  };
+    if (err.response.data.errorMessage !== undefined)
+      message = err.response.data.errorMessage;
+    if (err.response.data.error !== undefined)
+      message = err.response.data.error;
 
-  axios(options)
-    .then((r) => (access_token = r.data.access_token))
-    .catch((err) => console.log(err));
-}
-
-async function registration() {
-  let data = {
-    firstName: "Sergey",
-    lastName: "Kargopolov",
-    email: "test@test.com",
-    enabled: "true",
-    username: "app-user",
-    credentials: [
-      {
-        type: "password",
-        value: "test123",
-        temporary: false,
-      },
-    ],
-  };
-
-  const options = {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      Authorization: `Bearer ${access_token}`,
-    },
-    data,
-    url: "http://localhost:8080/auth/admin/realms/fiber-billing/users",
-  };
-
-  axios(options)
-    .then((r) => console.log(r))
-    .catch((err) => console.log(err));
-}
+    $q.notify({
+      message: `${message}`,
+      caption: `${err.code}`,
+      type: "negative",
+    });
+  }
+};
 </script>
 
 <template>
@@ -135,7 +142,7 @@ async function registration() {
           />
           <q-btn
             v-if="step == 3"
-            @click="$refs.stepper.next()"
+            @click="registerScript()"
             color="primary"
             label="Finish"
           />
@@ -161,7 +168,7 @@ async function registration() {
 
 <style scoped>
 main {
-  padding: 20px;
+  padding: 0 60px 0 60px;
   display: grid;
   background-color: #64b5f6;
   box-shadow: 10px 10px 5px lightblue;
@@ -170,7 +177,6 @@ main {
 }
 
 h1 {
-  margin-top: 7%;
   font-size: 60px;
   font-weight: bold;
   text-decoration: none;

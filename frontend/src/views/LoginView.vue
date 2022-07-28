@@ -1,40 +1,61 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { ref, onMounted, watch } from "vue";
+import { useQuasar } from "quasar";
+import { storeToRefs } from "pinia";
+import { getLoginToken } from "../services/loginService";
 import { registerStore } from "../stores/register";
+import { userStore } from "../stores/userStore";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const register = registerStore();
+const user = userStore();
+const { login, password, token } = storeToRefs(user);
+
 onMounted(() => {
   register.reset();
 });
 
-const loginInput = ref("");
-const passwordInput = ref("");
 const isPwd = ref(true);
+const $q = useQuasar();
 
-async function checkData(login, password) {
-  let params = {
-    grant_type: "password",
-    username: login,
-    password: password,
-    client_id: "fiber-billing",
-  };
+$q.notify.setDefaults({
+  position: "top-right",
+  timeout: 2000,
+  textColor: "white",
+  actions: [{ icon: "close", color: "white" }],
+});
 
-  const data = Object.keys(params)
-    .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-    .join("&");
+const checkData = () => {
+  getLoginToken(login.value, password.value)
+    .then((res) => {
+      console.log(res);
+      token.value = res.data;
+    })
+    .catch((err) => {
+      if (err.response.status === 401) {
+        $q.notify({
+          message: "Invalid login or password",
+          color: "red",
+        });
+      } else {
+        console.log(err);
+      }
+    });
+};
 
-  const options = {
-    method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    data,
-    url: "http://localhost:8080/auth/realms/fiber-billing/protocol/openid-connect/token",
-  };
+watch(token, () => {
+  if (token.access_token !== "") {
+    console.log("elo");
+    router.replace({ name: "home" });
 
-  axios(options)
-    .then((r) => console.log(r))
-    .catch((err) => console.log(err));
-}
+    $q.notify({
+      message: "Successfuly logged in.",
+      type: "positive",
+    });
+  }
+});
 </script>
 
 <template>
@@ -43,21 +64,19 @@ async function checkData(login, password) {
     <hr class="divider" />
     <q-input
       class="loggin-input"
-      rounded
       outlined
       bg-color="white"
-      v-model="loginInput"
-      placeholder="Login"
+      v-model="login"
+      label="Login"
     />
 
     <q-input
       class="loggin-input"
-      rounded
       outlined
       bg-color="white"
-      v-model="passwordInput"
+      v-model="password"
       :type="isPwd ? 'password' : 'text'"
-      placeholder="Password"
+      label="Password"
     >
       <template v-slot:append>
         <q-icon

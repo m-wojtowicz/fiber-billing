@@ -14,7 +14,7 @@ import java.util.Set;
 @Table(name = "CLIENT_TYPE")
 public class ClientType {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "TYPE", length = 20, nullable = false)
     private String type;

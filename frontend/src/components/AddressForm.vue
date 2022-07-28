@@ -19,22 +19,20 @@ const options = ["Poland"];
 <template>
   <q-select
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="country"
-    placeholder="Country"
+    label="Country"
     default="Country"
     :options="options"
     :rules="[(val) => !!val || 'Field is required']"
   />
   <q-input
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="city"
-    placeholder="City"
+    label="City"
     :rules="[
       (val) => !!val || 'Field is required',
       (val) => val.length < 46 || 'Please use maximum 45 character',
@@ -42,11 +40,10 @@ const options = ["Poland"];
   />
   <q-input
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="street"
-    placeholder="Street"
+    label="Street"
     :rules="[
       (val) => !!val || 'Field is required',
       (val) => val.length < 46 || 'Please use maximum 45 character',
@@ -54,11 +51,10 @@ const options = ["Poland"];
   />
   <q-input
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="streetNumber"
-    placeholder="Street number"
+    label="Street number"
     :rules="[
       (val) => !!val || 'Field is required',
       (val) => val.length < 6 || 'Please use maximum 5 character',
@@ -66,11 +62,10 @@ const options = ["Poland"];
   />
   <q-input
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="houseNumber"
-    placeholder="House number"
+    label="House number"
     :rules="[
       (val) => !!val || 'Field is required',
       (val) => val.length < 6 || 'Please use maximum 5 character',
@@ -78,11 +73,10 @@ const options = ["Poland"];
   />
   <q-input
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="zipCode"
-    placeholder="ZIP code"
+    label="ZIP code"
     :rules="[
       (val) => !!val || 'Field is required',
       (val) => val.match(/^[0-9]{2}-[0-9]{3}$/) || 'Invalid zip code',
@@ -90,11 +84,10 @@ const options = ["Poland"];
   />
   <q-input
     class="login-details-inputs"
-    rounded
     outlined
     bg-color="white"
     v-model="postOffice"
-    placeholder="Post office"
+    label="Post office"
     :rules="[
       (val) => !!val || 'Field is required',
       (val) => val.length < 46 || 'Please use maximum 45 character',
