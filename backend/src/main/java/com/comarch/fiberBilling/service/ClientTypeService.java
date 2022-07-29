@@ -11,4 +11,10 @@ public interface ClientTypeService {
     ResponseEntity getClientTypeById(String clientTypeId);
 
     ResponseEntity getClientTypeByName(String clientTypeName);
+
+    ResponseEntity addClientType(ClientTypeDTO clientTypeDTO);
+
+    ResponseEntity changeClientType(String clientTypeId, ClientTypeDTO clientTypeDTO);
+
+    ResponseEntity deleteClientTypeById(String clientTypeId);
 }

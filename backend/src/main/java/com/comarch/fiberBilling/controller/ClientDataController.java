@@ -37,8 +37,8 @@ public class ClientDataController {
             @ApiResponse(responseCode = "200", description = "ClientData", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDataDTO.class))}
             ),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
-            @ApiResponse(responseCode = "404", description = "ID not found", content = @Content)
     })
     @GetMapping(value = "/{clientDataId}")
     public ResponseEntity getClientDataById(@PathVariable("clientDataId") String clientDataId) {
@@ -48,12 +48,38 @@ public class ClientDataController {
 
     @Operation(summary = "Add new client data")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "ClientDataDTO", content = {
+            @ApiResponse(responseCode = "201", description = "ClientDataDTO", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDataDTO.class))
             }),
             @ApiResponse(responseCode = "400", description = "Client data not given", content = @Content)})
     @PostMapping
     public ResponseEntity<ClientDataDTO> addClientData(@RequestBody ClientDataDTO clientDataDTO) {
         return clientDataService.addClientData(clientDataDTO);
+    }
+
+    @Operation(summary = "Update client data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "ClientDataDTO", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDataDTO.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Client data not given", content = @Content),
+    })
+    @PutMapping(value = "/{clientDataId}")
+    public ResponseEntity<ClientDataDTO> changeClientData(@PathVariable("clientDataId") String clientDataId, @RequestBody ClientDataDTO clientDataDTO) {
+        return clientDataService.changeClientData(clientDataId, clientDataDTO);
+    }
+
+    @Operation(summary = "Delete client data by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ClientData", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDataDTO.class))}
+            ),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @DeleteMapping(value = "/{clientDataId}")
+    public ResponseEntity deleteClientDataById(@PathVariable("clientDataId") String clientDataId) {
+        return clientDataService.deleteClientDataById(clientDataId);
     }
 }

@@ -32,7 +32,9 @@ public class ClientData {
     @JoinColumn(name = "ID_ADDRESS", referencedColumnName = "ID", nullable = false)
     @OneToOne(cascade = CascadeType.MERGE)
     private Address address;
-    @JoinColumn(name = "ID_USER", referencedColumnName = "ID", nullable = false)
-    @OneToOne(cascade = CascadeType.MERGE)
-    private User user;
+    @Column(name = "LOGIN", length = 45, nullable = false)
+    private String login;
+    @JoinColumn(name = "ID_CLIENT_TYPE", nullable = false)
+    @ManyToOne
+    private ClientType clientType;
 }

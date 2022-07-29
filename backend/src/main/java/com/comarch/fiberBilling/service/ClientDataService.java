@@ -11,4 +11,8 @@ public interface ClientDataService {
     ResponseEntity getClientDataById(String clientDataId);
 
     ResponseEntity addClientData(ClientDataDTO clientDataDTO);
+
+    ResponseEntity changeClientData(String clientDataId, ClientDataDTO clientDataDTO);
+
+    ResponseEntity deleteClientDataById(String clientDataId);
 }

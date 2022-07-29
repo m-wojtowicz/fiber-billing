@@ -40,11 +40,9 @@ public class ClientDataServiceImpl implements ClientDataService {
         }
         Optional<ClientData> clientData = clientDataRepository.findById(id);
         if (clientData.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ID not found");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
-
         ClientDataDTO clientDataDTO = clientDataMapper.clientDataToClientDataDto(clientData.get());
-
         return ResponseEntity.ok(clientDataDTO);
     }
 
@@ -54,12 +52,45 @@ public class ClientDataServiceImpl implements ClientDataService {
         if (clientDataDTO == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Client data not provided");
         }
-
         ClientData clientData = clientDataMapper.clientDataDtoToClientData(clientDataDTO);
-
         ClientData newClientData = clientDataRepository.save(clientData);
         ClientDataDTO newClientDataDto = clientDataMapper.clientDataToClientDataDto(newClientData);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(newClientDataDto);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity changeClientData(String clientDataId, ClientDataDTO clientDataDTO) {
+        Long id;
+        try {
+            id = Long.valueOf(clientDataId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<ClientData> clientData = clientDataRepository.findById(id);
+        if (clientData.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        clientDataDTO.setId(id);
+        ClientData newClientData = clientDataMapper.clientDataDtoToClientData(clientDataDTO);
+        clientDataRepository.save(newClientData);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientDataMapper.clientDataToClientDataDto(newClientData));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity deleteClientDataById(String clientDataId) {
+        Long id;
+        try {
+            id = Long.valueOf(clientDataId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<ClientData> clientData = clientDataRepository.findById(id);
+        if (clientData.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        clientDataRepository.delete(clientData.get());
+        return ResponseEntity.status(HttpStatus.OK).body(clientDataMapper.clientDataToClientDataDto(clientData.get()));
     }
 }

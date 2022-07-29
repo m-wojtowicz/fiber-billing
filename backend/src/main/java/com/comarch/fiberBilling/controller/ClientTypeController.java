@@ -1,5 +1,6 @@
 package com.comarch.fiberBilling.controller;
 
+import com.comarch.fiberBilling.model.dto.ClientDataDTO;
 import com.comarch.fiberBilling.model.dto.ClientTypeDTO;
 import com.comarch.fiberBilling.service.ClientTypeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,8 +38,8 @@ public class ClientTypeController {
             @ApiResponse(responseCode = "200", description = "Client type", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ClientTypeDTO.class))}
             ),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
-            @ApiResponse(responseCode = "404", description = "ID not found", content = @Content)
     })
     @GetMapping(value = "/id/{clientTypeId}")
     public ResponseEntity getClientTypeById(@PathVariable("clientTypeId") String clientTypeId) {
@@ -55,5 +56,42 @@ public class ClientTypeController {
     @GetMapping(value = "/name/{clientTypeName}")
     public ResponseEntity getClientTypeByName(@PathVariable("clientTypeName") String clientTypeName) {
         return clientTypeService.getClientTypeByName(clientTypeName);
+    }
+
+    @Operation(summary = "Add new client type")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "ClientType", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientTypeDTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Client type not given", content = @Content)})
+    @PostMapping
+    public ResponseEntity<ClientTypeDTO> addClientType(@RequestBody ClientTypeDTO clientTypeDTO) {
+        return clientTypeService.addClientType(clientTypeDTO);
+    }
+
+    @Operation(summary = "Update client type")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "ClientType", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientTypeDTO.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Client type not given", content = @Content),
+    })
+    @PutMapping(value = "/{clientTypeId}")
+    public ResponseEntity<ClientTypeDTO> changeClientType(@PathVariable("clientTypeId") String clientTypeId, @RequestBody ClientTypeDTO clientTypeDTO) {
+        return clientTypeService.changeClientType(clientTypeId, clientTypeDTO);
+    }
+
+    @Operation(summary = "Delete client type by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ClientType", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDataDTO.class))}
+            ),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @DeleteMapping(value = "/{clientTypeId}")
+    public ResponseEntity deleteClientTypeById(@PathVariable("clientTypeId") String clientTypeId) {
+        return clientTypeService.deleteClientTypeById(clientTypeId);
     }
 }
