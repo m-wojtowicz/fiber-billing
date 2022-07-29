@@ -37,23 +37,49 @@ public class AddressController {
             @ApiResponse(responseCode = "200", description = "Address", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = AddressDTO.class))}
             ),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
-            @ApiResponse(responseCode = "404", description = "ID not found", content = @Content)
     })
     @GetMapping(value = "/{addressId}")
     public ResponseEntity getAddressById(@PathVariable("addressId") String addressId) {
         return addressService.getAddressById(addressId);
     }
 
-
     @Operation(summary = "Add new address")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "AddressDTO", content = {
+            @ApiResponse(responseCode = "201", description = "AddressDTO", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = AddressDTO.class))
             }),
-            @ApiResponse(responseCode = "400", description = "Address not given", content = @Content)})
+            @ApiResponse(responseCode = "400", description = "Address not given", content = @Content)
+    })
     @PostMapping
     public ResponseEntity<AddressDTO> addAddress(@RequestBody AddressDTO addressDTO) {
         return addressService.addAddress(addressDTO);
+    }
+
+    @Operation(summary = "Update address")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "AddressDTO", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AddressDTO.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "AddressID not given", content = @Content),
+    })
+    @PutMapping(value = "/{addressId}")
+    public ResponseEntity<AddressDTO> changeAddress(@PathVariable("addressId") String addressId, @RequestBody AddressDTO addressDTO) {
+        return addressService.changeAddress(addressId, addressDTO);
+    }
+
+    @Operation(summary = "Delete address by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Address", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AddressDTO.class))}
+            ),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @DeleteMapping(value = "/{addressId}")
+    public ResponseEntity deleteAddressById(@PathVariable("addressId") String addressId) {
+        return addressService.deleteAddressById(addressId);
     }
 }

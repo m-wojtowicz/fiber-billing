@@ -40,11 +40,9 @@ public class AddressServiceImpl implements AddressService {
         }
         Optional<Address> address = addressRepository.findById(id);
         if (address.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ID not found");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
-
         AddressDTO addressDTO = addressMapper.addressToAddressDto(address.get());
-
         return ResponseEntity.ok(addressDTO);
     }
 
@@ -54,12 +52,45 @@ public class AddressServiceImpl implements AddressService {
         if (addressDTO == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Address data not provided");
         }
-
         Address address = addressMapper.addressDtoToAddress(addressDTO);
-
         Address newAddress = addressRepository.save(address);
         AddressDTO newAddressDTO = addressMapper.addressToAddressDto(newAddress);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(newAddressDTO);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity changeAddress(String addressId, AddressDTO addressDTO) {
+        Long id;
+        try {
+            id = Long.valueOf(addressId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<Address> address = addressRepository.findById(id);
+        if (address.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        Address newAddress = addressMapper.addressDtoToAddress(addressDTO);
+        newAddress.setId(address.get().getId());
+        addressRepository.save(newAddress);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addressMapper.addressToAddressDto(newAddress));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity deleteAddressById(String addressId) {
+        Long id;
+        try {
+            id = Long.valueOf(addressId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<Address> address = addressRepository.findById(id);
+        if (address.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        addressRepository.delete(address.get());
+        return ResponseEntity.status(HttpStatus.OK).body(addressMapper.addressToAddressDto(address.get()));
     }
 }

@@ -11,4 +11,8 @@ public interface AddressService {
     ResponseEntity getAddressById(String addressId);
 
     ResponseEntity addAddress(AddressDTO addressDTO);
+
+    ResponseEntity changeAddress(String addressId, AddressDTO addressDTO);
+
+    ResponseEntity deleteAddressById(String addressId);
 }
