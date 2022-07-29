@@ -19,5 +19,5 @@ public class ClientType {
     @Column(name = "TYPE", length = 20, nullable = false)
     private String type;
     @OneToMany(mappedBy = "clientType", cascade = CascadeType.ALL)
-    private Set<User> users;
+    private Set<ClientData> clientDataSet;
 }

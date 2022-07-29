@@ -20,5 +20,6 @@ public class ClientDataDTO {
     private String emailAddress;
     private int phoneNumber;
     private AddressDTO address;
-    private UserDTO user;
+    private String login;
+    private ClientTypeDTO clientType;
 }

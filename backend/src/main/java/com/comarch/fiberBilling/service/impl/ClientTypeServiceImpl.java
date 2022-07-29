@@ -7,11 +7,11 @@ import com.comarch.fiberBilling.repository.ClientTypeRepository;
 import com.comarch.fiberBilling.service.ClientTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +40,7 @@ public class ClientTypeServiceImpl implements ClientTypeService {
         }
         Optional<ClientType> clientType = clientTypeRepository.findById(id);
         if (clientType.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ID not found");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
 
         ClientTypeDTO clientTypeDTO = clientTypeMapper.clientTypeToClientTypeDto(clientType.get());
@@ -57,5 +57,53 @@ public class ClientTypeServiceImpl implements ClientTypeService {
 
         ClientTypeDTO clientTypeDTO = clientTypeMapper.clientTypeToClientTypeDto(clientType.get(0));
         return ResponseEntity.ok(clientTypeDTO);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity addClientType(ClientTypeDTO clientTypeDTO) {
+        if (clientTypeDTO == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Client data not provided");
+        }
+        ClientType clientType = clientTypeMapper.clientTypeDtoToClientType(clientTypeDTO);
+        ClientType newClientType = clientTypeRepository.save(clientType);
+        ClientTypeDTO newClientTypeDTO = clientTypeMapper.clientTypeToClientTypeDto(newClientType);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newClientTypeDTO);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity changeClientType(String clientTypeId, ClientTypeDTO clientTypeDTO) {
+        Long id;
+        try {
+            id = Long.valueOf(clientTypeId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<ClientType> clientType = clientTypeRepository.findById(id);
+        if (clientType.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        ClientType newClientType = clientTypeMapper.clientTypeDtoToClientType(clientTypeDTO);
+        newClientType.setId(clientType.get().getId());
+        clientTypeRepository.save(newClientType);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientTypeMapper.clientTypeToClientTypeDto(newClientType));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity deleteClientTypeById(String clientTypeId) {
+        Long id;
+        try {
+            id = Long.valueOf(clientTypeId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<ClientType> clientType = clientTypeRepository.findById(id);
+        if (clientType.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        clientTypeRepository.delete(clientType.get());
+        return ResponseEntity.status(HttpStatus.OK).body(clientTypeMapper.clientTypeToClientTypeDto(clientType.get()));
     }
 }
