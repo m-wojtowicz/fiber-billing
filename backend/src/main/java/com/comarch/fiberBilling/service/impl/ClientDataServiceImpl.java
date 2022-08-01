@@ -54,8 +54,7 @@ public class ClientDataServiceImpl implements ClientDataService {
         }
         ClientData clientData = clientDataMapper.clientDataDtoToClientData(clientDataDTO);
         ClientData newClientData = clientDataRepository.save(clientData);
-        ClientDataDTO newClientDataDto = clientDataMapper.clientDataToClientDataDto(newClientData);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newClientDataDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newClientData.getId());
     }
 
     @Override
@@ -92,5 +91,16 @@ public class ClientDataServiceImpl implements ClientDataService {
         }
         clientDataRepository.delete(clientData.get());
         return ResponseEntity.status(HttpStatus.OK).body(clientDataMapper.clientDataToClientDataDto(clientData.get()));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity getClientDataByLogin(String login) {
+        Optional<ClientData> clientData = clientDataRepository.findByLogin(login);
+        if (clientData.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        ClientDataDTO clientDataDTO = clientDataMapper.clientDataToClientDataDto(clientData.get());
+        return ResponseEntity.ok(clientDataDTO);
     }
 }

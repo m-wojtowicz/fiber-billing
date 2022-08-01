@@ -1,5 +1,7 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { getUserData } from "../services/userService";
+import { loginStore } from "../stores/loginStore";
 
 const state = ref({
   disable: true,
@@ -7,7 +9,6 @@ const state = ref({
   name: "",
   surname: "",
   email: "",
-  password: "",
   country: "",
   city: "",
   street: "",
@@ -15,6 +16,23 @@ const state = ref({
   houseNumber: "",
   zipCode: "",
   postOffice: "",
+});
+
+const login = loginStore();
+
+onMounted(() => {
+  getUserData(login.login).then((r) => {
+    state.value.name = r.data.name;
+    state.value.surname = r.data.surname;
+    state.value.email = r.data.emailAddress;
+    state.value.country = r.data.address.country;
+    state.value.city = r.data.address.city;
+    state.value.street = r.data.address.street;
+    state.value.streetNumber = r.data.address.streetNumber;
+    state.value.houseNumber = r.data.address.houseNumber;
+    state.value.zipCode = r.data.address.zipCode;
+    state.value.postOffice = r.data.address.postOffice;
+  });
 });
 
 const edit = () => {
@@ -52,15 +70,6 @@ const edit = () => {
         <q-input
           class="text-input"
           outlined
-          v-model="state.password"
-          label="Password"
-          :disable="state.disable"
-        />
-      </div>
-      <div class="col q-gutter-md">
-        <q-input
-          class="text-input"
-          outlined
           v-model="state.country"
           label="Country"
           :disable="state.disable"
@@ -72,6 +81,8 @@ const edit = () => {
           label="City"
           :disable="state.disable"
         />
+      </div>
+      <div class="col q-gutter-md">
         <q-input
           class="text-input"
           outlined
@@ -109,10 +120,17 @@ const edit = () => {
         />
       </div>
     </div>
-    <q-btn v-if="state.isEdited === false" class="buttons q-mx-md" @click="edit"
+    <q-btn
+      v-if="state.isEdited === false"
+      class="buttons q-mx-md q-mt-md"
+      @click="edit"
       >Edit
     </q-btn>
-    <q-btn v-if="state.isEdited === true" class="buttons q-mx-md" @click="edit">
+    <q-btn
+      v-if="state.isEdited === true"
+      class="buttons q-mx-md q-mt-md"
+      @click="edit"
+    >
       Save
     </q-btn>
   </div>

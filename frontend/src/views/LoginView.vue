@@ -4,13 +4,13 @@ import { useQuasar } from "quasar";
 import { storeToRefs } from "pinia";
 import { getLoginToken } from "../services/loginService";
 import { registerStore } from "../stores/register";
-import { userStore } from "../stores/userStore";
+import { loginStore } from "../stores/loginStore";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 
 const register = registerStore();
-const user = userStore();
+const user = loginStore();
 const { login, password, token } = storeToRefs(user);
 
 onMounted(() => {

@@ -15,4 +15,6 @@ public interface ClientDataService {
     ResponseEntity changeClientData(String clientDataId, ClientDataDTO clientDataDTO);
 
     ResponseEntity deleteClientDataById(String clientDataId);
+
+    ResponseEntity getClientDataByLogin(String clientDataLogin);
 }

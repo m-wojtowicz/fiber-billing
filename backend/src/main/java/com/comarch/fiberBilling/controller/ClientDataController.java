@@ -32,6 +32,19 @@ public class ClientDataController {
         return clientDataService.getAll();
     }
 
+    @Operation(summary = "Get client data by login")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ClientData", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDataDTO.class))}
+            ),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @GetMapping(value = "/user/{clientDataLogin}")
+    public ResponseEntity getClientDataByLogin(@PathVariable("clientDataLogin") String clientDataLogin) {
+        return clientDataService.getClientDataByLogin(clientDataLogin);
+    }
+
     @Operation(summary = "Get client data by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "ClientData", content = {
