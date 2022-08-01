@@ -10,13 +10,18 @@ export default {
     };
   },
   components: { NavBar },
+  methods: {
+    showhidedrawer() {
+      this.drawer = !this.drawer;
+    },
+  },
 };
 </script>
 
 <template>
   <q-layout view="hHh LpR lff" container>
     <q-header elevated>
-      <NavBar />
+      <NavBar @showhidedrawer="showhidedrawer" />
     </q-header>
 
     <q-drawer
