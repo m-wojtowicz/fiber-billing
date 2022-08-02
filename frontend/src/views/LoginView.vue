@@ -47,7 +47,7 @@ const checkData = () => {
 
 watch(token, () => {
   if (token.access_token !== "") {
-    console.log("elo");
+    login.value = login.value.toLowerCase();
     router.replace({ name: "home" });
 
     $q.notify({

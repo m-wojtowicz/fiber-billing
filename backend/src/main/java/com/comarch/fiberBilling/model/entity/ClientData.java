@@ -19,12 +19,12 @@ public class ClientData {
     private String name;
     @Column(name = "SURNAME", length = 45, nullable = true)
     private String surname;
-    @Column(name = "EMAIL_ADDRESS", length = 45, nullable = false)
+    @Column(name = "EMAIL_ADDRESS", length = 45, nullable = false, unique = true)
     private String emailAddress;
     @JoinColumn(name = "ID_ADDRESS", referencedColumnName = "ID", nullable = false)
     @OneToOne(cascade = CascadeType.MERGE)
     private Address address;
-    @Column(name = "LOGIN", length = 45, nullable = false)
+    @Column(name = "LOGIN", length = 45, nullable = false, unique = true)
     private String login;
     @JoinColumn(name = "ID_CLIENT_TYPE", nullable = false)
     @ManyToOne

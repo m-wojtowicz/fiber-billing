@@ -1,10 +1,16 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getUserData, putUserData } from "../services/userService";
+import {
+  getUserData,
+  putUserData,
+  getClientType,
+} from "../services/userService";
 import { loginStore } from "../stores/loginStore";
 
 const disable = ref(true);
 const isEdited = ref(false);
+
+const clientType = ref("");
 
 const state = ref({
   name: "",
@@ -24,6 +30,11 @@ const login = loginStore();
 onMounted(() => {
   getUserData(login.login).then((r) => {
     state.value = r.data;
+  });
+
+  getClientType(login.login).then((r) => {
+    clientType.value = r.data;
+    console.log(clientType);
   });
 });
 
@@ -50,6 +61,7 @@ const save = () => {
           v-model="state.name"
           label="Name"
           :disable="disable"
+          v-if="clientType == 'regular'"
         />
         <q-input
           class="text-input"
@@ -57,6 +69,15 @@ const save = () => {
           v-model="state.surname"
           label="Surname"
           :disable="disable"
+          v-if="clientType == 'regular'"
+        />
+        <q-input
+          class="text-input"
+          outlined
+          v-model="state.name"
+          label="Company name"
+          :disable="disable"
+          v-if="clientType == 'business'"
         />
         <q-input
           class="text-input"

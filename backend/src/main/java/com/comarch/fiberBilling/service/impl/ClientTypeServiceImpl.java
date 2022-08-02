@@ -2,7 +2,9 @@ package com.comarch.fiberBilling.service.impl;
 
 import com.comarch.fiberBilling.mapper.ClientTypeMapper;
 import com.comarch.fiberBilling.model.dto.ClientTypeDTO;
+import com.comarch.fiberBilling.model.entity.ClientData;
 import com.comarch.fiberBilling.model.entity.ClientType;
+import com.comarch.fiberBilling.repository.ClientDataRepository;
 import com.comarch.fiberBilling.repository.ClientTypeRepository;
 import com.comarch.fiberBilling.service.ClientTypeService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import java.util.Optional;
 public class ClientTypeServiceImpl implements ClientTypeService {
 
     private final ClientTypeRepository clientTypeRepository;
+    private final ClientDataRepository clientDataRepository;
+
     private final ClientTypeMapper clientTypeMapper = ClientTypeMapper.INSTANCE;
 
     @Override
@@ -105,5 +109,15 @@ public class ClientTypeServiceImpl implements ClientTypeService {
         }
         clientTypeRepository.delete(clientType.get());
         return ResponseEntity.status(HttpStatus.OK).body(clientTypeMapper.clientTypeToClientTypeDto(clientType.get()));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity getClientTypeByLogin(String clientLogin) {
+        ClientData clientData = clientDataRepository.findByLogin(clientLogin).orElse(null);
+        if (clientData == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Data not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(clientData.getClientType().getType());
     }
 }

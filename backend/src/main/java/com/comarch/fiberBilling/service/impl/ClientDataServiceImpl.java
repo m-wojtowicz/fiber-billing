@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Slf4j
@@ -57,6 +58,7 @@ public class ClientDataServiceImpl implements ClientDataService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Client data not provided");
         }
         ClientData clientData = clientDataMapper.clientDataDtoToClientData(clientDataDTO);
+        clientData.setLogin(clientData.getLogin().toLowerCase(Locale.ROOT));
         ClientData newClientData = clientDataRepository.save(clientData);
         return ResponseEntity.status(HttpStatus.CREATED).body(newClientData.getId());
     }

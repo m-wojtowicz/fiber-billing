@@ -24,3 +24,8 @@ export const putUserData = async (user) => {
   const url = `http://localhost:8000/api/client-data/${clientDataId}`;
   return await axios.put(url, userData);
 };
+
+export const getClientType = async (login) => {
+  const url = `http://localhost:8000/api/client-type/login/${login}`;
+  return await axios.get(url);
+};

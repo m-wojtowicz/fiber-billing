@@ -67,7 +67,7 @@ public class ClientDataController {
             }),
             @ApiResponse(responseCode = "400", description = "Client data not given", content = @Content)})
     @PostMapping
-    public ResponseEntity<ClientDataDTO> addClientData(@RequestBody ClientDataDTO clientDataDTO) {
+    public ResponseEntity<Long> addClientData(@RequestBody ClientDataDTO clientDataDTO) {
         return clientDataService.addClientData(clientDataDTO);
     }
 
