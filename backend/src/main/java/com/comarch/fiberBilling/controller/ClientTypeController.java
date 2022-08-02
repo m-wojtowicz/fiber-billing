@@ -58,6 +58,18 @@ public class ClientTypeController {
         return clientTypeService.getClientTypeByName(clientTypeName);
     }
 
+    @Operation(summary = "Get client type by client login")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client type", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))}
+            ),
+            @ApiResponse(responseCode = "404", description = "ClientType not found", content = @Content)
+    })
+    @GetMapping(value="/login/{clientLogin}")
+    public ResponseEntity getClientTypeByClientLogin(@PathVariable("clientLogin") String clientLogin) {
+        return clientTypeService.getClientTypeByLogin(clientLogin);
+    }
+
     @Operation(summary = "Add new client type")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "ClientType", content = {

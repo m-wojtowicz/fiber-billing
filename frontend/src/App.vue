@@ -145,6 +145,16 @@ export default {
   align-items: center
   display: flex
 
+#toolbar
+  left: 0px
+  top: 0px
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+  align-items: center
+  padding: 0px 30px
+  background: $primary
+
 .selected-link
   color: black
   background: $selected

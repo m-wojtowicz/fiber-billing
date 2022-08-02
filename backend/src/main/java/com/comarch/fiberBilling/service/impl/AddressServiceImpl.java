@@ -54,8 +54,7 @@ public class AddressServiceImpl implements AddressService {
         }
         Address address = addressMapper.addressDtoToAddress(addressDTO);
         Address newAddress = addressRepository.save(address);
-        AddressDTO newAddressDTO = addressMapper.addressToAddressDto(newAddress);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newAddressDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newAddress.getId());
     }
 
     @Override

@@ -17,4 +17,6 @@ public interface ClientTypeService {
     ResponseEntity changeClientType(String clientTypeId, ClientTypeDTO clientTypeDTO);
 
     ResponseEntity deleteClientTypeById(String clientTypeId);
+
+    ResponseEntity getClientTypeByLogin(String clientLogin);
 }

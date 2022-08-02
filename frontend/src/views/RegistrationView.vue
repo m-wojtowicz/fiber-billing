@@ -9,7 +9,6 @@ import UserDataForm from "../components/UserDataForm.vue";
 import AddressFormVue from "../components/AddressForm.vue";
 import {
   registerKeycloak,
-  registerUser,
   registerAddress,
   registerClientData,
 } from "../services/registerService";
@@ -65,12 +64,15 @@ const validateUserData = computed(() => {
 });
 
 const registerScript = async () => {
-  let user = {};
-  let address = {};
+  let clientTypeId = null;
+  let addressID = null;
+  if (clientType.value == "regular") clientTypeId = 1;
+  else clientTypeId = 2;
   try {
-    await registerUser().then((r) => (user = r.data));
-    await registerAddress().then((r) => (address = r.data));
-    await registerClientData(user, address).then((r) => console.log(r.data));
+    await registerAddress().then((r) => (addressID = r.data));
+    await registerClientData(addressID, clientTypeId).then((r) =>
+      console.log(r.data)
+    );
     await registerKeycloak();
 
     $q.notify({

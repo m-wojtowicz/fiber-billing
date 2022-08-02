@@ -1,5 +1,6 @@
 package com.comarch.fiberBilling.controller;
 
+import com.comarch.fiberBilling.model.api.request.PutUserData;
 import com.comarch.fiberBilling.model.dto.ClientDataDTO;
 import com.comarch.fiberBilling.service.ClientDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,19 @@ public class ClientDataController {
         return clientDataService.getAll();
     }
 
+    @Operation(summary = "Get client data by login")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ClientData", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDataDTO.class))}
+            ),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @GetMapping(value = "/user/{clientDataLogin}")
+    public ResponseEntity getClientDataByLogin(@PathVariable("clientDataLogin") String clientDataLogin) {
+        return clientDataService.getClientDataByLogin(clientDataLogin);
+    }
+
     @Operation(summary = "Get client data by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "ClientData", content = {
@@ -53,7 +67,7 @@ public class ClientDataController {
             }),
             @ApiResponse(responseCode = "400", description = "Client data not given", content = @Content)})
     @PostMapping
-    public ResponseEntity<ClientDataDTO> addClientData(@RequestBody ClientDataDTO clientDataDTO) {
+    public ResponseEntity<Long> addClientData(@RequestBody ClientDataDTO clientDataDTO) {
         return clientDataService.addClientData(clientDataDTO);
     }
 
@@ -66,8 +80,8 @@ public class ClientDataController {
             @ApiResponse(responseCode = "400", description = "Client data not given", content = @Content),
     })
     @PutMapping(value = "/{clientDataId}")
-    public ResponseEntity<ClientDataDTO> changeClientData(@PathVariable("clientDataId") String clientDataId, @RequestBody ClientDataDTO clientDataDTO) {
-        return clientDataService.changeClientData(clientDataId, clientDataDTO);
+    public ResponseEntity<ClientDataDTO> changeClientData(@PathVariable("clientDataId") String clientDataId, @RequestBody PutUserData userData) {
+        return clientDataService.changeClientData(clientDataId, userData);
     }
 
     @Operation(summary = "Delete client data by id")
