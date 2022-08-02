@@ -1,5 +1,6 @@
 package com.comarch.fiberBilling.controller;
 
+import com.comarch.fiberBilling.model.api.request.PutUserData;
 import com.comarch.fiberBilling.model.dto.ClientDataDTO;
 import com.comarch.fiberBilling.service.ClientDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -79,8 +80,8 @@ public class ClientDataController {
             @ApiResponse(responseCode = "400", description = "Client data not given", content = @Content),
     })
     @PutMapping(value = "/{clientDataId}")
-    public ResponseEntity<ClientDataDTO> changeClientData(@PathVariable("clientDataId") String clientDataId, @RequestBody ClientDataDTO clientDataDTO) {
-        return clientDataService.changeClientData(clientDataId, clientDataDTO);
+    public ResponseEntity<ClientDataDTO> changeClientData(@PathVariable("clientDataId") String clientDataId, @RequestBody PutUserData userData) {
+        return clientDataService.changeClientData(clientDataId, userData);
     }
 
     @Operation(summary = "Delete client data by id")

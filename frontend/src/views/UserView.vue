@@ -1,14 +1,15 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getUserData } from "../services/userService";
+import { getUserData, putUserData } from "../services/userService";
 import { loginStore } from "../stores/loginStore";
 
+const disable = ref(true);
+const isEdited = ref(false);
+
 const state = ref({
-  disable: true,
-  isEdited: false,
   name: "",
   surname: "",
-  email: "",
+  emailAddress: "",
   country: "",
   city: "",
   street: "",
@@ -22,22 +23,19 @@ const login = loginStore();
 
 onMounted(() => {
   getUserData(login.login).then((r) => {
-    state.value.name = r.data.name;
-    state.value.surname = r.data.surname;
-    state.value.email = r.data.emailAddress;
-    state.value.country = r.data.address.country;
-    state.value.city = r.data.address.city;
-    state.value.street = r.data.address.street;
-    state.value.streetNumber = r.data.address.streetNumber;
-    state.value.houseNumber = r.data.address.houseNumber;
-    state.value.zipCode = r.data.address.zipCode;
-    state.value.postOffice = r.data.address.postOffice;
+    state.value = r.data;
   });
 });
 
 const edit = () => {
-  state.value.disable = !state.value.disable;
-  state.value.isEdited = !state.value.isEdited;
+  disable.value = !disable.value;
+  isEdited.value = !isEdited.value;
+  putUserData(state.value);
+};
+
+const save = () => {
+  disable.value = !disable.value;
+  isEdited.value = !isEdited.value;
 };
 </script>
 
@@ -51,35 +49,35 @@ const edit = () => {
           outlined
           v-model="state.name"
           label="Name"
-          :disable="state.disable"
+          :disable="disable"
         />
         <q-input
           class="text-input"
           outlined
           v-model="state.surname"
           label="Surname"
-          :disable="state.disable"
+          :disable="disable"
         />
         <q-input
           class="text-input"
           outlined
           v-model="state.email"
           label="Email"
-          :disable="state.disable"
+          :disable="disable"
         />
         <q-input
           class="text-input"
           outlined
           v-model="state.country"
           label="Country"
-          :disable="state.disable"
+          :disable="disable"
         />
         <q-input
           class="text-input"
           outlined
           v-model="state.city"
           label="City"
-          :disable="state.disable"
+          :disable="disable"
         />
       </div>
       <div class="col q-gutter-md">
@@ -88,46 +86,46 @@ const edit = () => {
           outlined
           v-model="state.street"
           label="Street"
-          :disable="state.disable"
+          :disable="disable"
         />
         <q-input
           class="text-input"
           outlined
           v-model="state.streetNumber"
           label="Street number"
-          :disable="state.disable"
+          :disable="disable"
         />
         <q-input
           class="text-input"
           outlined
           v-model="state.houseNumber"
           label="House number"
-          :disable="state.disable"
+          :disable="disable"
         />
         <q-input
           class="text-input"
           outlined
           v-model="state.zipCode"
           label="Zip code"
-          :disable="state.disable"
+          :disable="disable"
         />
         <q-input
           class="text-input"
           outlined
           v-model="state.postOffice"
           label="Post office"
-          :disable="state.disable"
+          :disable="disable"
         />
       </div>
     </div>
     <q-btn
-      v-if="state.isEdited === false"
+      v-if="isEdited === false"
       class="buttons q-mx-md q-mt-md"
-      @click="edit"
+      @click="save"
       >Edit
     </q-btn>
     <q-btn
-      v-if="state.isEdited === true"
+      v-if="isEdited === true"
       class="buttons q-mx-md q-mt-md"
       @click="edit"
     >
@@ -143,7 +141,6 @@ const edit = () => {
 
 .buttons {
   font-size: large;
-  /* margin: 5% auto 0 auto;s */
   color: white;
   background-color: #1976d2;
 }

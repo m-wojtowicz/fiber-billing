@@ -1,7 +1,11 @@
 package com.comarch.fiberBilling.service.impl;
 
 import com.comarch.fiberBilling.mapper.ClientDataMapper;
+import com.comarch.fiberBilling.mapper.UserToClientMapper;
+import com.comarch.fiberBilling.model.api.request.PutUserData;
+import com.comarch.fiberBilling.model.api.response.GetUserData;
 import com.comarch.fiberBilling.model.dto.ClientDataDTO;
+import com.comarch.fiberBilling.model.entity.Address;
 import com.comarch.fiberBilling.model.entity.ClientData;
 import com.comarch.fiberBilling.repository.ClientDataRepository;
 import com.comarch.fiberBilling.service.ClientDataService;
@@ -59,21 +63,20 @@ public class ClientDataServiceImpl implements ClientDataService {
 
     @Override
     @Transactional
-    public ResponseEntity changeClientData(String clientDataId, ClientDataDTO clientDataDTO) {
+    public ResponseEntity changeClientData(String clientDataId, PutUserData putUserData) {
         Long id;
         try {
             id = Long.valueOf(clientDataId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }
-        Optional<ClientData> clientData = clientDataRepository.findById(id);
-        if (clientData.isEmpty()) {
+        ClientData clientData = clientDataRepository.findById(id).orElse(null);
+        if (clientData == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
-        clientDataDTO.setId(id);
-        ClientData newClientData = clientDataMapper.clientDataDtoToClientData(clientDataDTO);
-        clientDataRepository.save(newClientData);
-        return ResponseEntity.status(HttpStatus.CREATED).body(clientDataMapper.clientDataToClientDataDto(newClientData));
+        putUserData.setId(id);
+        clientDataRepository.save(UserToClientMapper.UserToClient(putUserData, clientData));
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientDataMapper.clientDataToClientDataDto(clientData));
     }
 
     @Override
@@ -100,7 +103,19 @@ public class ClientDataServiceImpl implements ClientDataService {
         if (clientData.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
-        ClientDataDTO clientDataDTO = clientDataMapper.clientDataToClientDataDto(clientData.get());
-        return ResponseEntity.ok(clientDataDTO);
+        GetUserData userData = GetUserData.builder()
+                .id(clientData.get().getId())
+                .name(clientData.get().getName())
+                .surname(clientData.get().getSurname())
+                .email(clientData.get().getEmailAddress())
+                .country(clientData.get().getAddress().getCountry())
+                .city(clientData.get().getAddress().getCity())
+                .street(clientData.get().getAddress().getStreet())
+                .streetNumber(clientData.get().getAddress().getStreetNumber())
+                .houseNumber(clientData.get().getAddress().getHouseNumber())
+                .zipCode(clientData.get().getAddress().getZipCode())
+                .postOffice(clientData.get().getAddress().getPostOffice())
+                .build();
+        return ResponseEntity.ok(userData);
     }
 }
