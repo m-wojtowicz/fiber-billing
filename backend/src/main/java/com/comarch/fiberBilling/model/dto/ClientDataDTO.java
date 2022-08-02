@@ -14,11 +14,7 @@ public class ClientDataDTO {
     private long id;
     private String name;
     private String surname;
-    private int pesel;
-    private String companyName;
-    private int taxId;
     private String emailAddress;
-    private int phoneNumber;
     private AddressDTO address;
     private String login;
     private ClientTypeDTO clientType;

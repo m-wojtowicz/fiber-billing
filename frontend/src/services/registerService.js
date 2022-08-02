@@ -54,41 +54,32 @@ export const registerKeycloak = async () => {
   return axios(options);
 };
 
-export const registerUser = async () => {
-  let clientType = {};
-
-  await axios
-    .get(url + `/client-type/name/${register.clientType}`)
-    .then((r) => (clientType = r.data));
-
-  let userData = {
-    login: register.login,
-    clientType: clientType,
-  };
-
-  return axios.post(url + "/user", userData).catch((err) => console.log(err));
-};
-
 export const registerAddress = async () => {
   let addressData = {
+    country: register.country,
+    city: register.city,
     street: register.street,
-    houseNumber: register.streetNumber,
-    apartmentNumber: register.houseNumber,
+    streetNumber: register.streetNumber,
+    houseNumber: register.houseNumber,
     zipCode: register.zipCode,
     postOffice: register.postOffice,
-    city: register.city,
   };
 
   return axios.post(url + "/address", addressData);
 };
 
-export const registerClientData = async (user, address) => {
+export const registerClientData = async (addressId, clientTypeId) => {
   let clientDataData = {
     name: register.name,
     surname: register.surname,
     emailAddress: register.email,
-    address: address,
-    user: user,
+    address: {
+      id: addressId,
+    },
+    login: register.login,
+    clientType: {
+      id: clientTypeId,
+    },
   };
 
   return axios.post(url + "/client-data", clientDataData);
