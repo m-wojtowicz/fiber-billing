@@ -137,12 +137,6 @@ export default {
 #drawer
   background: $secondary
 
-#main-container
-  max-width: 1280px
-  width: 35%
-  margin: 0 auto
-  padding: 2rem
-
 #footer
   background: none
   z-index: -1
