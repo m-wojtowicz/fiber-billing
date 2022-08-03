@@ -39,6 +39,11 @@ const router = createRouter({
       component: () => import("../views/AccountView.vue"),
     },
     {
+      path: "/new-order",
+      name: "new-order",
+      component: () => import("../views/NewOrderView.vue"),
+    },
+    {
       path: "/terminate",
       name: "terminate",
     },
