@@ -148,19 +148,25 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
 
 <template>
   <div
-    class="q-pa-md flex column flex-center q-gutter-md"
-    style="min-width: 60%; max-width: 100%"
+    class="column items-center q-gutter-y-md"
+    style="min-width: 60%; max-width: 100%; min-height: inherit"
   >
-    <div id="filter-box" class="self-start">
-      <q-input outlined v-model="filter" label="Filter">
+    <div class="col-1 self-start full-width">
+      <q-input
+        outlined
+        v-model="filter"
+        label="Filter"
+        style="min-width: 200px; max-width: 300px"
+      >
         <template v-slot:append>
           <q-icon name="search" />
         </template>
       </q-input>
     </div>
 
-    <div id="products">
+    <div class="col-10 products column full-width q-gutter-y-md">
       <ProductEntry
+        class="col"
         :product="products[(current - 1) * 3]"
         v-if="(current - 1) * 3 < products.length"
         @click="
@@ -169,6 +175,7 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
         "
       />
       <ProductEntry
+        class="col"
         :product="products[(current - 1) * 3 + 1]"
         v-if="(current - 1) * 3 + 1 < products.length"
         @click="
@@ -177,6 +184,7 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
         "
       />
       <ProductEntry
+        class="col"
         :product="products[(current - 1) * 3 + 2]"
         v-if="(current - 1) * 3 + 2 < products.length"
         @click="
@@ -185,15 +193,16 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
         "
       />
     </div>
-    <q-pagination
-      id="pagination"
-      v-model="current"
-      :max="Math.ceil(products.length / 3)"
-      :max-pages="5"
-      outline
-      direction-links
-      boundary-numbers
-    />
+    <div class="col-1">
+      <q-pagination
+        v-model="current"
+        :max="Math.ceil(products.length / 3)"
+        :max-pages="5"
+        outline
+        direction-links
+        boundary-numbers
+      />
+    </div>
   </div>
 
   <ProductDetails
@@ -205,17 +214,6 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
 
 <style scoped lang="sass">
 
-#products
-  height: 500px
-  display: flex
-  flex-direction: column
-  align-content: center
-  gap: 20px
-  width: 100%
-
-#filter-box
-  width: 30%
-
-
-#pagination
+.products
+  flex: 1 0 100%
 </style>

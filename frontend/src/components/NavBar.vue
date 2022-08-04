@@ -3,7 +3,7 @@
 <template>
   <q-toolbar id="toolbar">
     <div class="row full-width">
-      <div class="col">
+      <div class="col text-left q-ma-auto">
         <q-btn
           flat
           @click="$emit('showhidedrawer')"
@@ -14,13 +14,13 @@
         />
       </div>
 
-      <div class="col text-center" >
+      <div class="col text-center q-ma-auto">
         <q-btn flat dense :to="{ name: 'home' }" @click="link = 'home'">
           <img src="@/assets/logo.svg" height="50" />
         </q-btn>
       </div>
 
-      <div class="col text-right q-ma-auto">
+      <div class="col text-right vertical-middle">
         <q-btn
           flat
           round
