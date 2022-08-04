@@ -231,8 +231,16 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
           </template>
         </q-input>
       </div>
-      <div class="col text-right">
-        <q-btn round color="primary" icon="add_circle" />
+      <div class="col column">
+        <div class="col row justify-end">
+          <q-btn
+            round
+            color="primary"
+            icon="add_circle"
+            :to="{ name: 'new-order' }"
+            size="18px"
+          />
+        </div>
       </div>
     </div>
 
@@ -246,7 +254,7 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
           dialog = !dialog;
         "
       />
-      
+
       <OrderEntry
         class="col"
         :order="orders[(current - 1) * 3 + 1]"

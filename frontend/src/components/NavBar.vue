@@ -20,7 +20,7 @@
         </q-btn>
       </div>
 
-      <div class="col text-right vertical-middle">
+      <div class="col row justify-end">
         <q-btn
           flat
           round
@@ -28,7 +28,6 @@
           icon="person"
           size="25px"
           :to="{ name: 'user' }"
-          @click="link = 'user'"
           style="font-size: 20px"
         />
       </div>
