@@ -23,7 +23,7 @@ import OfferCard from "../components/OfferCard.vue";
   position: absolute
   top: 20px
 
-.cart_button,
+.cart_button
   background-color: #1976D2
   color: #FFFFFF
 
