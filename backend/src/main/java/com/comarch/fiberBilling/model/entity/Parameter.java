@@ -1,6 +1,7 @@
 package com.comarch.fiberBilling.model.entity;
 
 import lombok.*;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -20,4 +21,8 @@ public class Parameter {
     @JoinColumn(name = "`ID_PRICE`", nullable = false)
     @ManyToOne
     private Price price;
+    @Column(name = "`ACTIVE_FROM`", nullable = false)
+    private Date activeFrom;
+    @Column(name = "`ACTIVE_TO`", nullable = false)
+    private Date activeTo;
 }
