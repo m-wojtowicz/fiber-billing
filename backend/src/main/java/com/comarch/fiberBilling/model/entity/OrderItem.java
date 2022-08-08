@@ -21,9 +21,8 @@ public class OrderItem {
     @JoinColumn(name = "`ID_ORDER`", nullable = false)
     @ManyToOne
     private Order order;
-    @JoinColumn(name = "`ID_PRODUCT`", nullable = false)
-    @ManyToOne
-    private Product product;
+    @Column(name = "`ORDER_ITEM_NAME`", nullable = false)
+    private String orderItemName;
     @Column(name = "`MONTHLY`", nullable = false)
     private boolean monthly;
     @Column(name = "`ACTIVATION_DATE`", nullable = false)
