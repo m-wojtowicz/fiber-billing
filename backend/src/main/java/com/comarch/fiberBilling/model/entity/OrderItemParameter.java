@@ -20,7 +20,7 @@ public class OrderItemParameter {
     @JoinColumn(name = "`ID_ORDER_ITEM`", nullable = false)
     @ManyToOne
     private OrderItem orderItem;
-    @JoinColumn(name = "`ID_PARAMETER`", nullable = false)
+    @JoinColumn(name = "`ID_PARAMETER_DETAIL`", nullable = false)
     @ManyToOne
-    private Parameter parameter;
+    private ParameterDetail parameterDetail;
 }

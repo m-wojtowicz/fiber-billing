@@ -11,15 +11,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "`PARAMERTER`")
+@Table(name = "`PARAMETER`")
 public class Parameter {
     @Id
     @Column(name = "`ID_PARAMETER`", length = 45, nullable = false)
-    private String id;
-    @Column(name = "`VALUES`", length = 45, nullable = false)
-    private String values;
-    @Column(name = "`ACTIVE_FROM`", nullable = false)
-    private Date activeFrom;
-    @Column(name = "`ACTIVE_TO`", nullable = false)
-    private Date activeTo;
+    private long id;
+    @Column(name = "`NAME`", length = 45, nullable = false)
+    private String name;
 }

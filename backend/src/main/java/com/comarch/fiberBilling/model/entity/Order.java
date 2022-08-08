@@ -23,8 +23,6 @@ public class Order {
     private Date orderStartDate;
     @Column(name = "`ORDER_END_DATE`", nullable = false)
     private Date orderEndDate;
-    @Column(name = "`PRODUCT_QUANTITY`", nullable = false)
-    private int productQuantity;
     @JoinColumn(name = "`ID_CLIENT_DATA`", nullable = false)
     @ManyToOne
     private ClientData clientData;

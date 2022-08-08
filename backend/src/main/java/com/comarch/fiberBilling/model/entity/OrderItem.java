@@ -3,6 +3,7 @@ package com.comarch.fiberBilling.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Builder
 @Getter
@@ -25,4 +26,6 @@ public class OrderItem {
     private Product product;
     @Column(name = "`MONTHLY`", nullable = false)
     private boolean monthly;
+    @Column(name = "`ACTIVATION_DATE`", nullable = false)
+    private Date activationDate;
 }
