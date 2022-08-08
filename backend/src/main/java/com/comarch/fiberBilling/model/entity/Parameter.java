@@ -18,9 +18,6 @@ public class Parameter {
     private String id;
     @Column(name = "`VALUES`", length = 45, nullable = false)
     private String values;
-    @JoinColumn(name = "`ID_PRICE`", nullable = false)
-    @ManyToOne
-    private Price price;
     @Column(name = "`ACTIVE_FROM`", nullable = false)
     private Date activeFrom;
     @Column(name = "`ACTIVE_TO`", nullable = false)
