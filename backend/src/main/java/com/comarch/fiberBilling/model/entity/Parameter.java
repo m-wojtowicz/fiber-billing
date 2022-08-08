@@ -1,6 +1,7 @@
 package com.comarch.fiberBilling.model.entity;
 
 import lombok.*;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -10,14 +11,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "`PARAMERTER`")
+@Table(name = "`PARAMETER`")
 public class Parameter {
     @Id
     @Column(name = "`ID_PARAMETER`", length = 45, nullable = false)
-    private String id;
-    @Column(name = "`VALUES`", length = 45, nullable = false)
-    private String values;
-    @JoinColumn(name = "`ID_PRICE`", nullable = false)
-    @ManyToOne
-    private Price price;
+    private long id;
+    @Column(name = "`NAME`", length = 45, nullable = false)
+    private String name;
 }

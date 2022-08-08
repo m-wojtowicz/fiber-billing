@@ -19,13 +19,10 @@ public class Order {
     private long id;
     @Column(name = "`ORDER_STATUS`", length = 20, nullable = false)
     private String orderStatus;
-    @Column(name = "`ORDER_DATE`", nullable = false)
-    private Date orderDate;
-    @Column(name = "`PRODUCT_QUANTITY`", nullable = false)
-    private int productQuantity;
-    @JoinColumn(name = "`ID_OFFER`", nullable = false)
-    @ManyToOne
-    private Offer offer;
+    @Column(name = "`ORDER_START_DATE`", nullable = false)
+    private Date orderStartDate;
+    @Column(name = "`ORDER_END_DATE`", nullable = false)
+    private Date orderEndDate;
     @JoinColumn(name = "`ID_CLIENT_DATA`", nullable = false)
     @ManyToOne
     private ClientData clientData;
