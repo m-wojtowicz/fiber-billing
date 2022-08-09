@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { loginStore } from "../stores/loginStore";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,6 +13,7 @@ const router = createRouter({
       path: "/home",
       name: "home",
       component: () => import("../views/HomeView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/register",
@@ -22,26 +24,31 @@ const router = createRouter({
       path: "/user",
       name: "user",
       component: () => import("../views/UserView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/products",
       name: "products",
       component: () => import("../views/ProductsView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/orders",
       name: "orders",
       component: () => import("../views/OrdersView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/account",
       name: "account",
       component: () => import("../views/AccountView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/new-order",
       name: "new-order",
       component: () => import("../views/NewOrderView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/terminate",
@@ -52,6 +59,16 @@ const router = createRouter({
       name: "change",
     },
   ],
+});
+
+router.beforeEach(async (to) => {
+  const user = loginStore();
+  if (to.meta.requiresAuth && !user.isLogged()) {
+    return {
+      path: "/",
+      query: { redirect: to.fullPath },
+    };
+  }
 });
 
 export default router;

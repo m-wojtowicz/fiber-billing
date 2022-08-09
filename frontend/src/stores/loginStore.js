@@ -16,7 +16,11 @@ export const loginStore = defineStore({
       token_type: "",
     },
   }),
-  persist: {
-    storage: sessionStorage,
+  actions: {
+    isLogged() {
+      if (this.token.access_token !== "") return true;
+      else false;
+    },
   },
+  persist: true,
 });

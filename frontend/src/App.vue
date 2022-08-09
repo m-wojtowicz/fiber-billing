@@ -9,11 +9,11 @@ const link = ref("");
 
 function showhidedrawer() {
   drawer.value = !drawer.value;
-};
+}
 
-watch(route, n => {
+watch(route, (n) => {
   link.value = n.name;
-})
+});
 </script>
 
 <template>
