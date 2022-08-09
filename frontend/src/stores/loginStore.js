@@ -16,7 +16,5 @@ export const loginStore = defineStore({
       token_type: "",
     },
   }),
-  persist: {
-    storage: sessionStorage,
-  },
+  persist: true,
 });

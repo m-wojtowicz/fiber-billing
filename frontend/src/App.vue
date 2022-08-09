@@ -18,8 +18,8 @@ watch(route, n => {
 
 <template>
   <q-layout view="hHh LpR lff" container>
-    <q-header elevated>
-      <NavBar @showhidedrawer="showhidedrawer" />
+    <q-header elevated >
+      <NavBar @showhidedrawer="showhidedrawer" :display-buttons="link !== 'login' && link !== 'register'" />
     </q-header>
 
     <q-drawer
