@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { loginStore } from "../stores/loginStore";
+import { refreshToken } from "../services/loginService";
+import { storeToRefs } from "pinia";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,6 +70,11 @@ router.beforeEach(async (to) => {
       path: "/",
       query: { redirect: to.fullPath },
     };
+  }
+  else {
+    const oldToken = user.token;
+    const { login, token } = storeToRefs(user);
+    refreshToken(oldToken).then((r) => token.value = r.data);
   }
 });
 

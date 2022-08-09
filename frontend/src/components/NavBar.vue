@@ -1,11 +1,13 @@
 <script setup>
 import { loginStore } from "../stores/loginStore";
+import { exitSession } from "../services/loginService";
 import { useRouter } from "vue-router";
 
 defineProps(["displayButtons"]);
 const router = useRouter();
 const logout = () => {
   const user = loginStore();
+  exitSession(user.token).then((r) => console.log(r));
   user.$reset();
   router.replace({ name: "login" });
 };
