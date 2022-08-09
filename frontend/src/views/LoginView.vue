@@ -11,8 +11,8 @@ const router = useRouter();
 
 const register = registerStore();
 const user = loginStore();
-const { login, password, token } = storeToRefs(user);
-
+const { login, token } = storeToRefs(user);
+const password = ref("");
 onMounted(() => {
   register.reset();
 });
