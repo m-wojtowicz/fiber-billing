@@ -1,27 +1,28 @@
-<script>
-import { ref } from "vue";
+<script setup>
+import { ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import NavBar from "./components/NavBar.vue";
 
-export default {
-  setup() {
-    return {
-      drawer: ref(false),
-      link: ref(""),
-    };
-  },
-  components: { NavBar },
-  methods: {
-    showhidedrawer() {
-      this.drawer = !this.drawer;
-    },
-  },
-};
+const route = useRoute();
+const drawer = ref(false);
+const link = ref("");
+
+function showhidedrawer() {
+  drawer.value = !drawer.value;
+}
+
+watch(route, (n) => {
+  link.value = n.name;
+});
 </script>
 
 <template>
   <q-layout view="hHh LpR lff" container>
     <q-header elevated>
-      <NavBar @showhidedrawer="showhidedrawer" />
+      <NavBar
+        @showhidedrawer="showhidedrawer"
+        :display-buttons="link !== 'login' && link !== 'register'"
+      />
     </q-header>
 
     <q-drawer
@@ -38,7 +39,6 @@ export default {
           <q-item
             clickable
             :active="link === 'products'"
-            @click="link = 'products'"
             active-class="selected-link"
             :to="{ name: 'products' }"
             v-ripple
@@ -52,7 +52,6 @@ export default {
           <q-item
             clickable
             :active="link === 'orders'"
-            @click="link = 'orders'"
             active-class="selected-link"
             :to="{ name: 'orders' }"
             v-ripple
@@ -66,7 +65,6 @@ export default {
           <q-item
             clickable
             :active="link === 'account'"
-            @click="link = 'account'"
             active-class="selected-link"
             :to="{ name: 'account' }"
             v-ripple
@@ -82,7 +80,6 @@ export default {
           <q-item
             clickable
             :active="link === 'terminate'"
-            @click="link = 'terminate'"
             active-class="selected-link"
             :to="{ name: 'terminate' }"
             v-ripple
@@ -96,7 +93,6 @@ export default {
           <q-item
             clickable
             :active="link === 'change'"
-            @click="link = 'change'"
             active-class="selected-link"
             :to="{ name: 'change' }"
             v-ripple
@@ -113,7 +109,7 @@ export default {
     <q-page-container>
       <q-page
         class="home-page column justify-center items-center"
-        style="background: none; padding-top: 1%"
+        style="background: none"
       >
         <router-view />
       </q-page>
@@ -137,12 +133,6 @@ export default {
 #drawer
   background: $secondary
 
-#main-container
-  max-width: 1280px
-  width: 35%
-  margin: 0 auto
-  padding: 2rem
-
 #footer
   background: none
   z-index: -1
@@ -150,16 +140,6 @@ export default {
 #content
   align-items: center
   display: flex
-
-#toolbar
-  left: 0px
-  top: 0px
-  display: flex
-  flex-direction: row
-  justify-content: space-between
-  align-items: center
-  padding: 0px 30px
-  background: $primary
 
 .selected-link
   color: black

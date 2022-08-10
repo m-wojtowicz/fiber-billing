@@ -11,8 +11,8 @@ const router = useRouter();
 
 const register = registerStore();
 const user = loginStore();
-const { login, password, token } = storeToRefs(user);
-
+const { login, token } = storeToRefs(user);
+const password = ref("");
 onMounted(() => {
   register.reset();
 });
@@ -94,14 +94,13 @@ watch(token, () => {
       @click="checkData(loginInput, passwordInput)"
     />
 
-    <p>
+    <div style="padding: 5% 15% 3% 15%">
       Not registered?
       <router-link class="router" :to="{ name: 'register' }">
         Create account
       </router-link>
-    </p>
+    </div>
   </main>
-  <router-view></router-view>
 </template>
 
 <style scoped>
@@ -122,10 +121,6 @@ h1 {
   margin-left: 15%;
   text-decoration: none;
   color: rgb(255, 255, 255);
-}
-
-p {
-  margin: 7% auto 7% 15%;
 }
 
 .divider {
