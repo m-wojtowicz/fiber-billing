@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, useRouter } from "vue-router";
 import { loginStore } from "../stores/loginStore";
-import { refreshToken } from "../services/loginService";
+import { exitSession, refreshToken } from "../services/loginService";
 import { storeToRefs } from "pinia";
 
 const router = createRouter({
@@ -10,6 +10,7 @@ const router = createRouter({
       path: "/",
       name: "login",
       component: () => import("../views/LoginView.vue"),
+      meta: { requiresAuth: false },
     },
     {
       path: "/home",
@@ -21,6 +22,7 @@ const router = createRouter({
       path: "/register",
       name: "register",
       component: () => import("../views/RegistrationView.vue"),
+      meta: { requiresAuth: false },
     },
     {
       path: "/user",
@@ -63,7 +65,7 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach(async (to) => {
+router.beforeEach(async (to, from) => {
   const user = loginStore();
   if (to.meta.requiresAuth && !user.isLogged()) {
     return {
@@ -71,10 +73,16 @@ router.beforeEach(async (to) => {
       query: { redirect: to.fullPath },
     };
   }
-  else {
+  if (from.name !== 'login' && user.isLogged()) {
     const oldToken = user.token;
     const { login, token } = storeToRefs(user);
-    refreshToken(oldToken).then((r) => token.value = r.data);
+      refreshToken(oldToken).
+      then((r) => (token.value = r.data)).
+      catch(() => {
+        exitSession(oldToken);
+        user.$reset();
+        router.replace({name: "login"});
+      });
   }
 });
 
