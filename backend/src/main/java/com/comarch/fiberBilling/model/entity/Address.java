@@ -10,6 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "ADDRESS")
 public class Address {
     @Id
@@ -29,6 +30,6 @@ public class Address {
     private String zipCode;
     @Column(name = "POST_OFFICE", length = 45, nullable = false)
     private String postOffice;
-    @OneToOne(mappedBy = "address")
-    private ClientData clientData;
+//    @OneToOne(mappedBy = "address")
+//    private ClientData clientData;
 }
