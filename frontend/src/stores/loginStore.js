@@ -4,7 +4,6 @@ export const loginStore = defineStore({
   id: "login",
   state: () => ({
     login: "",
-    password: "",
     token: {
       access_token: "",
       expires_in: null,
@@ -16,5 +15,11 @@ export const loginStore = defineStore({
       token_type: "",
     },
   }),
+  actions: {
+    isLogged() {
+      if (this.token.access_token !== "") return true;
+      else false;
+    },
+  },
   persist: true,
 });

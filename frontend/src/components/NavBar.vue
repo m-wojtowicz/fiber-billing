@@ -1,5 +1,16 @@
 <script setup>
-const props = defineProps(["displayButtons"]);
+import { loginStore } from "../stores/loginStore";
+import { exitSession } from "../services/loginService";
+import { useRouter } from "vue-router";
+
+defineProps(["displayButtons"]);
+const router = useRouter();
+const logout = () => {
+  const user = loginStore();
+  exitSession(user.token).then((r) => console.log(r));
+  user.$reset();
+  router.replace({ name: "login" });
+};
 </script>
 
 <template>
@@ -29,9 +40,20 @@ const props = defineProps(["displayButtons"]);
           dense
           icon="person"
           size="25px"
-          :to="{ name: 'user' }"
           style="font-size: 20px"
-        />
+        >
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item clickable v-close-popup :to="{ name: 'user' }">
+                <q-item-section>Profile</q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item clickable v-close-popup @click="logout">
+                <q-item-section>Logout</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </div>
     </div>
   </q-toolbar>

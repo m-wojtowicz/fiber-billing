@@ -11,8 +11,8 @@ const router = useRouter();
 
 const register = registerStore();
 const user = loginStore();
-const { login, password, token } = storeToRefs(user);
-
+const { login, token } = storeToRefs(user);
+const password = ref("");
 onMounted(() => {
   register.reset();
 });
@@ -94,7 +94,7 @@ watch(token, () => {
       @click="checkData(loginInput, passwordInput)"
     />
 
-    <div style="padding: 5% 15% 3% 15%;">
+    <div style="padding: 5% 15% 3% 15%">
       Not registered?
       <router-link class="router" :to="{ name: 'register' }">
         Create account

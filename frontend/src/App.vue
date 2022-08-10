@@ -9,17 +9,20 @@ const link = ref("");
 
 function showhidedrawer() {
   drawer.value = !drawer.value;
-};
+}
 
-watch(route, n => {
+watch(route, (n) => {
   link.value = n.name;
-})
+});
 </script>
 
 <template>
   <q-layout view="hHh LpR lff" container>
-    <q-header elevated >
-      <NavBar @showhidedrawer="showhidedrawer" :display-buttons="link !== 'login' && link !== 'register'" />
+    <q-header elevated>
+      <NavBar
+        @showhidedrawer="showhidedrawer"
+        :display-buttons="link !== 'login' && link !== 'register'"
+      />
     </q-header>
 
     <q-drawer
