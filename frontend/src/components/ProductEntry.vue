@@ -1,11 +1,12 @@
 <script setup>
-const props = defineProps({
+defineProps({
   product: {
     id: Number,
-    name: String,
-    state: String,
-    active: Date,
-    cost: String,
+    orderItemName: String,
+    monthly: Boolean,
+    activationDate: Date,
+    status: String,
+    // cost: String,
   },
 });
 </script>
@@ -15,19 +16,21 @@ const props = defineProps({
     <div class="row col">
       <div class="col text-h6 text-left">ID: {{ product.id }}</div>
       <div class="col text-h5 text-center">
-        {{ product.name }}
+        {{ product.orderItemName }}
       </div>
-      <div class="col text-h6 text-right">State: {{ product.state }}</div>
+      <div class="col text-h6 text-right">State: {{ product.status }}</div>
     </div>
     <div class="row col">
       <div class="col text-h6 text-left" style="align-self: flex-end">
         Active from:
-        {{ product.active.getDay() }}-{{ product.active.getMonth() }}-{{
+        <!-- {{ product.active.getDay() }}-{{ product.active.getMonth() }}-{{
           product.active.getFullYear()
-        }}
+        }} -->
+        {{ product.activationDate.toLocaleDateString() }}
       </div>
       <div class="col text-h6 text-right" style="align-self: flex-end">
-        {{ product.cost }} zł/mo</div>
+        12 zł/mo
+      </div>
     </div>
   </div>
 </template>

@@ -1,5 +1,6 @@
 package com.comarch.fiberBilling.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class OrderItem {
     private long id;
     @JoinColumn(name = "`ID_ORDER`", nullable = false)
     @ManyToOne
+    @JsonBackReference
     private Order order;
     @Column(name = "`ORDER_ITEM_NAME`", nullable = false)
     private String orderItemName;
@@ -27,4 +29,6 @@ public class OrderItem {
     private boolean monthly;
     @Column(name = "`ACTIVATION_DATE`", nullable = false)
     private Date activationDate;
+    @Column(name = "`STATUS`", nullable = false)
+    private String Status;
 }
