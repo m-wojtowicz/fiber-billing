@@ -1,14 +1,16 @@
 package com.comarch.fiberBilling.service;
 
-import com.comarch.fiberBilling.model.entity.Order;
+import com.comarch.fiberBilling.model.dto.OrderDTO;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 public interface OrderService {
-    ResponseEntity<List<Order>> getUserOrders(String userId);
+    ResponseEntity getUserOrders(String userId);
 
-    ResponseEntity<Order> getOrder(String orderId);
+    ResponseEntity getOrder(String orderId);
 
-    ResponseEntity<Order> addOrder(String orderId);
+    ResponseEntity addOrder(OrderDTO orderDTO);
+
+    ResponseEntity changeOrder(String orderId, OrderDTO orderDTO);
+
+    ResponseEntity deleteOrder(String orderId);
 }

@@ -27,4 +27,6 @@ public class OrderItem {
     private boolean monthly;
     @Column(name = "`ACTIVATION_DATE`", nullable = false)
     private Date activationDate;
+    @Column(name = "`STATUS`", nullable = false)
+    private String status;
 }
