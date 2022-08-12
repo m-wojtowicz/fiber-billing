@@ -40,7 +40,7 @@ public class AddressRepositoryTest {
 
         addressRepository.save(address);
 
-        Assertions.assertThat(address.getId()).isGreaterThan(0);
+       Assertions.assertThat(address.getId()).isGreaterThan(0);
     }
 
 
