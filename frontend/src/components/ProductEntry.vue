@@ -6,7 +6,7 @@ defineProps({
     monthly: Boolean,
     activationDate: Date,
     status: String,
-    // cost: String,
+    // cost: String, TODO
   },
 });
 </script>
@@ -23,9 +23,6 @@ defineProps({
     <div class="row col">
       <div class="col text-h6 text-left" style="align-self: flex-end">
         Active from:
-        <!-- {{ product.active.getDay() }}-{{ product.active.getMonth() }}-{{
-          product.active.getFullYear()
-        }} -->
         {{ product.activationDate.toLocaleDateString() }}
       </div>
       <div class="col text-h6 text-right" style="align-self: flex-end">

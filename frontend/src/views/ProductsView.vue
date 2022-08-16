@@ -5,9 +5,11 @@ import ProductDetails from "../components/ProductDetails.vue";
 import { getAllProducts } from "../services/productService.js";
 
 const dialog = ref(false);
+const productId = ref(0);
 const product = ref(null);
 const current = ref(1);
 const filter = ref("");
+// const params = ref(null);
 
 const productList = ref([]);
 onBeforeMount(async () => {
@@ -16,9 +18,14 @@ onBeforeMount(async () => {
     productList.value.forEach((element) => {
       element.activationDate = new Date(element.activationDate);
     });
-    console.log(productList.value);
+    // console.log(productList.value);
   });
 });
+
+// const passDataToEntry = async (id) => {
+//   let res = await getAllProductParameters(id);
+//   return res;
+// };
 
 watch(filter, (newv, oldv) => console.log(newv, oldv));
 </script>
@@ -47,8 +54,10 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
         :product="productList[(current - 1) * 3]"
         v-if="(current - 1) * 3 < productList.length"
         @click="
-          product = productList[(current - 1) * 3];
+          productId = productList[(current - 1) * 3].id;
           dialog = !dialog;
+          product = productList[(current - 1) * 3];
+          // params = passDataToEntry(product.id);
         "
       />
       <ProductEntry
@@ -56,8 +65,10 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
         :product="productList[(current - 1) * 3 + 1]"
         v-if="(current - 1) * 3 + 1 < productList.length"
         @click="
-          product = productList[(current - 1) * 3 + 1];
+          productId = productList[(current - 1) * 3 + 1].id;
           dialog = !dialog;
+          product = productList[(current - 1) * 3 + 1];
+          // params = passDataToEntry(product.id);
         "
       />
       <ProductEntry
@@ -65,8 +76,10 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
         :product="productList[(current - 1) * 3 + 2]"
         v-if="(current - 1) * 3 + 2 < productList.length"
         @click="
-          product = productList[(current - 1) * 3 + 2];
+          productId = productList[(current - 1) * 3 + 2].id;
           dialog = !dialog;
+          product = productList[(current - 1) * 3 + 2];
+          // params = passDataToEntry(product.id);
         "
       />
     </div>

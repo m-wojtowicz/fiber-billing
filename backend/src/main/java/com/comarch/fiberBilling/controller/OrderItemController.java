@@ -34,4 +34,16 @@ public class OrderItemController {
         return orderItemService.getAllUserProducts(id);
     }
 
+    @Operation(summary = "Get all parameters of product")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = List.class))}
+            ),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @GetMapping(value = "/parameters/{id}")
+    public ResponseEntity getAllProductParameters(@PathVariable Long id) {
+        return orderItemService.getAllProductParameters(id);
+    }
 }
