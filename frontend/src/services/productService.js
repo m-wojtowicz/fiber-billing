@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const getAllProducts = async (id) => {
+export const getAllProducts = async (id, userType) => {
   const url = `http://localhost:8000/api/orderItem/all/${id}`;
-  return await axios.get(url);
+  return await axios.get(url, { params: { userType: userType } });
 };
 
 export const getAllProductParameters = async (id) => {

@@ -3,17 +3,21 @@ import { ref, watch, onBeforeMount } from "vue";
 import ProductEntry from "../components/ProductEntry.vue";
 import ProductDetails from "../components/ProductDetails.vue";
 import { getAllProducts } from "../services/productService.js";
+import { storeToRefs } from "pinia";
+
+import { loginStore } from "../stores/loginStore";
+const user = loginStore();
+const { clientType, userId } = storeToRefs(user);
 
 const dialog = ref(false);
 const productId = ref(0);
 const product = ref(null);
 const current = ref(1);
 const filter = ref("");
-// const params = ref(null);
 
 const productList = ref([]);
 onBeforeMount(async () => {
-  await getAllProducts(2).then((resp) => {
+  await getAllProducts(userId.value, clientType.value).then((resp) => {
     productList.value = resp.data;
     productList.value.forEach((element) => {
       element.activationDate = new Date(element.activationDate);
@@ -51,7 +55,6 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
           productId = productList[(current - 1) * 3].id;
           dialog = !dialog;
           product = productList[(current - 1) * 3];
-          // params = passDataToEntry(product.id);
         "
       />
       <ProductEntry
@@ -62,7 +65,6 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
           productId = productList[(current - 1) * 3 + 1].id;
           dialog = !dialog;
           product = productList[(current - 1) * 3 + 1];
-          // params = passDataToEntry(product.id);
         "
       />
       <ProductEntry
@@ -73,7 +75,6 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
           productId = productList[(current - 1) * 3 + 2].id;
           dialog = !dialog;
           product = productList[(current - 1) * 3 + 2];
-          // params = passDataToEntry(product.id);
         "
       />
     </div>

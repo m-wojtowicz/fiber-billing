@@ -26,7 +26,7 @@ defineProps({
         {{ product.activationDate.toLocaleDateString() }}
       </div>
       <div class="col text-h6 text-right" style="align-self: flex-end">
-        12 zł/mo
+        {{ product.cost }} zł/mo
       </div>
     </div>
   </div>

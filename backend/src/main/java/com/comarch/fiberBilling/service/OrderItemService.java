@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface OrderItemService {
-    public ResponseEntity<List<OrderItem>> getAllUserProducts(Long id);
+    public ResponseEntity<List<OrderItem>> getAllUserProducts(Long id, String userType);
 
     public ResponseEntity<List<GetAllProductParameters>> getAllProductParameters(Long id);
 }

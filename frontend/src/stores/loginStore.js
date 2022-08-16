@@ -15,6 +15,7 @@ export const loginStore = defineStore({
       token_type: "",
     },
     clientType: "",
+    userId: 0,
   }),
   actions: {
     isLogged() {

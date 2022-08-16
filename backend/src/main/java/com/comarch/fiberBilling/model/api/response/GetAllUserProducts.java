@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
 @Builder
@@ -16,5 +17,5 @@ public class GetAllUserProducts {
     private String orderItemName;
     private Date activationDate;
     private String status;
-    private Double cost;
+    private BigDecimal cost;
 }
