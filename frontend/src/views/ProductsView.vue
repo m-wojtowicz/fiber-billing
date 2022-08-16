@@ -1,147 +1,29 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onBeforeMount } from "vue";
 import ProductEntry from "../components/ProductEntry.vue";
 import ProductDetails from "../components/ProductDetails.vue";
+import { getAllProducts } from "../services/productService.js";
+import { storeToRefs } from "pinia";
+
+import { loginStore } from "../stores/loginStore";
+const user = loginStore();
+const { clientType, userId } = storeToRefs(user);
 
 const dialog = ref(false);
+const productId = ref(0);
 const product = ref(null);
 const current = ref(1);
 const filter = ref("");
-const products = [
-  {
-    id: 1,
-    name: "product #1",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 2,
-    name: "product #2",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 3,
-    name: "product #3",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 4,
-    name: "product #4",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 5,
-    name: "product #5",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 6,
-    name: "product #6",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 7,
-    name: "product #7",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 8,
-    name: "product #8",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 9,
-    name: "product #9",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 10,
-    name: "product #10",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 11,
-    name: "product #11",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 12,
-    name: "product #12",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 13,
-    name: "product #13",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 14,
-    name: "product #14",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 15,
-    name: "product #15",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 16,
-    name: "product #16",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 17,
-    name: "product #17",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 18,
-    name: "product #18",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-  {
-    id: 19,
-    name: "product #19",
-    state: "Active",
-    active: new Date(),
-    cost: "55.00",
-  },
-];
+
+const productList = ref([]);
+onBeforeMount(async () => {
+  await getAllProducts(userId.value, clientType.value).then((resp) => {
+    productList.value = resp.data;
+    productList.value.forEach((element) => {
+      element.activationDate = new Date(element.activationDate);
+    });
+  });
+});
 
 watch(filter, (newv, oldv) => console.log(newv, oldv));
 </script>
@@ -167,36 +49,39 @@ watch(filter, (newv, oldv) => console.log(newv, oldv));
     <div class="col-10 products column full-width q-gutter-y-md">
       <ProductEntry
         class="col"
-        :product="products[(current - 1) * 3]"
-        v-if="(current - 1) * 3 < products.length"
+        :product="productList[(current - 1) * 3]"
+        v-if="(current - 1) * 3 < productList.length"
         @click="
-          product = products[(current - 1) * 3];
+          productId = productList[(current - 1) * 3].id;
           dialog = !dialog;
+          product = productList[(current - 1) * 3];
         "
       />
       <ProductEntry
         class="col"
-        :product="products[(current - 1) * 3 + 1]"
-        v-if="(current - 1) * 3 + 1 < products.length"
+        :product="productList[(current - 1) * 3 + 1]"
+        v-if="(current - 1) * 3 + 1 < productList.length"
         @click="
-          product = products[(current - 1) * 3 + 1];
+          productId = productList[(current - 1) * 3 + 1].id;
           dialog = !dialog;
+          product = productList[(current - 1) * 3 + 1];
         "
       />
       <ProductEntry
         class="col"
-        :product="products[(current - 1) * 3 + 2]"
-        v-if="(current - 1) * 3 + 2 < products.length"
+        :product="productList[(current - 1) * 3 + 2]"
+        v-if="(current - 1) * 3 + 2 < productList.length"
         @click="
-          product = products[(current - 1) * 3 + 2];
+          productId = productList[(current - 1) * 3 + 2].id;
           dialog = !dialog;
+          product = productList[(current - 1) * 3 + 2];
         "
       />
     </div>
     <div class="col-1">
       <q-pagination
         v-model="current"
-        :max="Math.ceil(products.length / 3)"
+        :max="Math.ceil(productList.length / 3)"
         :max-pages="5"
         outline
         direction-links
