@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import { getAllProductParameters } from "../services/productService.js";
+import { loginStore } from "../stores/loginStore";
 
 const emit = defineEmits(["changeDialog"]);
 
@@ -13,17 +14,12 @@ const props = defineProps({
     activationDate: Date,
     status: String,
   },
-  // params: {
-  //   id: Number,
-  //   orderItemName: String,
-  //   name: String,
-  //   value: String,
-  //   priceRegular: Number,
-  //   priceBusisness: Number,
-  // },
 });
 
+const user = loginStore();
+
 const params = ref(null);
+const totalCost = ref(0);
 
 const passDataToEntry = async (id) => {
   let res = await getAllProductParameters(id);
@@ -36,13 +32,16 @@ watch(
   async (newVal, oldVal) => {
     if (props.dialog) {
       params.value = await passDataToEntry(props.product.id);
-      console.log(params.value);
+      totalCost.value = 0;
+      if (user.clientType === "regular") {
+        params.value.forEach((parm) => {
+          totalCost.value += parm.priceRegular;
+        });
+      }
     }
     if (oldVal) emit("changeDialog");
   }
 );
-
-const sum = 4;
 </script>
 
 <template>
@@ -75,12 +74,17 @@ const sum = 4;
             style="text-align: left; padding: 10px 10px 10px 10px"
           >
             <div v-for="parameter in params" :key="parameter.id" class="bar">
-              <h6>{{ parameter.name }}</h6>
-              <h6>{{ parameter.priceBusiness }} zł/mo</h6>
+              <h6>{{ parameter.value }}</h6>
+              <h6 v-if="user.clientType === 'regular'">
+                {{ parameter.priceRegular }} zł/mo
+              </h6>
+              <h6 v-if="user.clientType === 'business'">
+                {{ parameter.priceBusiness }} zł/mo
+              </h6>
             </div>
             <div class="bar" style="margin-top: 30px">
               <div class="text-weight-bold text-h5">TOTAL</div>
-              <div class="text-weight-bold text-h5">{{ sum }} zł/mo</div>
+              <div class="text-weight-bold text-h5">{{ totalCost }} zł/mo</div>
             </div>
           </q-card>
           <div style="padding: 10px 0 10px 0; float: right">

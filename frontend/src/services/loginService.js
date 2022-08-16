@@ -66,3 +66,8 @@ export const refreshToken = async (token) => {
 
   return await axios(options);
 };
+
+export const getUserType = async (login) => {
+  let url = `http://localhost:8000/api/client-type/login/${login}`;
+  return await axios.get(url);
+};

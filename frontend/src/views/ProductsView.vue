@@ -13,19 +13,13 @@ const filter = ref("");
 
 const productList = ref([]);
 onBeforeMount(async () => {
-  await getAllProducts(1).then((resp) => {
+  await getAllProducts(2).then((resp) => {
     productList.value = resp.data;
     productList.value.forEach((element) => {
       element.activationDate = new Date(element.activationDate);
     });
-    // console.log(productList.value);
   });
 });
-
-// const passDataToEntry = async (id) => {
-//   let res = await getAllProductParameters(id);
-//   return res;
-// };
 
 watch(filter, (newv, oldv) => console.log(newv, oldv));
 </script>

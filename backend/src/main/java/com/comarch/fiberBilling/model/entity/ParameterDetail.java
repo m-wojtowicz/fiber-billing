@@ -16,6 +16,7 @@ import javax.persistence.*;
 @Table(name = "`PARAMERTER_DETAIL`")
 public class ParameterDetail {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`ID_PARAMETER_DETAIL`", length = 45, nullable = false)
     private long id;
     @JoinColumn(name = "`ID_PARAMETER`", nullable = false)
