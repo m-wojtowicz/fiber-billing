@@ -1,5 +1,6 @@
 package com.comarch.fiberBilling.repository;
 
+import com.comarch.fiberBilling.model.entity.Order;
 import com.comarch.fiberBilling.model.entity.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,5 @@ public interface OrderItemRepository extends JpaRepository <OrderItem, Long>{
             nativeQuery = true
     )
     Optional<List<OrderItem>> getAllUserProducts(Long id);
+    List<OrderItem> findByOrder(Order order);
 }

@@ -1,11 +1,15 @@
 package com.comarch.fiberBilling.service.impl;
 
+import com.comarch.fiberBilling.mapper.OrderItemMapper;
 import com.comarch.fiberBilling.model.api.response.GetAllProductParameters;
 import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
+import com.comarch.fiberBilling.model.dto.OrderItemDTO;
+import com.comarch.fiberBilling.model.entity.Order;
 import com.comarch.fiberBilling.model.entity.OrderItem;
 import com.comarch.fiberBilling.model.entity.OrderItemParameter;
 import com.comarch.fiberBilling.repository.OrderItemParameterRepository;
 import com.comarch.fiberBilling.repository.OrderItemRepository;
+import com.comarch.fiberBilling.repository.OrderRepository;
 import com.comarch.fiberBilling.service.OrderItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,8 +28,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderItemServiceImpl implements OrderItemService {
 
+    private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final OrderItemParameterRepository orderItemParameterRepository;
+    private final OrderItemMapper orderItemMapper = OrderItemMapper.INSTANCE;
 
     @Override
     public ResponseEntity getAllUserProducts(Long id, String userType) {
@@ -77,5 +82,23 @@ public class OrderItemServiceImpl implements OrderItemService {
                     .build());
         });
         return ResponseEntity.ok(getAllProductParameters);
+    }
+
+    @Override
+    public ResponseEntity getOrderItems(String orderId) {
+        Long id;
+        try {
+            id = Long.valueOf(orderId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<Order> order = orderRepository.findById(id);
+        if (order.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+
+        List<OrderItem> orderItems = orderItemRepository.findByOrder(order.get());
+        List<OrderItemDTO> orderItemsDTOS = orderItemMapper.orderItemsListToOrderItemsDtosList(orderItems);
+        return ResponseEntity.ok(orderItemsDTOS);
     }
 }

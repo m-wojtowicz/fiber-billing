@@ -17,7 +17,7 @@ export const getOrderItems = async (orderId) => {
 }
 
 export const getItemParameters = async (itemId) => {
-  let url = `http://localhost:8000/api/order-item/${itemId}/parameters`
+  let url = `http://localhost:8000/api/orderItem/parameters/${itemId}`
   const parameters = await (await axios.get(url)).data;
   return parameters;
 }
