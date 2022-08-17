@@ -7,17 +7,18 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class GetAllUserProducts {
+public class GetAllOrders {
     private Long id;
-    private String orderItemName;
-    private Date activationDate;
-    private String status;
-    private BigDecimal cost;
-    private Boolean monthly;
+    private String orderStatus;
+    private Date orderStartDate;
+    private Date orderEndDate;
+    private BigDecimal oneTimeCharge;
+    private BigDecimal monthlyCharge;
+    private List<GetAllUserProducts> items;
 }

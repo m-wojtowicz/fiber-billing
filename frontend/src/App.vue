@@ -111,7 +111,14 @@ watch(route, (n) => {
         class="home-page column justify-center items-center"
         style="background: none"
       >
-        <router-view />
+        <Suspense>
+          <template #default>
+            <router-view />
+          </template>
+          <template #fallback>
+            Loading
+          </template>
+        </Suspense>
       </q-page>
     </q-page-container>
 

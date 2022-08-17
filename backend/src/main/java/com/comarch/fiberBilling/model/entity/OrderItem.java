@@ -30,5 +30,5 @@ public class OrderItem {
     @Column(name = "`ACTIVATION_DATE`", nullable = false)
     private Date activationDate;
     @Column(name = "`STATUS`", nullable = false)
-    private String Status;
+    private String status;
 }

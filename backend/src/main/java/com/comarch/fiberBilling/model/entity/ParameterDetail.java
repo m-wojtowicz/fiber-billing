@@ -2,10 +2,9 @@ package com.comarch.fiberBilling.model.entity;
 
 import lombok.*;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-
-import javax.persistence.*;
 
 @Getter
 @Setter
@@ -13,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "`PARAMERTER_DETAIL`")
+@Table(name = "`PARAMETER_DETAIL`")
 public class ParameterDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
