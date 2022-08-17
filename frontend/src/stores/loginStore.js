@@ -15,6 +15,7 @@ export const loginStore = defineStore({
       session_state: "",
       token_type: "",
     },
+    clientType: "",
   }),
   persist: {
     storage: sessionStorage,

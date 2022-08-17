@@ -21,3 +21,7 @@ export const getLoginToken = async (login, password) => {
 
   return await axios(options);
 };
+export const getUserType = async (login) => {
+  let url = `http://localhost:8000/api/client-type/login/${login}`;
+  return await axios.get(url);
+};

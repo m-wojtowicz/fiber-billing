@@ -2,7 +2,7 @@
 import { ref, onMounted, watch } from "vue";
 import { useQuasar } from "quasar";
 import { storeToRefs } from "pinia";
-import { getLoginToken } from "../services/loginService";
+import { getLoginToken, getUserType } from "../services/loginService";
 import { registerStore } from "../stores/register";
 import { loginStore } from "../stores/loginStore";
 import { useRouter } from "vue-router";
@@ -11,8 +11,8 @@ const router = useRouter();
 
 const register = registerStore();
 const user = loginStore();
-const { login, password, token } = storeToRefs(user);
-
+const { login, token, clientType } = storeToRefs(user);
+const password = ref("");
 onMounted(() => {
   register.reset();
 });
@@ -45,11 +45,13 @@ const checkData = () => {
     });
 };
 
-watch(token, () => {
+watch(token, async () => {
   if (token.access_token !== "") {
     login.value = login.value.toLowerCase();
+    clientType.value = await getUserType(login.value).then(
+      (resp) => (resp = resp.data)
+    );
     router.replace({ name: "home" });
-
     $q.notify({
       message: "Successfuly logged in.",
       type: "positive",
@@ -94,14 +96,13 @@ watch(token, () => {
       @click="checkData(loginInput, passwordInput)"
     />
 
-    <p>
+    <div style="padding: 5% 15% 3% 15%">
       Not registered?
       <router-link class="router" :to="{ name: 'register' }">
         Create account
       </router-link>
-    </p>
+    </div>
   </main>
-  <router-view></router-view>
 </template>
 
 <style scoped>
@@ -122,10 +123,6 @@ h1 {
   margin-left: 15%;
   text-decoration: none;
   color: rgb(255, 255, 255);
-}
-
-p {
-  margin: 7% auto 7% 15%;
 }
 
 .divider {

@@ -1,5 +1,6 @@
 package com.comarch.fiberBilling.controller;
 
+import com.comarch.fiberBilling.model.api.response.GetAllOrders;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
 import com.comarch.fiberBilling.service.OrderItemService;
 import com.comarch.fiberBilling.service.OrderService;
@@ -32,7 +33,7 @@ public class OrderController {
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
     })
     @GetMapping(value = "/user/{clientDataId}")
-    public ResponseEntity<List<OrderDTO>> getAllUserOrders(@PathVariable("clientData") String clientDataId) {
+    public ResponseEntity<List<GetAllOrders>> getAllUserOrders(@PathVariable("clientDataId") String clientDataId) {
         return orderService.getUserOrders(clientDataId);
     }
 
