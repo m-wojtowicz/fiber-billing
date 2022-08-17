@@ -17,10 +17,10 @@ public class OrderItemParameter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`ID_ORDER_ITEM_PARAMETER`", nullable = false)
     private long id;
-    @JoinColumn(name = "`ID_ORDER_ITEM`", nullable = false)
+    @JoinColumn(name = "`ID_ORDER_ITEM`")
     @ManyToOne
     private OrderItem orderItem;
-    @JoinColumn(name = "`ID_PARAMETER_DETAIL`", nullable = false)
+    @JoinColumn(name = "`ID_PARAMETER_DETAIL`")
     @ManyToOne
     private ParameterDetail parameterDetail;
 }

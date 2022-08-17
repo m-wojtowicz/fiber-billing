@@ -1,16 +1,13 @@
 package com.comarch.fiberBilling.service;
 
-import com.comarch.fiberBilling.model.dto.OrderItemDTO;
+import com.comarch.fiberBilling.model.api.response.GetAllProductParameters;
+import com.comarch.fiberBilling.model.entity.OrderItem;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface OrderItemService {
-    ResponseEntity getOrderItem(String orderItemId);
+    public ResponseEntity<List<OrderItem>> getAllUserProducts(Long id, String userType);
 
-    ResponseEntity getOrderItems(String orderId);
-
-    ResponseEntity addOrderItem(OrderItemDTO orderItemDTO);
-
-    ResponseEntity changeOrderItem(String orderItemId, OrderItemDTO orderItemDTO);
-
-    ResponseEntity deleteOrderItem(String orderItemId);
+    public ResponseEntity<List<GetAllProductParameters>> getAllProductParameters(Long id);
 }
