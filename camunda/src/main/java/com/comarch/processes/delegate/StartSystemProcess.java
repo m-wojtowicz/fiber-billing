@@ -1,4 +1,4 @@
-package com.comarch.delegate;
+package com.comarch.processes.delegate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 public class StartSystemProcess implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        log.error("Wyslano widomosc do systemu " + delegateExecution.getProcessBusinessKey());
+        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("SystemNothingStart").correlate();
     }
 }

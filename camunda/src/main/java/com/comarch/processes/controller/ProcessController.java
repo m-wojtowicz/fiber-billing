@@ -1,6 +1,6 @@
 package com.comarch.processes.controller;
 
-import com.comarch.api.request.ProcessRequest;
+import com.comarch.processes.api.request.ProcessRequest;
 import com.comarch.processes.dto.ProcessDTO;
 import com.comarch.processes.service.CamundaService;
 import io.swagger.v3.oas.annotations.Operation;

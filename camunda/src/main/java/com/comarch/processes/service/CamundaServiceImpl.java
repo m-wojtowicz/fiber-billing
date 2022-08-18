@@ -1,6 +1,6 @@
 package com.comarch.processes.service;
 
-import com.comarch.api.request.ProcessRequest;
+import com.comarch.processes.api.request.ProcessRequest;
 import com.comarch.processes.dto.ProcessDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +25,13 @@ public class CamundaServiceImpl implements CamundaService {
     @Override
     public ProcessDTO create() {
         Map<String, Object> variables = new HashMap<>();
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Process_1uysan3", "fiber-billing" + LocalDateTime.now().toString());
-        ProcessDTO processDTO = ProcessDTO.builder()
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ClientProcess", "fiber-billing" + LocalDateTime.now());
+        return ProcessDTO.builder()
                 .definitionId(processInstance.getProcessDefinitionId())
                 .instanceID(processInstance.getProcessInstanceId())
                 .businessKey(processInstance.getBusinessKey())
                 .ended(processInstance.isEnded())
                 .build();
-        return processDTO;
     }
 
     @Override
@@ -51,12 +50,11 @@ public class CamundaServiceImpl implements CamundaService {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
                 .processInstanceBusinessKey(processRequest.getBusinessKey())
                 .singleResult();
-        ProcessDTO processDTO = ProcessDTO.builder()
+        return ProcessDTO.builder()
                 .definitionId(processInstance.getProcessDefinitionId())
                 .instanceID(processInstance.getProcessInstanceId())
                 .businessKey(processInstance.getBusinessKey())
                 .ended(processInstance.isEnded())
                 .build();
-        return processDTO;
     }
 }

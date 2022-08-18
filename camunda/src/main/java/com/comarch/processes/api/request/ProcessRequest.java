@@ -1,4 +1,4 @@
-package com.comarch.api.request;
+package com.comarch.processes.api.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
