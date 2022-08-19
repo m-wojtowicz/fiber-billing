@@ -1,7 +1,0 @@
-build site:
-  image: node:lts-alpine
-  stage: build
-  script:
-    - cd frontend
-    - npm install --progress=false
-    - npm run build

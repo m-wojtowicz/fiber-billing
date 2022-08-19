@@ -1,7 +1,0 @@
-backend:
-  trigger:
-    include: backend/.gitlab-ci.yml
-
-frontend:
-  trigger:
-    include: frontend/.gitlab-ci.yml
