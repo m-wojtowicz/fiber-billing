@@ -10,6 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "`PARAMETER_X_PRODUCT`")
 public class ParameterProduct {
     @Id

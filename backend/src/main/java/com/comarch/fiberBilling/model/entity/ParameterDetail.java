@@ -12,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "`PARAMETER_DETAIL`")
 public class ParameterDetail {
     @Id

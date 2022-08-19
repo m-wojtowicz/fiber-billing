@@ -12,6 +12,7 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "`INVOICE`")
 public class Invoice {
     @Id
