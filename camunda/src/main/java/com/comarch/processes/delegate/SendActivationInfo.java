@@ -9,11 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class StartSystemProcess implements JavaDelegate {
+public class SendActivationInfo implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("SystemNothingStart")
+        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("ReceiveActivation")
                 .processInstanceBusinessKey(delegateExecution.getProcessBusinessKey())
-                .correlate();
+                .setVariables(delegateExecution.getVariables())
+                .correlateWithResult();
     }
 }

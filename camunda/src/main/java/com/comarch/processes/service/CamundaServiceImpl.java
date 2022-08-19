@@ -25,7 +25,9 @@ public class CamundaServiceImpl implements CamundaService {
     @Override
     public ProcessDTO create() {
         Map<String, Object> variables = new HashMap<>();
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ClientProcess", "fiber-billing" + LocalDateTime.now());
+        variables.put("fiberExist", null);
+        variables.put("ontExist", null);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ClientProcess", "fiber-billing" + LocalDateTime.now(), variables);
         return ProcessDTO.builder()
                 .definitionId(processInstance.getProcessDefinitionId())
                 .instanceID(processInstance.getProcessInstanceId())
