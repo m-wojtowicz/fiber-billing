@@ -5,7 +5,7 @@
     <bpmn:participant id="Participant_165goey" name="AVAILABILITY CHECK" processRef="Process_1viw2u2" />
     <bpmn:participant id="Participant_0yqfo74" name="Client" processRef="ClientProcess" />
     <bpmn:participant id="Participant_02h54dt" name="PAYMENT SYSTEM" processRef="Process_0jjzzn4" />
-    <bpmn:participant id="Participant_0iojttj" name="technician" processRef="Process_1wqc7ot" />
+    <bpmn:participant id="Participant_0iojttj" name="technician" processRef="TechnicianProcess" />
     <bpmn:participant id="Participant_0g2iwdg" name="SystemNothing" processRef="SystemProcess" />
     <bpmn:messageFlow id="Flow_0tmao73" sourceRef="Event_0i3f0z2" targetRef="Event_109xx2q" />
     <bpmn:messageFlow id="Flow_1pms2xz" sourceRef="Event_1dxe9zg" targetRef="Event_1342m99" />
@@ -125,95 +125,6 @@
     </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:process id="ClientProcess" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_1">
-      <bpmn:outgoing>Flow_0isnbsm</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:userTask id="Activity_17c21o5" name="Select an offer">
-      <bpmn:incoming>Flow_1tyjd2k</bpmn:incoming>
-      <bpmn:outgoing>Flow_0bywbhz</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:parallelGateway id="Gateway_1tch6fx" camunda:asyncBefore="true">
-      <bpmn:incoming>Flow_0isnbsm</bpmn:incoming>
-      <bpmn:outgoing>Flow_1tyjd2k</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0gdjbc8</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:exclusiveGateway id="Gateway_1qv228z" name="Is fiber in the building?" camunda:asyncBefore="true">
-      <bpmn:extensionElements />
-      <bpmn:incoming>Flow_0nqbd0n</bpmn:incoming>
-      <bpmn:outgoing>Flow_09huapv</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1kfd7mb</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_15gomyz" name="check available instalation dates">
-      <bpmn:incoming>Flow_09huapv</bpmn:incoming>
-      <bpmn:incoming>Flow_1vevs7i</bpmn:incoming>
-      <bpmn:outgoing>Flow_1q5t7o8</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:exclusiveGateway id="Gateway_1uic92x" name="Client choose: cancel order or check another date">
-      <bpmn:incoming>Flow_1ycplh7</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ckhtiy</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1vevs7i</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_0wfqedw" name="Download or view invoice">
-      <bpmn:incoming>Flow_18bhovz</bpmn:incoming>
-      <bpmn:outgoing>Flow_14vx37o</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:userTask id="Activity_0sdij05" name="Start payment by pressing button &#39;Pay&#39;">
-      <bpmn:incoming>Flow_129cmi4</bpmn:incoming>
-      <bpmn:incoming>Flow_18xs9q6</bpmn:incoming>
-      <bpmn:outgoing>Flow_1y8dywy</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0itx05e</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:endEvent id="Event_1tdawiq">
-      <bpmn:incoming>Flow_1y8dywy</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:userTask id="Activity_0n8eaic" name="Submit order">
-      <bpmn:incoming>Flow_1kfd7mb</bpmn:incoming>
-      <bpmn:incoming>Flow_0fd4e7u</bpmn:incoming>
-      <bpmn:outgoing>Flow_1o7nzpu</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:userTask id="Activity_185w88h" name="Cancel order">
-      <bpmn:incoming>Flow_0ckhtiy</bpmn:incoming>
-      <bpmn:outgoing>Flow_0jpvhio</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:intermediateThrowEvent id="Event_16clpxq" name="Send info: order status - cancelled">
-      <bpmn:extensionElements />
-      <bpmn:incoming>Flow_1wbuhip</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0p7u2ad" messageRef="Message_1qakapl">
-        <bpmn:extensionElements />
-      </bpmn:messageEventDefinition>
-    </bpmn:intermediateThrowEvent>
-    <bpmn:receiveTask id="Activity_0m4na80" name="receive mail that order is complited">
-      <bpmn:incoming>Flow_0dw5gil</bpmn:incoming>
-      <bpmn:outgoing>Flow_1xzzsvr</bpmn:outgoing>
-    </bpmn:receiveTask>
-    <bpmn:parallelGateway id="Gateway_1mw5d9y">
-      <bpmn:incoming>Flow_1o7nzpu</bpmn:incoming>
-      <bpmn:outgoing>Flow_0dw5gil</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1cprzqv</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:intermediateThrowEvent id="Event_100zrhp" name="Send info: order status - in progress">
-      <bpmn:incoming>Flow_1cprzqv</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_18b8wk9" messageRef="Message_2npd24p" />
-    </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateThrowEvent id="Event_0nno929" name="send request to system when technician will be available">
-      <bpmn:incoming>Flow_1q5t7o8</bpmn:incoming>
-      <bpmn:outgoing>Flow_1tz01th</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0hmr9ke" messageRef="Message_3nujqjg" />
-    </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateCatchEvent id="Event_1wxg0s6" name="Receive info about availability of technician">
-      <bpmn:incoming>Flow_1tz01th</bpmn:incoming>
-      <bpmn:outgoing>Flow_0edbbzr</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0th3s9c" messageRef="Message_23q4422" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:exclusiveGateway id="Gateway_0skfy6r" name="Are dates available?">
-      <bpmn:incoming>Flow_0edbbzr</bpmn:incoming>
-      <bpmn:outgoing>Flow_1ycplh7</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0fd4e7u</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:intermediateThrowEvent id="Event_1dxe9zg" name="Send request to payment system: start payment process">
-      <bpmn:incoming>Flow_0itx05e</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0bbll9y" messageRef="Message_1pnsig1" />
-    </bpmn:intermediateThrowEvent>
     <bpmn:sequenceFlow id="Flow_1vevs7i" name="Check another date" sourceRef="Gateway_1uic92x" targetRef="Activity_15gomyz">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{CheckAnotherDate}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -247,18 +158,56 @@
     <bpmn:sequenceFlow id="Flow_1y8dywy" sourceRef="Activity_0sdij05" targetRef="Event_1tdawiq" />
     <bpmn:sequenceFlow id="Flow_0edbbzr" sourceRef="Event_1wxg0s6" targetRef="Gateway_0skfy6r" />
     <bpmn:sequenceFlow id="Flow_0itx05e" sourceRef="Activity_0sdij05" targetRef="Event_1dxe9zg" />
-    <bpmn:userTask id="Activity_1mps98h" name="Configure a product based on available parameters">
-      <bpmn:incoming>Flow_0bywbhz</bpmn:incoming>
-      <bpmn:outgoing>Flow_1opajr0</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_18bhovz" sourceRef="Event_037hh66" targetRef="Activity_0wfqedw" />
-    <bpmn:intermediateCatchEvent id="Event_037hh66" name="Waiting for downloading invoice by clinet">
-      <bpmn:incoming>Flow_0auugg1</bpmn:incoming>
-      <bpmn:outgoing>Flow_18bhovz</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_1xxyjwi">
-        <bpmn:timeDate xsi:type="bpmn:tFormalExpression" />
-      </bpmn:timerEventDefinition>
+    <bpmn:sequenceFlow id="Flow_129cmi4" sourceRef="Event_1wb5ru5" targetRef="Activity_0sdij05" />
+    <bpmn:sequenceFlow id="Flow_18xs9q6" sourceRef="Event_1ovdz9m" targetRef="Activity_0sdij05" />
+    <bpmn:sequenceFlow id="Flow_1xzzsvr" sourceRef="Activity_0m4na80" targetRef="Event_1a0tdb3" />
+    <bpmn:sequenceFlow id="Flow_0auugg1" sourceRef="Event_1fzchsu" targetRef="Event_037hh66" />
+    <bpmn:sequenceFlow id="Flow_0gdjbc8" sourceRef="Gateway_1tch6fx" targetRef="Gateway_02t4czn" />
+    <bpmn:sequenceFlow id="Flow_1vlizdl" sourceRef="Gateway_02t4czn" targetRef="Event_1n2ytl0" />
+    <bpmn:sequenceFlow id="Flow_0lvf6ih" sourceRef="Gateway_02t4czn" targetRef="Event_0nougwm" />
+    <bpmn:sequenceFlow id="Flow_1opajr0" sourceRef="Activity_1mps98h" targetRef="Gateway_16p57w4" />
+    <bpmn:sequenceFlow id="Flow_1vv9nvl" sourceRef="Event_0nougwm" targetRef="Gateway_16p57w4" />
+    <bpmn:sequenceFlow id="Flow_0nqbd0n" sourceRef="Gateway_16p57w4" targetRef="Gateway_1qv228z" />
+    <bpmn:parallelGateway id="Gateway_16p57w4" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_1opajr0</bpmn:incoming>
+      <bpmn:incoming>Flow_1vv9nvl</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nqbd0n</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:intermediateCatchEvent id="Event_0nougwm" name="client received message about activation" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_0lvf6ih</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vv9nvl</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1t5lq6s" messageRef="Message_0aor9hf" />
     </bpmn:intermediateCatchEvent>
+    <bpmn:parallelGateway id="Gateway_02t4czn" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_0gdjbc8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vlizdl</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0lvf6ih</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:intermediateThrowEvent id="Event_1n2ytl0" name="Info to SystemNothing that order started" camunda:asyncBefore="true">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_1vlizdl</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0fyfj6o" messageRef="Message_0nkuu81" camunda:class="com.comarch.processes.delegate.StartSystemProcess" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="Event_16r7xnz">
+      <bpmn:incoming>Flow_1g5m6ie</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:parallelGateway id="Gateway_0d1h033">
+      <bpmn:incoming>Flow_0jpvhio</bpmn:incoming>
+      <bpmn:outgoing>Flow_1g5m6ie</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1wbuhip</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:startEvent id="Event_1ovdz9m" name="Receive info: Payment has failed" camunda:initiator="Message_03hkv8i">
+      <bpmn:outgoing>Flow_18xs9q6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1p7s3j4" messageRef="Message_1v9p05g" />
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Event_1fzchsu" name="Receive message about invoice" camunda:initiator="Message_2afbd9c">
+      <bpmn:outgoing>Flow_0auugg1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0qo4wiy" messageRef="Message_1307nq7" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_1a0tdb3">
+      <bpmn:incoming>Flow_1xzzsvr</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:intermediateCatchEvent id="Event_1wb5ru5" name="Waiting for client make payment">
       <bpmn:incoming>Flow_14vx37o</bpmn:incoming>
       <bpmn:outgoing>Flow_129cmi4</bpmn:outgoing>
@@ -266,55 +215,106 @@
         <bpmn:timeDate xsi:type="bpmn:tFormalExpression" />
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="Flow_129cmi4" sourceRef="Event_1wb5ru5" targetRef="Activity_0sdij05" />
-    <bpmn:sequenceFlow id="Flow_18xs9q6" sourceRef="Event_1ovdz9m" targetRef="Activity_0sdij05" />
-    <bpmn:endEvent id="Event_1a0tdb3">
-      <bpmn:incoming>Flow_1xzzsvr</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1xzzsvr" sourceRef="Activity_0m4na80" targetRef="Event_1a0tdb3" />
-    <bpmn:sequenceFlow id="Flow_0auugg1" sourceRef="Event_1fzchsu" targetRef="Event_037hh66" />
-    <bpmn:startEvent id="Event_1fzchsu" name="Receive message about invoice" camunda:initiator="Message_2afbd9c">
-      <bpmn:outgoing>Flow_0auugg1</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0qo4wiy" messageRef="Message_1307nq7" />
-    </bpmn:startEvent>
-    <bpmn:startEvent id="Event_1ovdz9m" name="Receive info: Payment has failed" camunda:initiator="Message_03hkv8i">
-      <bpmn:outgoing>Flow_18xs9q6</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1p7s3j4" messageRef="Message_1v9p05g" />
-    </bpmn:startEvent>
-    <bpmn:parallelGateway id="Gateway_0d1h033">
-      <bpmn:incoming>Flow_0jpvhio</bpmn:incoming>
-      <bpmn:outgoing>Flow_1g5m6ie</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1wbuhip</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:endEvent id="Event_16r7xnz">
-      <bpmn:incoming>Flow_1g5m6ie</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:intermediateThrowEvent id="Event_1n2ytl0" name="Info to SystemNothing that order started" camunda:asyncBefore="true">
-      <bpmn:extensionElements />
-      <bpmn:incoming>Flow_1vlizdl</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0fyfj6o" messageRef="Message_0nkuu81" camunda:class="com.comarch.processes.delegate.StartSystemProcess" />
-    </bpmn:intermediateThrowEvent>
-    <bpmn:parallelGateway id="Gateway_02t4czn" camunda:asyncBefore="true">
-      <bpmn:incoming>Flow_0gdjbc8</bpmn:incoming>
-      <bpmn:outgoing>Flow_1vlizdl</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0lvf6ih</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_0gdjbc8" sourceRef="Gateway_1tch6fx" targetRef="Gateway_02t4czn" />
-    <bpmn:sequenceFlow id="Flow_1vlizdl" sourceRef="Gateway_02t4czn" targetRef="Event_1n2ytl0" />
-    <bpmn:intermediateCatchEvent id="Event_0nougwm" name="client received message about activation" camunda:asyncBefore="true">
-      <bpmn:incoming>Flow_0lvf6ih</bpmn:incoming>
-      <bpmn:outgoing>Flow_1vv9nvl</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1t5lq6s" messageRef="Message_0aor9hf" />
+    <bpmn:intermediateCatchEvent id="Event_037hh66" name="Waiting for downloading invoice by clinet">
+      <bpmn:incoming>Flow_0auugg1</bpmn:incoming>
+      <bpmn:outgoing>Flow_18bhovz</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1xxyjwi">
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression" />
+      </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="Flow_0lvf6ih" sourceRef="Gateway_02t4czn" targetRef="Event_0nougwm" />
-    <bpmn:parallelGateway id="Gateway_16p57w4">
-      <bpmn:incoming>Flow_1opajr0</bpmn:incoming>
-      <bpmn:incoming>Flow_1vv9nvl</bpmn:incoming>
-      <bpmn:outgoing>Flow_0nqbd0n</bpmn:outgoing>
+    <bpmn:userTask id="Activity_1mps98h" name="Configure a product based on available parameters">
+      <bpmn:incoming>Flow_0bywbhz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1opajr0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateThrowEvent id="Event_1dxe9zg" name="Send request to payment system: start payment process">
+      <bpmn:incoming>Flow_0itx05e</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0bbll9y" messageRef="Message_1pnsig1" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:exclusiveGateway id="Gateway_0skfy6r" name="Are dates available?">
+      <bpmn:incoming>Flow_0edbbzr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ycplh7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0fd4e7u</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateCatchEvent id="Event_1wxg0s6" name="Receive info about availability of technician">
+      <bpmn:incoming>Flow_1tz01th</bpmn:incoming>
+      <bpmn:outgoing>Flow_0edbbzr</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0th3s9c" messageRef="Message_23q4422" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="Event_0nno929" name="send request to system when technician will be available">
+      <bpmn:incoming>Flow_1q5t7o8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tz01th</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0hmr9ke" messageRef="Message_3nujqjg" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="Event_100zrhp" name="Send info: order status - in progress" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_1cprzqv</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_18b8wk9" messageRef="Message_2npd24p" camunda:class="com.comarch.processes.delegate.SendOrderStatus" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:parallelGateway id="Gateway_1mw5d9y">
+      <bpmn:incoming>Flow_1o7nzpu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dw5gil</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1cprzqv</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_1opajr0" sourceRef="Activity_1mps98h" targetRef="Gateway_16p57w4" />
-    <bpmn:sequenceFlow id="Flow_1vv9nvl" sourceRef="Event_0nougwm" targetRef="Gateway_16p57w4" />
-    <bpmn:sequenceFlow id="Flow_0nqbd0n" sourceRef="Gateway_16p57w4" targetRef="Gateway_1qv228z" />
+    <bpmn:receiveTask id="Activity_0m4na80" name="receive mail that order is complited" camunda:asyncBefore="true" messageRef="Message_10dt6ih">
+      <bpmn:incoming>Flow_0dw5gil</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xzzsvr</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:intermediateThrowEvent id="Event_16clpxq" name="Send info: order status - cancelled">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_1wbuhip</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0p7u2ad" messageRef="Message_1qakapl">
+        <bpmn:extensionElements />
+      </bpmn:messageEventDefinition>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:userTask id="Activity_185w88h" name="Cancel order">
+      <bpmn:incoming>Flow_0ckhtiy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jpvhio</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0n8eaic" name="Submit order">
+      <bpmn:incoming>Flow_1kfd7mb</bpmn:incoming>
+      <bpmn:incoming>Flow_0fd4e7u</bpmn:incoming>
+      <bpmn:outgoing>Flow_1o7nzpu</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1tdawiq">
+      <bpmn:incoming>Flow_1y8dywy</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_0sdij05" name="Start payment by pressing button &#39;Pay&#39;">
+      <bpmn:incoming>Flow_129cmi4</bpmn:incoming>
+      <bpmn:incoming>Flow_18xs9q6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1y8dywy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0itx05e</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0wfqedw" name="Download or view invoice">
+      <bpmn:incoming>Flow_18bhovz</bpmn:incoming>
+      <bpmn:outgoing>Flow_14vx37o</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_1uic92x" name="Client choose: cancel order or check another date">
+      <bpmn:incoming>Flow_1ycplh7</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ckhtiy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1vevs7i</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_15gomyz" name="check available instalation dates">
+      <bpmn:incoming>Flow_09huapv</bpmn:incoming>
+      <bpmn:incoming>Flow_1vevs7i</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q5t7o8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_1qv228z" name="Is fiber in the building?" camunda:asyncBefore="true">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_0nqbd0n</bpmn:incoming>
+      <bpmn:outgoing>Flow_09huapv</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1kfd7mb</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:parallelGateway id="Gateway_1tch6fx" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_0isnbsm</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tyjd2k</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0gdjbc8</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="Activity_17c21o5" name="Select an offer">
+      <bpmn:incoming>Flow_1tyjd2k</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bywbhz</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0isnbsm</bpmn:outgoing>
+    </bpmn:startEvent>
   </bpmn:process>
   <bpmn:process id="Process_0jjzzn4" isExecutable="false">
     <bpmn:endEvent id="Event_0lpsrqw">
@@ -358,7 +358,7 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1ou5ezk" sourceRef="Activity_1ogl5t2" targetRef="Activity_1lhzh3f" />
   </bpmn:process>
-  <bpmn:process id="Process_1wqc7ot" isExecutable="false">
+  <bpmn:process id="TechnicianProcess" isExecutable="true">
     <bpmn:startEvent id="Event_10ua5ub" name="Receive request from system, when will be available" camunda:initiator="Message_0gb8qu6">
       <bpmn:outgoing>Flow_10duxpb</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0lls68w" messageRef="Message_0sla8pd" />
@@ -366,52 +366,44 @@
     <bpmn:intermediateThrowEvent id="Event_02r4dut" name="Send available date, sysDate() + 7 days">
       <bpmn:incoming>Flow_00hbbx6</bpmn:incoming>
       <bpmn:outgoing>Flow_12wjddq</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_00yib54" messageRef="Message_1kj6ka2" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_00yib54" messageRef="Message_1kj6ka2" camunda:class="com.comarch.processes.delegate.LoggerDelegate" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:serviceTask id="Activity_1g837xk" name="checking technician availability">
+    <bpmn:serviceTask id="Activity_1g837xk" name="checking technician availability" camunda:asyncBefore="true" camunda:class="com.comarch.processes.delegate.LoggerDelegate">
       <bpmn:incoming>Flow_10duxpb</bpmn:incoming>
       <bpmn:outgoing>Flow_00hbbx6</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:intermediateCatchEvent id="Event_0stez00" name="To instalation day">
+    <bpmn:intermediateCatchEvent id="Event_0stez00" name="To instalation day" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_1uo9bo0</bpmn:incoming>
       <bpmn:outgoing>Flow_0usjpk5</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_087mg55">
-        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">#{minimal_activation_date = sysDate() + 7 days}</bpmn:timeDate>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P7D</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:task id="Activity_118y8m4" name="actvate client&#39;s port of switch, add IP Address and add address MAC for a new client,">
-      <bpmn:incoming>Flow_00saetq</bpmn:incoming>
-      <bpmn:outgoing>Flow_1lnev2y</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:task id="Activity_0t2o24w" name="add ont to shipment">
-      <bpmn:incoming>Flow_1lnev2y</bpmn:incoming>
-      <bpmn:outgoing>Flow_1v9bbjm</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:endEvent id="Event_19xujmd">
       <bpmn:incoming>Flow_12wjddq</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:manualTask id="Activity_0dbohm4" name="actvate client&#39;s  port of switch, add IP Address  and add address MAC for a new client,">
+    <bpmn:manualTask id="Activity_0dbohm4" name="actvate client&#39;s  port of switch, add IP Address  and add address MAC for a new client," camunda:asyncBefore="true">
       <bpmn:incoming>Flow_1ollryd</bpmn:incoming>
       <bpmn:outgoing>Flow_0rzrg6s</bpmn:outgoing>
     </bpmn:manualTask>
     <bpmn:endEvent id="Event_1hj8vx3">
       <bpmn:incoming>Flow_1rh2d77</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:manualTask id="Activity_19hlpeg" name="actvate client&#39;s  port of switch, add IP Address  and add address MAC for a new client,">
+    <bpmn:manualTask id="Activity_19hlpeg" name="actvate client&#39;s  port of switch, add IP Address  and add address MAC for a new client," camunda:asyncBefore="true">
       <bpmn:incoming>Flow_10onvcm</bpmn:incoming>
       <bpmn:outgoing>Flow_096ryjj</bpmn:outgoing>
     </bpmn:manualTask>
     <bpmn:endEvent id="Event_1resc5r">
       <bpmn:incoming>Flow_1tz6ix1</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:intermediateThrowEvent id="Event_0i3f0z2" name="request to shipment: start shipment process">
+    <bpmn:intermediateThrowEvent id="Event_0i3f0z2" name="request to shipment: start shipment process" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_1f9i1bh</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0qebrrz" messageRef="Message_1ovplpk" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0qebrrz" messageRef="Message_1ovplpk" camunda:class="com.comarch.processes.delegate.SendActivationInfo" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateThrowEvent id="Event_0wuc1qr" name="send info: everything done">
+    <bpmn:intermediateThrowEvent id="Event_0wuc1qr" name="send info: everything done" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_096ryjj</bpmn:incoming>
       <bpmn:outgoing>Flow_1tz6ix1</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_09fhnbw" messageRef="Message_0vq5iba" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_09fhnbw" messageRef="Message_0vq5iba" camunda:class="com.comarch.processes.delegate.SendEverythingDone" />
     </bpmn:intermediateThrowEvent>
     <bpmn:endEvent id="Event_13urqtd">
       <bpmn:incoming>Flow_0v5mqvs</bpmn:incoming>
@@ -441,15 +433,15 @@
     <bpmn:sequenceFlow id="Flow_1f9i1bh" sourceRef="Gateway_0hq7jif" targetRef="Event_0i3f0z2" />
     <bpmn:sequenceFlow id="Flow_0v5mqvs" sourceRef="Gateway_0574zxt" targetRef="Event_13urqtd" />
     <bpmn:sequenceFlow id="Flow_1rh2d77" sourceRef="Gateway_0hq7jif" targetRef="Event_1hj8vx3" />
-    <bpmn:startEvent id="Event_0fuu717" name="Info from system: client need activatoin and installation" camunda:initiator="Message_004vbmb">
+    <bpmn:startEvent id="Event_0fuu717" name="Info from system: client need activatoin and installation" camunda:asyncBefore="true" camunda:initiator="Message_004vbmb">
       <bpmn:outgoing>Flow_1m38k6s</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0fnfutk" messageRef="Message_2l5dolt" />
     </bpmn:startEvent>
-    <bpmn:startEvent id="Event_1qxuwma" name="Info from system: client need activation and router shipment" camunda:initiator="Message_3f6lhgb">
+    <bpmn:startEvent id="Event_1qxuwma" name="Info from system: client need activation and router shipment" camunda:asyncBefore="true" camunda:initiator="Message_3f6lhgb">
       <bpmn:outgoing>Flow_00saetq</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0hnp9l2" messageRef="Message_3bi49ab" />
     </bpmn:startEvent>
-    <bpmn:startEvent id="Event_1yus48c" name="Info from system: client has everything, activation needs only" camunda:initiator="Message_0j6c8mv">
+    <bpmn:startEvent id="Event_1yus48c" name="Info from system: client has everything, activation needs only" camunda:asyncBefore="true" camunda:initiator="Message_0j6c8mv">
       <bpmn:outgoing>Flow_10onvcm</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0yknfin" messageRef="Message_1kbit46" />
     </bpmn:startEvent>
@@ -457,20 +449,28 @@
     <bpmn:sequenceFlow id="Flow_00saetq" sourceRef="Event_1qxuwma" targetRef="Activity_118y8m4" />
     <bpmn:sequenceFlow id="Flow_10onvcm" sourceRef="Event_1yus48c" targetRef="Activity_19hlpeg" />
     <bpmn:sequenceFlow id="Flow_1y2fpno" sourceRef="Gateway_0574zxt" targetRef="Activity_0mi4r6i" />
-    <bpmn:sendTask id="Activity_0mi4r6i" name="send info: everything done">
+    <bpmn:sendTask id="Activity_0mi4r6i" name="send info: everything done" camunda:asyncBefore="true" camunda:class="com.comarch.processes.delegate.LoggerDelegate">
       <bpmn:incoming>Flow_1y2fpno</bpmn:incoming>
     </bpmn:sendTask>
-    <bpmn:manualTask id="Activity_0fiyftj" name="Receive info about instalation date and address">
+    <bpmn:manualTask id="Activity_0fiyftj" name="Receive info about instalation date and address" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_1m38k6s</bpmn:incoming>
       <bpmn:outgoing>Flow_1uo9bo0</bpmn:outgoing>
     </bpmn:manualTask>
-    <bpmn:manualTask id="Activity_1lmy815" name="installing devices">
+    <bpmn:manualTask id="Activity_1lmy815" name="installing devices" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_0rzrg6s</bpmn:incoming>
       <bpmn:outgoing>Flow_1uur4af</bpmn:outgoing>
     </bpmn:manualTask>
-    <bpmn:manualTask id="Activity_1cxbklj" name="Takes all devices with himself and goes to client&#39;s home for full configuration">
+    <bpmn:manualTask id="Activity_1cxbklj" name="Takes all devices with himself and goes to client&#39;s home for full configuration" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_0usjpk5</bpmn:incoming>
       <bpmn:outgoing>Flow_1ollryd</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:manualTask id="Activity_118y8m4" name="actvate client&#39;s port of switch, add IP Address and add address MAC for a new client," camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_00saetq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lnev2y</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:manualTask id="Activity_0t2o24w" name="add ont to shipment" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_1lnev2y</bpmn:incoming>
+      <bpmn:outgoing>Flow_1v9bbjm</bpmn:outgoing>
     </bpmn:manualTask>
   </bpmn:process>
   <bpmn:process id="SystemProcess" isExecutable="true">
@@ -504,13 +504,13 @@
     <bpmn:sequenceFlow id="Flow_1ekgrt8" sourceRef="Activity_1amp06h" targetRef="Gateway_1tso611" />
     <bpmn:sequenceFlow id="Flow_1sl79zt" sourceRef="Activity_1pinu9b" targetRef="Gateway_0vpwj00" />
     <bpmn:sequenceFlow id="Flow_1lnqriu" name="fiberExist = yes&#10;ontExist = yes" sourceRef="Gateway_0vpwj00" targetRef="Event_0rp26sh">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{fiberExist} #{ontExist}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${fiberExist == true and ontExist == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_08cxvj2" name="fiberExist = yes&#10;ontExist = no" sourceRef="Gateway_0vpwj00" targetRef="Event_0gp9q6d">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{fiberExist} #{not ontExist}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${fiberExist == true and ontExist == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_16weprf" name="fiberExist = no&#10;ontExist = no" sourceRef="Gateway_0vpwj00" targetRef="Event_09ns870">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{not fiberExist} #{not ontExist}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${fiberExist == false and ontExist == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1h401v9" name="fiberExist = no&#10;ontExist = no" sourceRef="Gateway_1i783k4" targetRef="Activity_1jdbshb">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${fiberExist == false and ontExist == false}</bpmn:conditionExpression>
@@ -629,26 +629,26 @@
       <bpmn:outgoing>Flow_08cxvj2</bpmn:outgoing>
       <bpmn:outgoing>Flow_16weprf</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_1pinu9b" name="Set order status in progress" camunda:asyncBefore="true" camunda:exclusive="false" camunda:class="com.comarch.processes.delegate.LoggerDelegate">
+    <bpmn:serviceTask id="Activity_1pinu9b" name="Set order status in progress" camunda:asyncBefore="true" camunda:class="com.comarch.processes.delegate.LoggerDelegate">
       <bpmn:incoming>Flow_0p8bhvc</bpmn:incoming>
       <bpmn:outgoing>Flow_1sl79zt</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:intermediateThrowEvent id="Event_0rp26sh" name="Info to technician: client has everything, activation needs only">
+    <bpmn:intermediateThrowEvent id="Event_0rp26sh" name="Info to technician: client has everything, activation needs only" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_1lnqriu</bpmn:incoming>
       <bpmn:outgoing>Flow_1nd3x8i</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0b9rcud" messageRef="Message_0j6c8mv" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0b9rcud" messageRef="Message_0j6c8mv" camunda:class="com.comarch.processes.delegate.SendClientHasEverything" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateThrowEvent id="Event_0gp9q6d" name="Info to technician: client need activation and router shipment">
+    <bpmn:intermediateThrowEvent id="Event_0gp9q6d" name="Info to technician: client need activation and router shipment" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_08cxvj2</bpmn:incoming>
       <bpmn:outgoing>Flow_1joyy1a</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1ak2lnq" messageRef="Message_3f6lhgb" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1ak2lnq" messageRef="Message_3f6lhgb" camunda:class="com.comarch.processes.delegate.SendClientNeedRouter" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateThrowEvent id="Event_09ns870" name="Info to technician: client need activatoin and installation">
+    <bpmn:intermediateThrowEvent id="Event_09ns870" name="Info to technician: client need activatoin and installation" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_16weprf</bpmn:incoming>
       <bpmn:outgoing>Flow_18n40vr</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0q3f186" messageRef="Message_004vbmb" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateCatchEvent id="Event_0eippvf" name="receive info: everything done">
+    <bpmn:intermediateCatchEvent id="Event_0eippvf" name="receive info: everything done" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_1nd3x8i</bpmn:incoming>
       <bpmn:incoming>Flow_18n40vr</bpmn:incoming>
       <bpmn:incoming>Flow_1joyy1a</bpmn:incoming>
@@ -673,7 +673,7 @@
     <bpmn:endEvent id="Event_0ndl41o">
       <bpmn:incoming>Flow_1uwdk70</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sendTask id="Activity_1l07erk" name="send mail to client that order is complited" camunda:class="com.comarch.processes.delegate.LoggerDelegate">
+    <bpmn:sendTask id="Activity_1l07erk" name="send mail to client that order is complited" camunda:asyncBefore="true" camunda:class="com.comarch.processes.delegate.OrderComplete">
       <bpmn:incoming>Flow_0q2dwgp</bpmn:incoming>
       <bpmn:outgoing>Flow_0dfguty</bpmn:outgoing>
     </bpmn:sendTask>
@@ -715,19 +715,19 @@
   <bpmn:message id="Message_0sla8pd" name="Message_0sla8pd" />
   <bpmn:message id="Message_1kj6ka2" name="Message_1kj6ka2" />
   <bpmn:message id="Message_38nrhsr" name="Message_38nrhsr" />
-  <bpmn:message id="Message_2npd24p" name="OrderStatusInProgres" />
-  <bpmn:message id="Message_2gsa3bb" name="OrderStatusInProgres" />
+  <bpmn:message id="Message_2npd24p" name="OrderStatusInProgress" />
+  <bpmn:message id="Message_2gsa3bb" name="OrderStatusInProgress" />
   <bpmn:message id="Message_0j6c8mv" name="ClientHasEverything" />
   <bpmn:message id="Message_1kbit46" name="ClientHasEverything" />
   <bpmn:message id="Message_3f6lhgb" name="ClientNeedRouter" />
   <bpmn:message id="Message_3bi49ab" name="ClientNeedRouter" />
   <bpmn:message id="Message_004vbmb" name="ClientNeedEverything" />
   <bpmn:message id="Message_2l5dolt" name="ClientNeedEverything" />
-  <bpmn:message id="Message_0vq5iba" name="Message_0vq5iba" />
-  <bpmn:message id="Message_1898gp0" name="Message_1898gp0" />
+  <bpmn:message id="Message_0vq5iba" name="ReceiveEverythingDone" />
+  <bpmn:message id="Message_1898gp0" name="ReceiveEverythingDone" />
   <bpmn:message id="Message_1ovplpk" name="Message_1ovplpk" />
   <bpmn:message id="Message_0f3oi2o" name="Message_0f3oi2o" />
-  <bpmn:message id="Message_3ac54mh" name="Message_3ac54mh" />
+  <bpmn:message id="Message_3ac54mh" name="ReceiveEverythingDone" />
   <bpmn:message id="Message_2stlesf" name="ReceiveAvailabilityCheck" />
   <bpmn:message id="Message_1pnsig1" name="Message_1pnsig1" />
   <bpmn:message id="Message_3relbqs" name="Message_3relbqs" />
@@ -739,6 +739,7 @@
   <bpmn:message id="Message_21i1ldo" name="ReceiveActivationInfo" />
   <bpmn:message id="Message_1v9lm4d" name="Message_1v9lm4d" />
   <bpmn:message id="Message_2jsurca" name="Message_1v9lm4d" />
+  <bpmn:message id="Message_10dt6ih" name="OrderComplete" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1cvgoba">
       <bpmndi:BPMNShape id="Participant_1hskevz_di" bpmnElement="Participant_1hskevz" isHorizontal="true">
@@ -890,6 +891,30 @@
         <dc:Bounds x="340" y="170" width="4820" height="720" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0nqbd0n_di" bpmnElement="Flow_0nqbd0n">
+        <di:waypoint x="915" y="440" />
+        <di:waypoint x="945" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vv9nvl_di" bpmnElement="Flow_1vv9nvl">
+        <di:waypoint x="890" y="522" />
+        <di:waypoint x="890" y="465" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1opajr0_di" bpmnElement="Flow_1opajr0">
+        <di:waypoint x="845" y="440" />
+        <di:waypoint x="865" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lvf6ih_di" bpmnElement="Flow_0lvf6ih">
+        <di:waypoint x="525" y="540" />
+        <di:waypoint x="872" y="540" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vlizdl_di" bpmnElement="Flow_1vlizdl">
+        <di:waypoint x="500" y="565" />
+        <di:waypoint x="500" y="592" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gdjbc8_di" bpmnElement="Flow_0gdjbc8">
+        <di:waypoint x="500" y="465" />
+        <di:waypoint x="500" y="515" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0auugg1_di" bpmnElement="Flow_0auugg1">
         <di:waypoint x="2328" y="320" />
         <di:waypoint x="2582" y="320" />
@@ -1016,30 +1041,6 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1074" y="176" width="73" height="27" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0gdjbc8_di" bpmnElement="Flow_0gdjbc8">
-        <di:waypoint x="500" y="465" />
-        <di:waypoint x="500" y="515" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1vlizdl_di" bpmnElement="Flow_1vlizdl">
-        <di:waypoint x="500" y="565" />
-        <di:waypoint x="500" y="592" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0lvf6ih_di" bpmnElement="Flow_0lvf6ih">
-        <di:waypoint x="525" y="540" />
-        <di:waypoint x="872" y="540" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1opajr0_di" bpmnElement="Flow_1opajr0">
-        <di:waypoint x="845" y="440" />
-        <di:waypoint x="865" y="440" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1vv9nvl_di" bpmnElement="Flow_1vv9nvl">
-        <di:waypoint x="890" y="522" />
-        <di:waypoint x="890" y="465" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nqbd0n_di" bpmnElement="Flow_0nqbd0n">
-        <di:waypoint x="915" y="440" />
-        <di:waypoint x="945" y="440" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="412" y="422" width="36" height="36" />
@@ -1354,14 +1355,6 @@
           <dc:Bounds x="3298" y="2125" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_118y8m4_di" bpmnElement="Activity_118y8m4">
-        <dc:Bounds x="2670" y="2200" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0t2o24w_di" bpmnElement="Activity_0t2o24w">
-        <dc:Bounds x="2890" y="2200" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_19xujmd_di" bpmnElement="Event_19xujmd">
         <dc:Bounds x="1672" y="2172" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -1432,10 +1425,20 @@
       <bpmndi:BPMNShape id="Activity_027x2ha_di" bpmnElement="Activity_1cxbklj">
         <dc:Bounds x="3580" y="2060" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1of6lia_di" bpmnElement="Activity_118y8m4">
+        <dc:Bounds x="2670" y="2200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0d9ac5a_di" bpmnElement="Activity_0t2o24w">
+        <dc:Bounds x="2890" y="2200" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_0g2iwdg_di" bpmnElement="Participant_0g2iwdg" isHorizontal="true">
         <dc:Bounds x="340" y="1030" width="4810" height="860" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_04pe8ky_di" bpmnElement="Flow_04pe8ky">
+        <di:waypoint x="1620" y="1400" />
+        <di:waypoint x="1692" y="1400" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_18wx7ic_di" bpmnElement="Flow_18wx7ic">
         <di:waypoint x="3380" y="1300" />
         <di:waypoint x="3380" y="1178" />
@@ -1622,10 +1625,6 @@
         <di:waypoint x="3241" y="1340" />
         <di:waypoint x="3241" y="1290" />
         <di:waypoint x="3252" y="1290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_04pe8ky_di" bpmnElement="Flow_04pe8ky">
-        <di:waypoint x="1620" y="1400" />
-        <di:waypoint x="1692" y="1400" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0ekizb9_di" bpmnElement="Activity_1fslcfd">
         <dc:Bounds x="1520" y="1360" width="100" height="80" />

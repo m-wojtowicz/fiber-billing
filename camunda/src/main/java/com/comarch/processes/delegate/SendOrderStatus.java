@@ -1,26 +1,21 @@
 package com.comarch.processes.delegate;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class CheckAvailability implements JavaDelegate {
+public class SendOrderStatus implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("fiberExist", true);
-        variables.put("ontExist", true);
-        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("CheckAvailability")
+        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("OrderStatusInProgress")
                 .processInstanceBusinessKey(delegateExecution.getProcessBusinessKey())
-                .setVariables(variables)
+                .setVariables(delegateExecution.getVariables())
                 .correlate();
     }
 }
