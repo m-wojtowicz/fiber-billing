@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class SendActivationInfo implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("ReceiveActivation")
+        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("ReceiveActivationInfo")
                 .processInstanceBusinessKey(delegateExecution.getProcessBusinessKey())
                 .setVariables(delegateExecution.getVariables())
                 .correlateWithResult();

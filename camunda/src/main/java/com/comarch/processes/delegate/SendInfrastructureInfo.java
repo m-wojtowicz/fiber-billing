@@ -15,6 +15,6 @@ public class SendInfrastructureInfo implements JavaDelegate {
         delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("ReceiveAvailabilityCheck")
                 .processInstanceBusinessKey(delegateExecution.getProcessBusinessKey())
                 .setVariables(delegateExecution.getVariables())
-                .correlate();
+                .correlateWithResult();
     }
 }
