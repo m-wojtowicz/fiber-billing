@@ -5,7 +5,6 @@ import com.comarch.fiberBilling.mapper.UserToClientMapper;
 import com.comarch.fiberBilling.model.api.request.PutUserData;
 import com.comarch.fiberBilling.model.api.response.GetUserData;
 import com.comarch.fiberBilling.model.dto.ClientDataDTO;
-import com.comarch.fiberBilling.model.entity.Address;
 import com.comarch.fiberBilling.model.entity.ClientData;
 import com.comarch.fiberBilling.repository.ClientDataRepository;
 import com.comarch.fiberBilling.service.ClientDataService;
@@ -14,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;

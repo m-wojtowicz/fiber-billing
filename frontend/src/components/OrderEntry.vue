@@ -1,48 +1,54 @@
 <script setup>
+import { ref, watch } from "vue";
+import { getOrderItems } from "../services/orderService";
+
 const props = defineProps({
   order: {
     id: Number,
-    type: String,
-    state: String,
-    creation: Date,
-    cost1: String,
-    cost2: String,
-    parameters: {
-      id: Number,
-      name: String,
-    },
+    orderStatus: String,
+    orderStartDate: Date,
+    orderEndDate: Date,
+    oneTimeCharge: Number,
+    monthlyCharge: Number,
+    items: [],
   },
 });
+
+const startDate = ref(null);
+//const items = ref([]);
+
+if (props.order) {
+  startDate.value = new Date(props.order.orderStartDate).toLocaleDateString();
+  //items.value = await getOrderItems(props.order.id);
+}
 </script>
 
 <template>
   <div class="window column">
     <div class="col-1 row">
-      <div class="col text-h6">Order type: {{ order.type }}</div>
+      <div class="col text-h6">Order type: aktywejszyn</div>
       <div class="col text-h5 text-center">Order #{{ order.id }}</div>
-      <div class="col text-h6 text-right">State: {{ order.state }}</div>
+      <div class="col text-h6 text-right">State: {{ order.orderStatus }}</div>
     </div>
     <div class="col row">
       <div class="col text-h6" style="align-self: flex-end">
         Creation date:
-        {{ order.creation.getDay() }}-{{ order.creation.getMonth() }}-{{
-          order.creation.getFullYear()
-        }}
+        {{ startDate }}
       </div>
       <div class="col column">
         <div class="text-center text-h6 col-5">Order products:</div>
         <div class="col-7">
           <q-scroll-area visible style="height: 100%">
             <div class="text-left">
-              <li v-for="parameter in order.parameters" :key="parameter.id">
-                {{ parameter.name }}
+              <li v-for="item in order.items" :key="item.id">
+                {{ item.orderItemName }}
               </li>
             </div>
           </q-scroll-area>
         </div>
       </div>
       <div class="col text-h6 text-right" style="align-self: flex-end">
-        {{ order.cost1 }} zł +{{ order.cost2 }} zł/mo
+        {{ order.oneTimeCharge }} zł + {{ order.monthlyCharge }} zł/mo
       </div>
     </div>
   </div>
