@@ -1,147 +1,125 @@
 <script setup>
-import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
-import NavBar from "./components/NavBar.vue";
-
-const route = useRoute();
-const drawer = ref(false);
-const link = ref("");
-
-function showhidedrawer() {
-  drawer.value = !drawer.value;
-}
-
-watch(route, (n) => {
-  link.value = n.name;
-});
+import { RouterLink, RouterView } from "vue-router";
+import HelloWorld from "@/components/HelloWorld.vue";
 </script>
 
 <template>
-  <q-layout view="hHh LpR lff" container>
-    <q-header elevated>
-      <NavBar
-        @showhidedrawer="showhidedrawer"
-        :display-buttons="link !== 'login' && link !== 'register'"
-      />
-    </q-header>
+  <header>
+    <img
+      alt="Vue logo"
+      class="logo"
+      src="@/assets/logo.svg"
+      width="125"
+      height="125"
+    />
 
-    <q-drawer
-      v-model="drawer"
-      :width="292"
-      :breakpoint="500"
-      overlay
-      elevated
-      behavior="desktop"
-      id="drawer"
-    >
-      <q-scroll-area class="fit">
-        <q-list>
-          <q-item
-            clickable
-            :active="link === 'products'"
-            active-class="selected-link"
-            :to="{ name: 'products' }"
-            v-ripple
-          >
-            <q-item-section avatar>
-              <q-icon name="inventory_2" />
-            </q-item-section>
-            <q-item-section>My products</q-item-section>
-          </q-item>
+    <div class="wrapper">
+      <HelloWorld msg="You did it!" />
 
-          <q-item
-            clickable
-            :active="link === 'orders'"
-            active-class="selected-link"
-            :to="{ name: 'orders' }"
-            v-ripple
-          >
-            <q-item-section avatar>
-              <q-icon name="receipt_long" />
-            </q-item-section>
-            <q-item-section>My orders</q-item-section>
-          </q-item>
+      <nav>
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/about">About</RouterLink>
+      </nav>
+    </div>
+  </header>
 
-          <q-item
-            clickable
-            :active="link === 'account'"
-            active-class="selected-link"
-            :to="{ name: 'account' }"
-            v-ripple
-          >
-            <q-item-section avatar>
-              <q-icon name="account_balance" />
-            </q-item-section>
-            <q-item-section>Check account balance</q-item-section>
-          </q-item>
-
-          <q-separator spaced />
-
-          <q-item
-            clickable
-            :active="link === 'terminate'"
-            active-class="selected-link"
-            :to="{ name: 'terminate' }"
-            v-ripple
-          >
-            <q-item-section avatar>
-              <q-icon name="phonelink_erase" />
-            </q-item-section>
-            <q-item-section>Terminate existing service</q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            :active="link === 'change'"
-            active-class="selected-link"
-            :to="{ name: 'change' }"
-            v-ripple
-          >
-            <q-item-section avatar>
-              <q-icon name="phonelink_setup" />
-            </q-item-section>
-            <q-item-section>Change existing service</q-item-section>
-          </q-item>
-        </q-list>
-      </q-scroll-area>
-    </q-drawer>
-
-    <q-page-container>
-      <q-page
-        class="home-page column justify-center items-center"
-        style="background: none"
-      >
-        <router-view />
-      </q-page>
-    </q-page-container>
-
-    <q-footer borderless id="footer">
-      <q-img src="@/assets/weaves.svg" />
-    </q-footer>
-  </q-layout>
+  <RouterView />
 </template>
 
-<style lang="sass">
-@import "@/assets/base.css"
+<style>
+@import "@/assets/base.css";
 
-#app
-  height: 100vh
-  margin: 0
-  display: flex
-  flex-direction: column
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
 
-#drawer
-  background: $secondary
+  font-weight: normal;
+}
 
-#footer
-  background: none
-  z-index: -1
+header {
+  line-height: 1.5;
+  max-height: 100vh;
+}
 
-#content
-  align-items: center
-  display: flex
+.logo {
+  display: block;
+  margin: 0 auto 2rem;
+}
 
-.selected-link
-  color: black
-  background: $selected
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+nav {
+  width: 100%;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+nav a.router-link-exact-active {
+  color: var(--color-text);
+}
+
+nav a.router-link-exact-active:hover {
+  background-color: transparent;
+}
+
+nav a {
+  display: inline-block;
+  padding: 0 1rem;
+  border-left: 1px solid var(--color-border);
+}
+
+nav a:first-of-type {
+  border: 0;
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  }
+
+  header {
+    display: flex;
+    place-items: center;
+    padding-right: calc(var(--section-gap) / 2);
+  }
+
+  header .wrapper {
+    display: flex;
+    place-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    margin: 0 2rem 0 0;
+  }
+
+  nav {
+    text-align: left;
+    margin-left: -1rem;
+    font-size: 1rem;
+
+    padding: 1rem 0;
+    margin-top: 1rem;
+  }
+}
 </style>

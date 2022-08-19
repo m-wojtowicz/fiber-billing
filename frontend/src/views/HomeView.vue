@@ -1,3 +1,9 @@
+<script setup>
+import TheWelcome from "@/components/TheWelcome.vue";
+</script>
+
 <template>
-  <p>Tu będzie widok początkowy</p>
+  <main>
+    <TheWelcome />
+  </main>
 </template>
