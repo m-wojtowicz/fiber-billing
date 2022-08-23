@@ -1,5 +1,10 @@
 <script setup>
 import OfferCard from "../components/OfferCard.vue";
+let offers = [
+  { name: "Offer", description: "asdasds asd" },
+  { name: "Offer", description: "asdasds asd" },
+  { name: "Offer", description: "asdasds asd" },
+];
 </script>
 <template>
   <div class="heders flex justify-between">
@@ -7,9 +12,13 @@ import OfferCard from "../components/OfferCard.vue";
     <h3>Avalible offers</h3>
     <p class="order-number">Order number: 1323</p>
   </div>
-  <div class="avalible-offers flex justify-center q-gutter-xl">
-    <OfferCard />
-    <OfferCard />
+  <div class="row flex justify-center q-gutter-xl">
+    <div class="col avalible-offers q-gutter-xl">
+      <OfferCard v-for="offer in offers" :key="offer.name" />
+    </div>
+    <div class="col avalible-offers q-gutter-xl">
+      <OfferCard v-for="offer in offers" :key="offer.name" />
+    </div>
   </div>
   <div>
     <q-btn class="configure_button q-ma-md"> Configure Products </q-btn>
@@ -36,5 +45,5 @@ import OfferCard from "../components/OfferCard.vue";
   font-size: 20px
 
 .avalible-offers
-  width: 100%
+  flex-direction: column
 </style>

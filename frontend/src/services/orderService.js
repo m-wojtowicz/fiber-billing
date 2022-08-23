@@ -11,13 +11,13 @@ export const getUserOrders = async (login) => {
 };
 
 export const getOrderItems = async (orderId) => {
-  let url = `http://localhost:8000/api/order/${orderId}/items`
+  let url = `http://localhost:8000/api/order/${orderId}/items`;
   const items = await (await axios.get(url)).data;
   return items;
-}
+};
 
 export const getItemParameters = async (itemId) => {
-  let url = `http://localhost:8000/api/orderItem/parameters/${itemId}`
+  let url = `http://localhost:8000/api/orderItem/parameters/${itemId}`;
   const parameters = await (await axios.get(url)).data;
   return parameters;
-}
+};
