@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class SendShipmentRequest implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("ReceiveShipmentRequest")
+        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("SendShipmentRequest")
                 .processInstanceBusinessKey(delegateExecution.getProcessBusinessKey())
                 .setVariables(delegateExecution.getVariables())
                 .correlate();
