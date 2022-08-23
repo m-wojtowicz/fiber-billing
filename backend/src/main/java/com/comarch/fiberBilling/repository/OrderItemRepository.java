@@ -17,7 +17,7 @@ public interface OrderItemRepository extends JpaRepository <OrderItem, Long>{
                 "FROM \"ORDER_ITEM\" " +
                 "JOIN \"ORDER\" USING(\"ID_ORDER\") " +
                 "JOIN \"CLIENT_DATA\" USING(\"ID_CLIENT_DATA\") " +
-                "WHERE \"CLIENT_DATA\".\"ID_CLIENT_DATA\" = ?1",
+                "WHERE \"CLIENT_DATA\".\"ID_CLIENT_DATA\" = ?1 AND \"ORDER_ITEM\".\"MONTHLY\" = true",
             nativeQuery = true
     )
     Optional<List<OrderItem>> getAllUserProducts(Long id);
