@@ -162,4 +162,27 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.delete(order.get());
         return ResponseEntity.status(HttpStatus.OK).body(orderMapper.orderToOrderDto(order.get()));
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity createOrder(String userId) {
+        Long id;
+        try {
+            id = Long.valueOf(userId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<ClientData> clientData = clientDataRepository.findById(id);
+        if (clientData.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+
+        Order order = orderRepository.save(Order.builder().
+                clientData(clientData.get()).
+                orderStatus("NEW").
+                //TODO
+                        build()
+        );
+        return ResponseEntity.ok(order);
+    }
 }

@@ -99,4 +99,30 @@ public class OrderController {
     public ResponseEntity deleteOrder(@PathVariable("orderId") String orderId) {
         return orderService.deleteOrder(orderId);
     }
+
+    @Operation(summary = "Add offer to order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @PutMapping(value = "/{orderId}/offer/{offerId}")
+    public ResponseEntity addOffer(@PathVariable("orderId") String orderId, @PathVariable("offerId") String offerId) {
+        return orderItemService.addOffer(orderId, offerId);
+    }
+
+    @Operation(summary = "Create new order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @PostMapping(value = "/{userId}")
+    public ResponseEntity createOrder(@PathVariable("userId") String userId) {
+        return orderService.createOrder(userId);
+    }
 }
