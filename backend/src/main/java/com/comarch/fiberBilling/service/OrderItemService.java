@@ -13,4 +13,8 @@ public interface OrderItemService {
     public ResponseEntity<List<GetAllProductParameters>> getAllProductParameters(Long id);
 
     public ResponseEntity<List<OrderItemDTO>> getOrderItems(String orderId);
+
+    public ResponseEntity addOffer(String orderId, String offerId);
+
+    public ResponseEntity removeItem(String itemId);
 }
