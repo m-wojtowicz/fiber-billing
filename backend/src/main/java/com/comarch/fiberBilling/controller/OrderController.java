@@ -108,8 +108,8 @@ public class OrderController {
             @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
     })
-    @PutMapping(value = "/{orderId}/offer/{offerId}")
-    public ResponseEntity addOffer(@PathVariable("orderId") String orderId, @PathVariable("offerId") String offerId) {
+    @PutMapping(value = "/{orderId}/offer")
+    public ResponseEntity addOffer(@PathVariable("orderId") String orderId, @RequestBody String offerId) {
         return orderItemService.addOffer(orderId, offerId);
     }
 
@@ -124,5 +124,18 @@ public class OrderController {
     @PostMapping(value = "/{userId}")
     public ResponseEntity createOrder(@PathVariable("userId") String userId) {
         return orderService.createOrder(userId);
+    }
+
+    @Operation(summary = "Update order status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @PutMapping(value = "/{orderId}/status")
+    public ResponseEntity updateStatus(@PathVariable("orderId") String orderId, @RequestBody String status) {
+        return orderService.changeStatus(orderId, status);
     }
 }

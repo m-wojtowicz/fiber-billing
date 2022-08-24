@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -177,12 +178,33 @@ public class OrderServiceImpl implements OrderService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
 
-        Order order = orderRepository.save(Order.builder().
+        Order newOrder = Order.builder().
                 clientData(clientData.get()).
                 orderStatus("NEW").
-                //TODO
-                        build()
-        );
-        return ResponseEntity.ok(order);
+                orderStartDate(new Date()).
+                orderEndDate(new Date()).
+                build();
+
+        orderRepository.flush();
+        Order order = orderRepository.save(newOrder);
+        return ResponseEntity.ok(order.getId());
+    }
+
+    @Override
+    public ResponseEntity changeStatus(String orderId, String status) {
+        Long id;
+        try {
+            id = Long.valueOf(orderId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<Order> order = orderRepository.findById(id);
+        if (order.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        Order newOrder = order.get();
+        newOrder.setOrderStatus(status);
+        orderRepository.save(newOrder);
+        return ResponseEntity.ok(newOrder);
     }
 }

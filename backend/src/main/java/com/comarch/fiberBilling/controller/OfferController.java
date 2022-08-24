@@ -29,9 +29,9 @@ public class OfferController {
             @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
     })
-    @GetMapping(value = "/user/{clientDataId}")
-    public ResponseEntity<List<GetAllOffers>> getAllAvailableOffers(@PathVariable("clientDataId") String clientDataId) {
-        return offerService.getAvailableOffers(clientDataId);
+    @GetMapping(value = "/all")
+    public ResponseEntity<List<GetAllOffers>> getAllAvailableOffers() {
+        return offerService.getAvailableOffers();
     }
 
 
