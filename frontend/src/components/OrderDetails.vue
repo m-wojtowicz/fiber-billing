@@ -72,7 +72,7 @@ watch(
                     {{ item.orderItemName }}
                   </div>
                   <div class="col text-h6 text-right">
-                    State: {{ order.orderStatus }}
+                    State: {{ item.status }}
                   </div>
                 </div>
                 <div class="row justify-between">
@@ -94,7 +94,7 @@ watch(
                       {{ item.cost }} zł/mo
                     </div>
                     <div class="text-h6 self-end" v-else>
-                      {{ item.cost }} zł
+                      {{ item.oneTimeCharge }}zł/mo + {{ item.cost }} zł
                       </div>
                   </div>
                 </div>

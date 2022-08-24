@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface OrderItemRepository extends JpaRepository <OrderItem, Long>{
 
     @Query(
-        value = "Select \"ORDER_ITEM\".\"ID_ORDER_ITEM\", \"ORDER_ITEM\".\"ACTIVATION_DATE\", \"ORDER_ITEM\".\"MONTHLY\", \"ORDER_ITEM\".\"ORDER_ITEM_NAME\", \"ORDER_ITEM\".\"ID_ORDER\", \"ORDER_ITEM\".\"STATUS\" " +
+        value = "Select \"ORDER_ITEM\".\"ID_ORDER_ITEM\", \"ORDER_ITEM\".\"ACTIVATION_DATE\", \"ORDER_ITEM\".\"ORDER_ITEM_NAME\", \"ORDER_ITEM\".\"ID_ORDER\", \"ORDER_ITEM\".\"STATUS\" " +
                 "FROM \"ORDER_ITEM\" " +
                 "JOIN \"ORDER\" USING(\"ID_ORDER\") " +
                 "JOIN \"CLIENT_DATA\" USING(\"ID_CLIENT_DATA\") " +
