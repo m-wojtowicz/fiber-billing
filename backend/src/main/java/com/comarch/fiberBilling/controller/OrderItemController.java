@@ -1,6 +1,8 @@
 package com.comarch.fiberBilling.controller;
 
 import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
+import com.comarch.fiberBilling.model.dto.OrderDTO;
+import com.comarch.fiberBilling.model.dto.OrderItemDTO;
 import com.comarch.fiberBilling.model.entity.OrderItem;
 import com.comarch.fiberBilling.service.impl.OrderItemServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,5 +48,18 @@ public class OrderItemController {
     @GetMapping(value = "/parameters/{id}")
     public ResponseEntity getAllProductParameters(@PathVariable Long id) {
         return orderItemService.getAllProductParameters(id);
+    }
+
+    @Operation(summary = "Remove offer from order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OrderItem", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemDTO.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @DeleteMapping(value = "/{itemId}")
+    public ResponseEntity removeItem(@PathVariable("itemId") String itemId) {
+        return orderItemService.removeItem(itemId);
     }
 }
