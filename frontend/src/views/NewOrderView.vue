@@ -3,35 +3,27 @@ import OfferCard from "../components/OfferCard.vue";
 let offers = [
   { name: "Offer", description: "asdasds asd" },
   { name: "Offer", description: "asdasds asd" },
-  { name: "Offer", description: "asdasds asd" },
 ];
 </script>
-<template>
-  <div class="heders flex justify-between">
-    <q-btn class="cart_button" icon="shopping_cart" />
-    <h3>Avalible offers</h3>
-    <p class="order-number">Order number: 1323</p>
-  </div>
-  <div class="row flex justify-center q-gutter-xl">
-    <div class="col avalible-offers q-gutter-xl">
-      <OfferCard v-for="offer in offers" :key="offer.name" />
-    </div>
-    <div class="col avalible-offers q-gutter-xl">
-      <OfferCard v-for="offer in offers" :key="offer.name" />
-    </div>
-  </div>
+<template class="flex items-start">
   <div>
-    <q-btn class="configure_button q-ma-md"> Configure Products </q-btn>
+    <div class="header flex justify-between q-ma-lg">
+      <q-btn class="cart_button" icon="shopping_cart" />
+      <h3>Avalible offers</h3>
+      <p class="order-number">Order number: 1323</p>
+    </div>
+    <ul class="q-gutter-xl">
+      <OfferCard v-for="offer in offers" :key="offer.name" class="q-mx-xl" />
+    </ul>
+    <div class="q-mt-lg">
+      <q-btn class="configure_button q-ma-md"> Configure Products </q-btn>
+    </div>
   </div>
 </template>
 
 <style scoped lang="sass">
-
-.heders
-  width: 90%
-  position: absolute
-  top: 20px
-
+.header
+  width: 100%
 .cart_button
   background-color: #1976D2
   color: #FFFFFF
@@ -44,6 +36,7 @@ let offers = [
   font-weight: bold
   font-size: 20px
 
-.avalible-offers
-  flex-direction: column
+ul
+  display: grid
+  grid-template-columns: repeat(2, 1fr)
 </style>
