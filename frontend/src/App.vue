@@ -115,9 +115,7 @@ watch(route, (n) => {
           <template #default>
             <router-view />
           </template>
-          <template #fallback>
-            Loading
-          </template>
+          <template #fallback> Loading </template>
         </Suspense>
       </q-page>
     </q-page-container>

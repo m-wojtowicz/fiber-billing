@@ -19,5 +19,5 @@ public class GetAllUserProducts {
     private Date activationDate;
     private String status;
     private BigDecimal cost;
-    private Boolean monthly;
+    private BigDecimal oneTimeCharge;
 }

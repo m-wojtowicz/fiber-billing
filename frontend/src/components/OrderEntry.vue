@@ -1,6 +1,5 @@
 <script setup>
-import { ref, watch } from "vue";
-import { getOrderItems } from "../services/orderService";
+import { ref } from "vue";
 
 const props = defineProps({
   order: {
@@ -15,11 +14,9 @@ const props = defineProps({
 });
 
 const startDate = ref(null);
-//const items = ref([]);
 
 if (props.order) {
   startDate.value = new Date(props.order.orderStartDate).toLocaleDateString();
-  //items.value = await getOrderItems(props.order.id);
 }
 </script>
 

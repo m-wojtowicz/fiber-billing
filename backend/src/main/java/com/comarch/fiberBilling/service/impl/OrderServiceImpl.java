@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,9 +39,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseEntity getUserOrders(String userId) {
-        Long id;
+        long id;
         try {
-            id = Long.valueOf(userId);
+            id = Long.parseLong(userId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }
@@ -52,47 +53,49 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findByClientData(clientData.get());
         List<GetAllOrders> allOrders = new ArrayList<>();
         orders.forEach(order -> {
+            String clientType = order.getClientData().getClientType().getType();
             List<OrderItem> orderItems = orderItemRepository.findByOrder(order);
             List<GetAllUserProducts> items = new ArrayList<>();
-            BigDecimal oneTimeCharge = new BigDecimal("0");
-            BigDecimal monthlyCharge = new BigDecimal("0");
-
-            for (OrderItem item : orderItems) {
-                List<OrderItemParameter> params = orderItemParameterRepository.findByOrderItem(item);
-                BigDecimal cost = new BigDecimal("0");
-                if (clientData.get().getClientType().getType().equals("business")) {
-                    for (OrderItemParameter param : params) {
-                        cost = cost.add(param.getParameterDetail().getPriceBusiness());
+            BigDecimal monthlyCost = BigDecimal.ZERO;
+            BigDecimal oneTimeCharge = BigDecimal.ZERO;
+            BigDecimal totalMonthlyCost = BigDecimal.ZERO;
+            BigDecimal totalOneTimeCharge = BigDecimal.ZERO;
+            for( var orderItem: orderItems) {
+                monthlyCost = BigDecimal.ZERO;
+                oneTimeCharge = BigDecimal.ZERO;
+                List<OrderItemParameter> orderItemParameters = orderItemParameterRepository.findByOrderItem(orderItem);
+                for (var orderItemParameter : orderItemParameters) {
+                    if(clientType.equals("regular")) {
+                        if (orderItemParameter.isMonthly())
+                            monthlyCost = monthlyCost.add(orderItemParameter.getParameterDetail().getPriceRegular());
+                        else
+                            oneTimeCharge = oneTimeCharge.add(orderItemParameter.getParameterDetail().getPriceRegular());
+                    } else {
+                        if (orderItemParameter.isMonthly())
+                            monthlyCost = monthlyCost.add(orderItemParameter.getParameterDetail().getPriceBusiness());
+                        else
+                            oneTimeCharge = oneTimeCharge.add(orderItemParameter.getParameterDetail().getPriceBusiness());
                     }
-                } else {
-                    for (OrderItemParameter param : params) {
-                        cost = cost.add(param.getParameterDetail().getPriceRegular());
-                    }
-                }
 
-                if (item.isMonthly()) {
-                    monthlyCharge = monthlyCharge.add(cost);
-                } else {
-                    oneTimeCharge = oneTimeCharge.add(cost);
                 }
-
                 items.add(GetAllUserProducts.builder()
-                        .id(item.getId())
-                        .orderItemName(item.getOrderItemName())
-                        .activationDate(item.getActivationDate())
-                        .status(item.getStatus())
-                        .cost(cost)
-                        .monthly(item.isMonthly())
+                        .id(orderItem.getId())
+                        .orderItemName(orderItem.getOrderItemName())
+                        .activationDate(orderItem.getActivationDate())
+                        .status(orderItem.getStatus())
+                        .cost(monthlyCost)
+                        .oneTimeCharge(oneTimeCharge)
                         .build());
+                totalMonthlyCost = totalMonthlyCost.add(monthlyCost);
+                totalOneTimeCharge = totalOneTimeCharge.add(oneTimeCharge);
             }
-
             allOrders.add(GetAllOrders.builder()
                     .id(order.getId())
                     .orderStatus(order.getOrderStatus())
                     .orderStartDate(order.getOrderStartDate())
                     .orderEndDate(order.getOrderEndDate())
-                    .oneTimeCharge(oneTimeCharge)
-                    .monthlyCharge(monthlyCharge)
+                    .oneTimeCharge(totalOneTimeCharge)
+                    .monthlyCharge(totalMonthlyCost)
                     .items(items)
                     .build());
         });
@@ -101,9 +104,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseEntity getOrder(String orderId) {
-        Long id;
+        long id;
         try {
-            id = Long.valueOf(orderId);
+            id = Long.parseLong(orderId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }
@@ -130,9 +133,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public ResponseEntity changeOrder(String orderId, OrderDTO orderDTO) {
-        Long id;
+        long id;
         try {
-            id = Long.valueOf(orderId);
+            id = Long.parseLong(orderId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }
@@ -149,6 +152,48 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public ResponseEntity deleteOrder(String orderId) {
+        long id;
+        try {
+            id = Long.parseLong(orderId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<Order> order = orderRepository.findById(id);
+        if (order.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        orderRepository.delete(order.get());
+        return ResponseEntity.status(HttpStatus.OK).body(orderMapper.orderToOrderDto(order.get()));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity createOrder(String userId) {
+        Long id;
+        try {
+            id = Long.valueOf(userId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<ClientData> clientData = clientDataRepository.findById(id);
+        if (clientData.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+
+        Order newOrder = Order.builder().
+                clientData(clientData.get()).
+                orderStatus("NEW").
+                orderStartDate(new Date()).
+                orderEndDate(new Date()).
+                build();
+
+        orderRepository.flush();
+        Order order = orderRepository.save(newOrder);
+        return ResponseEntity.ok(order.getId());
+    }
+
+    @Override
+    public ResponseEntity changeStatus(String orderId, String status) {
         Long id;
         try {
             id = Long.valueOf(orderId);
@@ -159,7 +204,9 @@ public class OrderServiceImpl implements OrderService {
         if (order.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
-        orderRepository.delete(order.get());
-        return ResponseEntity.status(HttpStatus.OK).body(orderMapper.orderToOrderDto(order.get()));
+        Order newOrder = order.get();
+        newOrder.setOrderStatus(status);
+        orderRepository.save(newOrder);
+        return ResponseEntity.ok(newOrder);
     }
 }
