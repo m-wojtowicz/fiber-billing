@@ -21,3 +21,13 @@ export const getItemParameters = async (itemId) => {
   const parameters = await (await axios.get(url)).data;
   return parameters;
 };
+
+export const checkOpenOrder = async (userId) => {
+  let url = `http://localhost:8000/api/order/user/${userId}/open`;
+  return await axios.get(url);
+};
+
+export const createOrder = async (userId) => {
+  let url = `http://localhost:8000/api/order/user/${userId}`;
+  return await axios.post(url);
+};

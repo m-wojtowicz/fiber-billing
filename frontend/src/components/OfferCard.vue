@@ -1,9 +1,20 @@
-<script setup></script>
+<script setup>
+defineProps({
+  offer: {
+    id: Number,
+    offerName: String,
+    product: {
+      id: Number,
+      productName: String,
+    },
+  },
+});
+</script>
 
 <template>
   <q-card flat bordered class="my-card">
     <q-card-section>
-      <div class="text-h5 q-mt-sm q-mb-xs">Offer name</div>
+      <div class="text-h5 q-mt-sm q-mb-xs">{{ offer.offerName }}</div>
       <div class="text-caption">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua.
@@ -11,7 +22,7 @@
     </q-card-section>
     <q-separator dark />
     <q-card-section>
-      <div class="text-h5 q-mt-sm q-mb-xs">Parameters</div>
+      <div class="text-h5 q-mt-sm q-mb-xs">{{ offer.product.productName }}</div>
       <div class="text-caption">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua.
