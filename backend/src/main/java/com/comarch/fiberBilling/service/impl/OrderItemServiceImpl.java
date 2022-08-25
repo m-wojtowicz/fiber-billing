@@ -1,6 +1,7 @@
 package com.comarch.fiberBilling.service.impl;
 
 import com.comarch.fiberBilling.mapper.OrderItemMapper;
+import com.comarch.fiberBilling.model.api.response.GetAllOrderItems;
 import com.comarch.fiberBilling.model.api.response.GetAllProductParameters;
 import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
 import com.comarch.fiberBilling.model.dto.OrderItemDTO;
@@ -15,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -97,8 +95,16 @@ public class OrderItemServiceImpl implements OrderItemService {
         }
 
         List<OrderItem> orderItems = orderItemRepository.findByOrder(order.get());
-        List<OrderItemDTO> orderItemsDTOS = orderItemMapper.orderItemsListToOrderItemsDtosList(orderItems);
-        return ResponseEntity.ok(orderItemsDTOS);
+        List<GetAllOrderItems> orderItemsList = new ArrayList<>();
+        orderItems.forEach(o -> {
+            orderItemsList.add(GetAllOrderItems.builder().
+                    id(o.getId()).
+                    name(o.getOrderItemName()).
+                    activationDate(o.getActivationDate()).
+                    status(o.getStatus()).
+                    build());
+        });
+        return ResponseEntity.ok(orderItemsList);
     }
 
     @Override
@@ -127,9 +133,10 @@ public class OrderItemServiceImpl implements OrderItemService {
 
         OrderItem orderItem = OrderItem.builder().
                 order(order.get()).
-                orderItemName(offer.get().getOfferName()).
-                //TODO
-                        build();
+                orderItemName(offer.get().getProduct().getProductName()).
+                activationDate(new Date()).
+                status("NEW").
+                build();
         OrderItem savedOrderItem = orderItemRepository.save(orderItem);
 
         return ResponseEntity.ok(savedOrderItem);
@@ -138,8 +145,18 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     @Transactional
     public ResponseEntity removeItem(String itemId) {
-        //TODO
-        return null;
+        Long id;
+        try {
+            id = Long.valueOf(itemId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<OrderItem> orderItem = orderItemRepository.findById(id);
+        if (orderItem.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        orderItemRepository.delete(orderItem.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
     }
 
 

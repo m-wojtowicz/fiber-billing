@@ -1,5 +1,12 @@
 <script setup>
+import { addOfferToOrder } from "../services/orderService";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
+const emit = defineEmits(["updateItems"]);
+
 defineProps({
+  orderId: Number,
   offer: {
     id: Number,
     offerName: String,
@@ -9,6 +16,25 @@ defineProps({
     },
   },
 });
+
+async function addOffer(orderId, offerId, productName) {
+  await addOfferToOrder(orderId, offerId)
+    .then((res) => {
+      if (res.status === 200 || res.status === 204) {
+        $q.notify({
+          message: `${productName} added to cart`,
+          color: "green",
+        });
+        emit("updateItems");
+      }
+    })
+    .catch((err) => {
+      $q.notify({
+        message: "Error",
+        color: "red",
+      });
+    });
+}
 </script>
 
 <template>
@@ -30,7 +56,12 @@ defineProps({
     </q-card-section>
     <q-separator dark />
     <q-card-actions>
-      <q-btn flat color="#FFFFFF" label="Add card" />
+      <q-btn
+        flat
+        color="#FFFFFF"
+        label="Add card"
+        @click="addOffer(orderId, offer.id, offer.product.productName)"
+      />
     </q-card-actions>
   </q-card>
 </template>
