@@ -73,9 +73,14 @@ async function removeItemFromOrder(itemId, itemName) {
 }
 </script>
 <template class="flex items-start">
-  <div>
-    <div class="header flex justify-between q-ma-lg">
-      <q-btn-dropdown class="cart_button" icon="shopping_cart" menu-anchor="bottom left" menu-self="top start">
+  <div id="new-order">
+    <div class="header flex justify-between q-my-lg q-mx-xl">
+      <q-btn-dropdown
+        class="cart_button"
+        icon="shopping_cart"
+        menu-anchor="bottom left"
+        menu-self="top start"
+      >
         <q-list style="min-width: 100px">
           <q-item v-if="items === null">
             <q-item-section>
@@ -100,25 +105,31 @@ async function removeItemFromOrder(itemId, itemName) {
       <h3>Avalible offers</h3>
       <p class="order-number">Order number: {{ order.id }}</p>
     </div>
-    <ul class="q-gutter-xl">
-      <OfferCard
-        v-for="offer in offers"
-        :key="offer.id"
-        class="q-mx-xl"
-        :orderId="order.id"
-        :offer="offer"
-        @update-items="updateItems()"
-      />
-    </ul>
-    <div class="q-mt-lg">
-      <q-btn class="configure_button q-ma-md"> Configure Products </q-btn>
+    <div class="flex justify-center q-mt-xl">
+      <ul class="q-gutter-xl">
+        <OfferCard
+          v-for="offer in offers"
+          :key="offer.id"
+          class="q-mx-xl"
+          :orderId="order.id"
+          :offer="offer"
+          @update-items="updateItems()"
+        />
+      </ul>
+    </div>
+    <div class="q-mt-xl flex justify-end">
+      <q-btn class="configure_button q-mt-xl q-mr-xl">
+        Configure Products
+      </q-btn>
     </div>
   </div>
 </template>
 
 <style scoped lang="sass">
-.header
+#new-order
+  min-height: inherit
   width: 100%
+
 .cart_button
   background-color: #1976D2
   color: #FFFFFF
