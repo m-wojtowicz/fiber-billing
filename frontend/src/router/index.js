@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, useRouter } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import { loginStore } from "../stores/loginStore";
 import { exitSession, refreshToken } from "../services/loginService";
 import { storeToRefs } from "pinia";
@@ -73,15 +73,15 @@ router.beforeEach(async (to, from) => {
       query: { redirect: to.fullPath },
     };
   }
-  if (from.name !== 'login' && user.isLogged()) {
+  if (from.name !== "login" && user.isLogged()) {
     const oldToken = user.token;
-    const { login, token } = storeToRefs(user);
-      refreshToken(oldToken).
-      then((r) => (token.value = r.data)).
-      catch(() => {
+    const { token } = storeToRefs(user);
+    refreshToken(oldToken)
+      .then((r) => (token.value = r.data))
+      .catch(() => {
         exitSession(oldToken);
         user.$reset();
-        router.replace({name: "login"});
+        router.replace({ name: "login" });
       });
   }
 });

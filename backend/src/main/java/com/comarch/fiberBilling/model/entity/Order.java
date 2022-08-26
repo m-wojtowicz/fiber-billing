@@ -15,7 +15,7 @@ import java.util.Date;
 @Table(name = "`ORDER`")
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "`ID_ORDER`", nullable = false)
     private long id;
     @Column(name = "`ORDER_STATUS`", length = 20, nullable = false)

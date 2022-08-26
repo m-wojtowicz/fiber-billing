@@ -1,7 +1,6 @@
 <script setup>
 import { ref, watch } from "vue";
-import { getItemParameters, getOrderItems } from "../services/orderService";
-import { loginStore } from "../stores/loginStore";
+import { getItemParameters } from "../services/orderService";
 
 const emit = defineEmits(["changeDialog"]);
 
@@ -18,7 +17,6 @@ const props = defineProps({
   },
 });
 
-const user = loginStore();
 let startDate = ref(null);
 
 watch(
@@ -72,7 +70,7 @@ watch(
                     {{ item.orderItemName }}
                   </div>
                   <div class="col text-h6 text-right">
-                    State: {{ order.orderStatus }}
+                    State: {{ item.status }}
                   </div>
                 </div>
                 <div class="row justify-between">
@@ -89,13 +87,13 @@ watch(
                       </div>
                     </q-scroll-area>
                   </div>
-                  <div class="col flex justify-center" >
+                  <div class="col flex justify-center">
                     <div class="text-h6 self-end" v-if="item.monthly">
                       {{ item.cost }} zł/mo
                     </div>
                     <div class="text-h6 self-end" v-else>
-                      {{ item.cost }} zł
-                      </div>
+                      {{ item.oneTimeCharge }}zł/mo + {{ item.cost }} zł
+                    </div>
                   </div>
                 </div>
               </div>

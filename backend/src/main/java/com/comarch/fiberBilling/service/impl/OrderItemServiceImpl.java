@@ -1,27 +1,22 @@
 package com.comarch.fiberBilling.service.impl;
 
 import com.comarch.fiberBilling.mapper.OrderItemMapper;
+import com.comarch.fiberBilling.model.api.response.GetAllOrderItems;
 import com.comarch.fiberBilling.model.api.response.GetAllProductParameters;
 import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
 import com.comarch.fiberBilling.model.dto.OrderItemDTO;
-import com.comarch.fiberBilling.model.entity.Order;
-import com.comarch.fiberBilling.model.entity.OrderItem;
-import com.comarch.fiberBilling.model.entity.OrderItemParameter;
-import com.comarch.fiberBilling.repository.OrderItemParameterRepository;
-import com.comarch.fiberBilling.repository.OrderItemRepository;
-import com.comarch.fiberBilling.repository.OrderRepository;
+import com.comarch.fiberBilling.model.entity.*;
+import com.comarch.fiberBilling.repository.*;
 import com.comarch.fiberBilling.service.OrderItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -29,6 +24,7 @@ import java.util.Optional;
 public class OrderItemServiceImpl implements OrderItemService {
 
     private final OrderRepository orderRepository;
+    private final OfferRepository offerRepository;
     private final OrderItemRepository orderItemRepository;
     private final OrderItemParameterRepository orderItemParameterRepository;
     private final OrderItemMapper orderItemMapper = OrderItemMapper.INSTANCE;
@@ -45,7 +41,8 @@ public class OrderItemServiceImpl implements OrderItemService {
             List<OrderItemParameter> orderItemParameters = orderItemParameterRepository.findByOrderItem(x);
             if (Objects.equals(userType, "regular")) {
                 for (var orderItemParameter : orderItemParameters) {
-                    cost = cost.add(orderItemParameter.getParameterDetail().getPriceRegular());
+                    if(!orderItemParameter.isMonthly())
+                        cost = cost.add(orderItemParameter.getParameterDetail().getPriceRegular());
                 }
             } else {
                 for (var orderItemParameter : orderItemParameters) {
@@ -98,7 +95,69 @@ public class OrderItemServiceImpl implements OrderItemService {
         }
 
         List<OrderItem> orderItems = orderItemRepository.findByOrder(order.get());
-        List<OrderItemDTO> orderItemsDTOS = orderItemMapper.orderItemsListToOrderItemsDtosList(orderItems);
-        return ResponseEntity.ok(orderItemsDTOS);
+        List<GetAllOrderItems> orderItemsList = new ArrayList<>();
+        orderItems.forEach(o -> {
+            orderItemsList.add(GetAllOrderItems.builder().
+                    id(o.getId()).
+                    name(o.getOrderItemName()).
+                    activationDate(o.getActivationDate()).
+                    status(o.getStatus()).
+                    build());
+        });
+        return ResponseEntity.ok(orderItemsList);
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity addOffer(String orderId, String offerId) {
+        Long id;
+        try {
+            id = Long.valueOf(orderId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order ID NaN");
+        }
+        Optional<Order> order = orderRepository.findById(id);
+        if (order.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Order ID not found");
+        }
+
+        try {
+            id = Long.valueOf(offerId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Offer ID NaN");
+        }
+        Optional<Offer> offer = offerRepository.findById(id);
+        if (offer.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Offer ID not found");
+        }
+
+        OrderItem orderItem = OrderItem.builder().
+                order(order.get()).
+                orderItemName(offer.get().getProduct().getProductName()).
+                activationDate(new Date()).
+                status("NEW").
+                build();
+        OrderItem savedOrderItem = orderItemRepository.save(orderItem);
+
+        return ResponseEntity.ok(savedOrderItem);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity removeItem(String itemId) {
+        Long id;
+        try {
+            id = Long.valueOf(itemId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<OrderItem> orderItem = orderItemRepository.findById(id);
+        if (orderItem.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        orderItemRepository.delete(orderItem.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
+    }
+
+
 }
