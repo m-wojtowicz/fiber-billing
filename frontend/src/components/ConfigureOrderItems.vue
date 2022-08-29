@@ -12,15 +12,15 @@ const order = {
   orderStatus: "elo",
   orderStartDate: "2022-10-10",
   orderEndDate: "2022-11-10",
-  oneTimeCharge: 100,
-  monthlyCharge: 100,
+  oneTimeCharge: 0,
+  monthlyCharge: 0,
   items: [
     {
       id: 1,
       orderItemName: "Fiber",
       status: "XD",
-      cost: 100,
-      oneTimeCharge: 50,
+      cost: 0,
+      oneTimeCharge: 0,
       parameters: [
         {
           id: 1,
@@ -40,8 +40,8 @@ const order = {
       id: 2,
       orderItemName: "Fiber",
       status: "XD",
-      cost: 100,
-      oneTimeCharge: 50,
+      cost: 0,
+      oneTimeCharge: 0,
       parameters: [
         {
           id: 1,
@@ -86,6 +86,33 @@ const getPrice = (row, col, value) => {
   let index = order.items[row].parameters[col].values.indexOf(value);
   if (index === -1) return 0;
   return order.items[row].parameters[col].prices[index];
+};
+
+const getProductPrice = (productIndex) => {
+  let sum = 0;
+  for (var i = 0; i < choosenValues.value[productIndex].length; i++) {
+    let index = order.items[productIndex].parameters[i].values.indexOf(
+      choosenValues.value[productIndex][i]
+    );
+    if (index !== -1)
+      sum += order.items[productIndex].parameters[i].prices[index];
+  }
+  return sum;
+};
+
+const getOrderProduct = () => {
+  let sum = 0;
+  for (var i = 0; i < choosenValues.value.length; i++) {
+    for (var j = 0; j < choosenValues.value[i].length; j++) {
+      let index = order.items[i].parameters[j].values.indexOf(
+        choosenValues.value[i][j]
+      );
+      if (index !== -1) {
+        sum += order.items[i].parameters[j].prices[index];
+      }
+    }
+  }
+  return sum;
 };
 
 onMounted(() => {
@@ -167,7 +194,8 @@ onMounted(() => {
                   </div>
                   <div class="col flex justify-center">
                     <div class="text-h6 self-end">
-                      {{ item.oneTimeCharge }} zł + {{ item.cost }} zł/mo
+                      {{ item.oneTimeCharge }} zł +
+                      {{ getProductPrice(ind) }} zł/mo
                     </div>
                   </div>
                 </div>
@@ -178,7 +206,7 @@ onMounted(() => {
       </q-card-section>
       <q-card-section class="items-center">
         <div class="text-h5 text-center text-bold">
-          Total: {{ order.oneTimeCharge }} zł + {{ order.monthlyCharge }} zł/mo
+          Total: {{ order.oneTimeCharge }} zł + {{ getOrderProduct() }} zł/mo
         </div>
       </q-card-section>
     </q-card>
@@ -190,14 +218,6 @@ onMounted(() => {
   min-width: 60%
   justify-content: center
   text-align: center
-
-.bar
-  display: flex
-  flex-direction: row
-  justify-content: space-between
-  align-items: center
-  padding: 0px 20px 0px 20px
-  box-sizing: border-box
 
 .row > div
   padding: 10px 15px
