@@ -1,10 +1,14 @@
 <script setup>
+import { ref } from "vue";
 import OfferCard from "../components/OfferCard.vue";
+import ConfigureOrderItems from "../components/ConfigureOrderItems.vue";
 
 let offers = [
   { name: "Offer", description: "asdasds asd" },
   { name: "Offer", description: "asdasds asd" },
 ];
+
+const dialog = ref(false);
 </script>
 
 <template>
@@ -20,10 +24,11 @@ let offers = [
       </ul>
     </div>
     <div class="q-mt-xl flex justify-end">
-      <q-btn class="configure_button q-mt-xl q-mr-xl">
+      <q-btn class="configure_button q-mt-xl q-mr-xl" @click="dialog = true">
         Configure Products
       </q-btn>
     </div>
+    <ConfigureOrderItems :dialog="dialog" @responseDialog="dialog = false" />
   </div>
 </template>
 
