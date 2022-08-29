@@ -1,4 +1,5 @@
 <script setup>
+import { useQuasar } from "quasar";
 import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import NavBar from "./components/NavBar.vue";
@@ -13,6 +14,14 @@ function showhidedrawer() {
 
 watch(route, (n) => {
   link.value = n.name;
+});
+
+const $q = useQuasar();
+$q.notify.setDefaults({
+  position: "top-right",
+  timeout: 2000,
+  textColor: "white",
+  actions: [{ icon: "close", color: "white" }],
 });
 </script>
 

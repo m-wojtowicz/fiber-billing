@@ -21,13 +21,6 @@ onMounted(() => {
 const isPwd = ref(true);
 const $q = useQuasar();
 
-$q.notify.setDefaults({
-  position: "top-right",
-  timeout: 2000,
-  textColor: "white",
-  actions: [{ icon: "close", color: "white" }],
-});
-
 const checkData = () => {
   getLoginToken(login.value, password.value)
     .then((res) => {
