@@ -1,9 +1,46 @@
-<script setup></script>
+<script setup>
+import { addOfferToOrder } from "../services/orderService";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
+const emit = defineEmits(["updateItems"]);
+
+defineProps({
+  orderId: Number,
+  offer: {
+    id: Number,
+    offerName: String,
+    product: {
+      id: Number,
+      productName: String,
+    },
+  },
+});
+
+async function addOffer(orderId, offerId, productName) {
+  await addOfferToOrder(orderId, offerId)
+    .then((res) => {
+      if (res.status === 200 || res.status === 204) {
+        $q.notify({
+          message: `${productName} added to cart`,
+          color: "green",
+        });
+        emit("updateItems");
+      }
+    })
+    .catch((err) => {
+      $q.notify({
+        message: "Error",
+        color: "red",
+      });
+    });
+}
+</script>
 
 <template>
   <q-card flat bordered class="my-card">
     <q-card-section>
-      <div class="text-h5 q-mt-sm q-mb-xs">Offer name</div>
+      <div class="text-h5 q-mt-sm q-mb-xs">{{ offer.offerName }}</div>
       <div class="text-caption">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua.
@@ -11,7 +48,7 @@
     </q-card-section>
     <q-separator dark />
     <q-card-section>
-      <div class="text-h5 q-mt-sm q-mb-xs">Parameters</div>
+      <div class="text-h5 q-mt-sm q-mb-xs">{{ offer.product.productName }}</div>
       <div class="text-caption">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua.
@@ -19,7 +56,12 @@
     </q-card-section>
     <q-separator dark />
     <q-card-actions>
-      <q-btn flat color="#FFFFFF" label="Add card" />
+      <q-btn
+        flat
+        color="#FFFFFF"
+        label="Add card"
+        @click="addOffer(orderId, offer.id, offer.product.productName)"
+      />
     </q-card-actions>
   </q-card>
 </template>

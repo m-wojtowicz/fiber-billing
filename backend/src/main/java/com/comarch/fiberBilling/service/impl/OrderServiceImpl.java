@@ -209,4 +209,28 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(newOrder);
         return ResponseEntity.ok(newOrder);
     }
+
+    @Override
+    public ResponseEntity getOpenOrder(String userId) {
+        Long id;
+        try {
+            id = Long.parseLong(userId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<ClientData> clientData = clientDataRepository.findById(id);
+        if (clientData.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+
+        List<Order> orders = orderRepository.findByClientData(clientData.get());
+
+        for (Order order : orders) {
+            if (order.getOrderStatus().equals("NEW")) {
+                return ResponseEntity.ok(order.getId());
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No open order found");
+    }
 }

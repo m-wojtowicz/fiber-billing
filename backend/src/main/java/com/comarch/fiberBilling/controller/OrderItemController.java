@@ -50,6 +50,19 @@ public class OrderItemController {
         return orderItemService.getAllProductParameters(id);
     }
 
+    @Operation(summary = "Add offer to order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @PostMapping(value = "/{orderId}/offer")
+    public ResponseEntity addOffer(@PathVariable("orderId") String orderId, @RequestBody String offerId) {
+        return orderItemService.addOffer(orderId, offerId);
+    }
+
     @Operation(summary = "Remove offer from order")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OrderItem", content = {

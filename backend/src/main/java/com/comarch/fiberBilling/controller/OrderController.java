@@ -100,19 +100,6 @@ public class OrderController {
         return orderService.deleteOrder(orderId);
     }
 
-    @Operation(summary = "Add offer to order")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Order", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))
-            }),
-            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
-    })
-    @PutMapping(value = "/{orderId}/offer")
-    public ResponseEntity addOffer(@PathVariable("orderId") String orderId, @RequestBody String offerId) {
-        return orderItemService.addOffer(orderId, offerId);
-    }
-
     @Operation(summary = "Create new order")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order", content = {
@@ -121,7 +108,7 @@ public class OrderController {
             @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
     })
-    @PostMapping(value = "/{userId}")
+    @PostMapping(value = "/user/{userId}")
     public ResponseEntity createOrder(@PathVariable("userId") String userId) {
         return orderService.createOrder(userId);
     }
@@ -137,5 +124,18 @@ public class OrderController {
     @PutMapping(value = "/{orderId}/status")
     public ResponseEntity updateStatus(@PathVariable("orderId") String orderId, @RequestBody String status) {
         return orderService.changeStatus(orderId, status);
+    }
+
+    @Operation(summary = "Get open Order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @GetMapping(value = "/user/{userId}/open")
+    public ResponseEntity getOpenOrder(@PathVariable("userId") String userId) {
+        return orderService.getOpenOrder(userId);
     }
 }
