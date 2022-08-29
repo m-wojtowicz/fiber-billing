@@ -168,7 +168,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public ResponseEntity createOrder(String userId) {
+    public ResponseEntity createOrder(String userId, String businessKey) {
         Long id;
         try {
             id = Long.valueOf(userId);
@@ -185,6 +185,7 @@ public class OrderServiceImpl implements OrderService {
                 orderStatus("NEW").
                 orderStartDate(new Date()).
                 orderEndDate(new Date()).
+                businessKey(businessKey).
                 build();
 
         orderRepository.flush();

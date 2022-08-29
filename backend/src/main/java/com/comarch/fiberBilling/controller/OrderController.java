@@ -4,15 +4,23 @@ import com.comarch.fiberBilling.model.api.response.GetAllOrders;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
 import com.comarch.fiberBilling.service.OrderItemService;
 import com.comarch.fiberBilling.service.OrderService;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 
 @RestController
@@ -110,7 +118,24 @@ public class OrderController {
     })
     @PostMapping(value = "/user/{userId}")
     public ResponseEntity createOrder(@PathVariable("userId") String userId) {
-        return orderService.createOrder(userId);
+        String businessKey;
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().
+                uri(URI.create("http://localhost:9000/camunda/process/new")).
+                POST(HttpRequest.BodyPublishers.ofString("")).
+                build();
+
+        ResponseEntity retVal;
+
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            JSONObject jsonObject = new JSONObject(response.body());
+            businessKey = jsonObject.getString("businessKey");
+            retVal = orderService.createOrder(userId, businessKey);
+        } catch (IOException | InterruptedException ex) {
+            retVal = new ResponseEntity("Camunda error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return retVal;
     }
 
     @Operation(summary = "Update order status")

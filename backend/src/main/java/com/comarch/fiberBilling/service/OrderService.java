@@ -14,7 +14,7 @@ public interface OrderService {
 
     ResponseEntity deleteOrder(String orderId);
 
-    ResponseEntity createOrder(String userId);
+    ResponseEntity createOrder(String userId, String businessKey);
 
     ResponseEntity changeStatus(String orderId, String status);
 
