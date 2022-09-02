@@ -11,12 +11,12 @@ import java.util.Map;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class SendActivationInfo implements JavaDelegate {
+public class SendCheckAvailability implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("ReceiveActivationInfo")
+        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("CheckAvailability")
                 .processInstanceBusinessKey(delegateExecution.getProcessBusinessKey())
                 .setVariables(delegateExecution.getVariables())
-                .correlateWithResult();
+                .correlate();
     }
 }

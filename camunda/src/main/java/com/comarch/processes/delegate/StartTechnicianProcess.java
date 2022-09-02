@@ -14,6 +14,7 @@ public class StartTechnicianProcess implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
         delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("TechnicianCheck")
                 .processInstanceBusinessKey(delegateExecution.getProcessBusinessKey())
+                .setVariables(delegateExecution.getVariables())
                 .correlate();
     }
 }

@@ -1,13 +1,25 @@
 package com.comarch.fiberBilling.service.impl;
 
 import com.comarch.fiberBilling.mapper.OrderMapper;
-import com.comarch.fiberBilling.model.api.response.*;
+import com.comarch.fiberBilling.model.api.response.GetAllOrders;
+import com.comarch.fiberBilling.model.api.response.GetAllUserOrders;
+import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
-import com.comarch.fiberBilling.model.entity.*;
-import com.comarch.fiberBilling.repository.*;
+import com.comarch.fiberBilling.model.entity.ClientData;
+import com.comarch.fiberBilling.model.entity.Order;
+import com.comarch.fiberBilling.model.entity.OrderItem;
+import com.comarch.fiberBilling.model.entity.OrderItemParameter;
+import com.comarch.fiberBilling.model.specs.OrderSpecification;
+import com.comarch.fiberBilling.model.specs.SearchCriteria;
+import com.comarch.fiberBilling.repository.ClientDataRepository;
+import com.comarch.fiberBilling.repository.OrderItemParameterRepository;
+import com.comarch.fiberBilling.repository.OrderItemRepository;
+import com.comarch.fiberBilling.repository.OrderRepository;
 import com.comarch.fiberBilling.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
 
     @Override
-    public ResponseEntity getUserOrders(String userId) {
+    public ResponseEntity getUserOrders(String userId, int pageNo, String filter) {
         long id;
         try {
             id = Long.parseLong(userId);
@@ -45,7 +57,12 @@ public class OrderServiceImpl implements OrderService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
 
-        List<Order> orders = orderRepository.findByClientData(clientData.get());
+        Pageable paging = PageRequest.of(pageNo, 3);
+
+        OrderSpecification spec = new OrderSpecification(new SearchCriteria("ORDER_STATUS", ":", filter));
+        List<Order> orders = orderRepository.findByClientData(clientData.get(), paging);
+        int size = orderRepository.findByClientData(clientData.get(), null).size();
+
         List<GetAllOrders> allOrders = new ArrayList<>();
         orders.forEach(order -> {
             String clientType = order.getClientData().getClientType().getType();
@@ -94,7 +111,10 @@ public class OrderServiceImpl implements OrderService {
                     .items(items)
                     .build());
         });
-        return ResponseEntity.ok(allOrders);
+        GetAllUserOrders response = new GetAllUserOrders();
+        response.setOrders(allOrders);
+        response.setSize(size);
+        return ResponseEntity.ok(response);
     }
 
     @Override
@@ -163,8 +183,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public ResponseEntity createOrder(String userId) {
-        long id;
+    public ResponseEntity createOrder(String userId, String businessKey) {
+        Long id;
         try {
             id = Long.parseLong(userId);
         } catch (NumberFormatException ex) {
@@ -180,6 +200,7 @@ public class OrderServiceImpl implements OrderService {
                 orderStatus("NEW").
                 orderStartDate(new Date()).
                 orderEndDate(new Date()).
+                businessKey(businessKey).
                 build();
 
         orderRepository.flush();
@@ -218,7 +239,7 @@ public class OrderServiceImpl implements OrderService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
 
-        List<Order> orders = orderRepository.findByClientData(clientData.get());
+        List<Order> orders = orderRepository.findByClientData(clientData.get(), null);
 
         for (Order order : orders) {
             if (order.getOrderStatus().equals("NEW")) {
