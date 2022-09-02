@@ -5,6 +5,7 @@ import OrderDetails from "../components/OrderDetails.vue";
 import { getUserOrders } from "../services/orderService";
 import { getUserType } from "../services/loginService";
 import { loginStore } from "../stores/loginStore";
+import { Loading } from "quasar";
 
 const dialog = ref(false);
 const order = ref(null);
@@ -12,7 +13,7 @@ const parameters = ref(null);
 const current = ref(1);
 const filter = ref("");
 
-watch(filter, (newv, oldv) => console.log(newv, oldv));
+watch(filter, () => updateOrders());
 
 const login = loginStore();
 const orders = ref(null);
@@ -21,10 +22,14 @@ const size = ref(null);
 await updateOrders();
 
 async function updateOrders() {
+  Loading.show();
+
   await getUserOrders(login.login, current.value, filter.value).then((res) => {
     orders.value = res.orders;
     size.value = res.size;
   });
+
+  Loading.hide();
 }
 </script>
 
@@ -38,6 +43,7 @@ async function updateOrders() {
         <q-input
           outlined
           v-model="filter"
+          debounce="1000"
           label="Filter"
           style="min-width: 200px; max-width: 300px"
         >

@@ -7,6 +7,7 @@ import { registerStore } from "../stores/register";
 import { loginStore } from "../stores/loginStore";
 import { useRouter } from "vue-router";
 import { getUserData } from "../services/userService";
+import { Loading } from "quasar";
 
 const router = useRouter();
 
@@ -21,7 +22,16 @@ onMounted(() => {
 const isPwd = ref(true);
 const $q = useQuasar();
 
+$q.notify.setDefaults({
+  position: "top-right",
+  timeout: 2000,
+  textColor: "white",
+  actions: [{ icon: "close", color: "white" }],
+});
+
 const checkData = () => {
+  Loading.show();
+
   getLoginToken(login.value, password.value)
     .then((res) => {
       token.value = res.data;
@@ -36,9 +46,12 @@ const checkData = () => {
         console.log(err);
       }
     });
+
+  Loading.hide();
 };
 
 watch(token, async () => {
+  Loading.show();
   if (token.access_token !== "") {
     login.value = login.value.toLowerCase();
     clientType.value = await getUserType(login.value).then(
@@ -53,6 +66,7 @@ watch(token, async () => {
       type: "positive",
     });
   }
+  Loading.hide();
 });
 </script>
 

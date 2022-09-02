@@ -11,6 +11,7 @@ import { getAvailableOffers } from "../services/offerService";
 import { loginStore } from "../stores/loginStore";
 import { useQuasar } from "quasar";
 import ConfigureOrderItems from "../components/ConfigureOrderItems.vue";
+import { Loading } from "quasar";
 
 const $q = useQuasar();
 const order = ref({ id: "" });
@@ -20,25 +21,50 @@ const user = loginStore();
 const dialog = ref(false);
 
 onBeforeMount(async () => {
-  await checkOpenOrder(user.userId).then((resp) => {
+  Loading.show();
+
+  await checkOpenOrder(user.userId).then((res) => {
     order.value = {
-      id: resp.data,
+      id: res.data,
     };
+    if (res.status === 200) {
+      $q.notify({
+        message: `Loaded an unfinished order`,
+        color: "green",
+      });
+      updateItems();
+    }
   });
 
   if (order.value.id === "") {
-    await createOrder(user.userId).then((resp) => {
-      order.value = {
-        id: resp.data,
-      };
-    });
+    await createOrder(user.userId)
+      .then((res) => {
+        order.value = {
+          id: res.data,
+        };
+        if (res.status === 200) {
+          $q.notify({
+            message: `Opened a new order`,
+            color: "green",
+          });
+          updateItems();
+        }
+      })
+      .catch((err) => {
+        $q.notify({
+          message: "Error",
+          color: "red",
+        });
+      });
   }
 
-  await getAvailableOffers().then((resp) => {
-    offers.value = resp.data;
+  await getAvailableOffers().then((res) => {
+    offers.value = res.data;
   });
 
   await updateItems();
+
+  Loading.hide();
 });
 
 async function updateItems() {
@@ -74,6 +100,7 @@ async function removeItemFromOrder(itemId, itemName) {
     });
 }
 </script>
+
 <template class="flex items-start">
   <div id="new-order">
     <div class="header flex justify-between q-my-lg q-mx-xl">
