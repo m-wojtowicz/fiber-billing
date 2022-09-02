@@ -59,24 +59,48 @@ watch(
 
       <div class="row">
         <div class="col">
-          <q-card
-            class="parameters-list"
-            style="text-align: left; padding: 10px 10px 10px 10px"
-          >
+          <q-card class="parameters-list" style="padding: 10px 10px 10px 10px">
             <div class="bar">
-              <div class="text-weight-bold text-h5">Name</div>
-              <div class="text-weight-bold text-h5">Value</div>
-              <div class="text-weight-bold text-h5">Price</div>
+              <div
+                class="col text-weight-bold text-h5"
+                style="text-align: left"
+              >
+                Name
+              </div>
+              <div
+                class="col text-weight-bold text-h5"
+                style="text-align: center"
+              >
+                Value
+              </div>
+              <div
+                class="col text-weight-bold text-h5"
+                style="text-align: right"
+              >
+                Price
+              </div>
             </div>
             <div v-for="parameter in params" :key="parameter.id" class="bar">
-              <h6>{{ parameter.name }}</h6>
-              <h6>{{ parameter.value }}</h6>
-              <h6 v-if="user.clientType === 'regular'">
+              <div class="col" style="text-align: left">
+                {{ parameter.name }}
+              </div>
+              <div class="col" style="text-align: center">
+                {{ parameter.value }}
+              </div>
+              <div
+                class="col"
+                style="text-align: right"
+                v-if="user.clientType === 'regular'"
+              >
                 {{ parameter.priceRegular }} zł/mo
-              </h6>
-              <h6 v-if="user.clientType === 'business'">
+              </div>
+              <div
+                class="col"
+                style="text-align: right"
+                v-if="user.clientType === 'business'"
+              >
                 {{ parameter.priceBusiness }} zł/mo
-              </h6>
+              </div>
             </div>
             <div class="bar" style="margin-top: 30px">
               <div class="text-weight-bold text-h5">TOTAL</div>
