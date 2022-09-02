@@ -1,6 +1,8 @@
 package com.comarch.fiberBilling.controller;
 
+import com.comarch.fiberBilling.model.api.request.PutConfigItems;
 import com.comarch.fiberBilling.model.api.response.GetAllOrders;
+import com.comarch.fiberBilling.model.api.response.GetConfigItems;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
 import com.comarch.fiberBilling.service.OrderItemService;
 import com.comarch.fiberBilling.service.OrderService;
@@ -137,5 +139,32 @@ public class OrderController {
     @GetMapping(value = "/user/{userId}/open")
     public ResponseEntity getOpenOrder(@PathVariable("userId") String userId) {
         return orderService.getOpenOrder(userId);
+    }
+
+    @Operation(summary = "Get all data to configure")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = GetConfigItems.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @GetMapping(value = "/configure/{orderId}")
+    public ResponseEntity getConfigureOrderData(@PathVariable("orderId") String orderId) {
+        return orderService.getConfigItems(orderId);
+    }
+
+    @Operation(summary = "Post all data to configure")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
+    })
+    @PostMapping(value = "/configure/{orderId}")
+    public ResponseEntity postConfigItems(@PathVariable("orderId") String orderId, @RequestBody PutConfigItems data) {
+        System.out.println(data);
+        return ResponseEntity.ok("elo");
     }
 }

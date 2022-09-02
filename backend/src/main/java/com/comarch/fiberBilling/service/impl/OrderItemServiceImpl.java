@@ -41,7 +41,7 @@ public class OrderItemServiceImpl implements OrderItemService {
             List<OrderItemParameter> orderItemParameters = orderItemParameterRepository.findByOrderItem(x);
             if (Objects.equals(userType, "regular")) {
                 for (var orderItemParameter : orderItemParameters) {
-                    if(!orderItemParameter.isMonthly())
+                    if (!orderItemParameter.isMonthly())
                         cost = cost.add(orderItemParameter.getParameterDetail().getPriceRegular());
                 }
             } else {
@@ -83,9 +83,9 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public ResponseEntity getOrderItems(String orderId) {
-        Long id;
+        long id;
         try {
-            id = Long.valueOf(orderId);
+            id = Long.parseLong(orderId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }
@@ -110,9 +110,9 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     @Transactional
     public ResponseEntity addOffer(String orderId, String offerId) {
-        Long id;
+        long id;
         try {
-            id = Long.valueOf(orderId);
+            id = Long.parseLong(orderId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order ID NaN");
         }
@@ -122,7 +122,7 @@ public class OrderItemServiceImpl implements OrderItemService {
         }
 
         try {
-            id = Long.valueOf(offerId);
+            id = Long.parseLong(offerId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Offer ID NaN");
         }
@@ -145,9 +145,9 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     @Transactional
     public ResponseEntity removeItem(String itemId) {
-        Long id;
+        long id;
         try {
-            id = Long.valueOf(itemId);
+            id = Long.parseLong(itemId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }

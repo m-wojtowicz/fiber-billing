@@ -12,7 +12,7 @@ export const getUserOrders = async (login) => {
 
 export const getOrderItems = async (orderId) => {
   let url = `http://localhost:8000/api/order/${orderId}/items`;
-  const items = await (await axios.get(url));
+  const items = await await axios.get(url);
   return items;
 };
 
@@ -42,4 +42,15 @@ export const addOfferToOrder = async (orderId, offerId) => {
 export const removeItem = async (itemId) => {
   let url = `http://localhost:8000/api/orderItem/${itemId}`;
   return await axios.delete(url);
+};
+
+export const getConfigData = async (orderId) => {
+  let url = `http://localhost:8000/api/order/configure/${orderId}`;
+  return await axios.get(url);
+};
+
+export const sendConfigData = async (orderId, data) => {
+  console.log(data);
+  let url = `http://localhost:8000/api/order/configure/${orderId}`;
+  return await axios.post(url, data);
 };

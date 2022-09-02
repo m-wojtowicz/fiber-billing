@@ -63,17 +63,13 @@ watch(
             class="parameters-list"
             style="text-align: left; padding: 10px 10px 10px 10px"
           >
-            <h6 v-for="parameter in params" :key="parameter.id" class="bar">
-              {{ parameter.name }}
-            </h6>
-          </q-card>
-        </div>
-        <div class="col">
-          <q-card
-            class="parameters-list"
-            style="text-align: left; padding: 10px 10px 10px 10px"
-          >
+            <div class="bar">
+              <div class="text-weight-bold text-h5">Name</div>
+              <div class="text-weight-bold text-h5">Value</div>
+              <div class="text-weight-bold text-h5">Price</div>
+            </div>
             <div v-for="parameter in params" :key="parameter.id" class="bar">
+              <h6>{{ parameter.name }}</h6>
               <h6>{{ parameter.value }}</h6>
               <h6 v-if="user.clientType === 'regular'">
                 {{ parameter.priceRegular }} zł/mo
@@ -122,9 +118,6 @@ watch(
   padding: 10px 15px
 .row + .row
   margin-top: 1rem
-
-.col
-  align-items: right
 
 .parameters-list
   background: $background

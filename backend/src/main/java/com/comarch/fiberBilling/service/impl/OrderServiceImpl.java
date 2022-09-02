@@ -1,17 +1,10 @@
 package com.comarch.fiberBilling.service.impl;
 
 import com.comarch.fiberBilling.mapper.OrderMapper;
-import com.comarch.fiberBilling.model.api.response.GetAllOrders;
-import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
+import com.comarch.fiberBilling.model.api.response.*;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
-import com.comarch.fiberBilling.model.entity.ClientData;
-import com.comarch.fiberBilling.model.entity.Order;
-import com.comarch.fiberBilling.model.entity.OrderItem;
-import com.comarch.fiberBilling.model.entity.OrderItemParameter;
-import com.comarch.fiberBilling.repository.ClientDataRepository;
-import com.comarch.fiberBilling.repository.OrderItemParameterRepository;
-import com.comarch.fiberBilling.repository.OrderItemRepository;
-import com.comarch.fiberBilling.repository.OrderRepository;
+import com.comarch.fiberBilling.model.entity.*;
+import com.comarch.fiberBilling.repository.*;
 import com.comarch.fiberBilling.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +29,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper = OrderMapper.INSTANCE;
     private final OrderItemRepository orderItemRepository;
     private final OrderItemParameterRepository orderItemParameterRepository;
+    private final ParameterProductRepository parameterProductRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public ResponseEntity getUserOrders(String userId) {
@@ -56,16 +51,16 @@ public class OrderServiceImpl implements OrderService {
             String clientType = order.getClientData().getClientType().getType();
             List<OrderItem> orderItems = orderItemRepository.findByOrder(order);
             List<GetAllUserProducts> items = new ArrayList<>();
-            BigDecimal monthlyCost = BigDecimal.ZERO;
-            BigDecimal oneTimeCharge = BigDecimal.ZERO;
+            BigDecimal monthlyCost;
+            BigDecimal oneTimeCharge;
             BigDecimal totalMonthlyCost = BigDecimal.ZERO;
             BigDecimal totalOneTimeCharge = BigDecimal.ZERO;
-            for( var orderItem: orderItems) {
+            for (var orderItem : orderItems) {
                 monthlyCost = BigDecimal.ZERO;
                 oneTimeCharge = BigDecimal.ZERO;
                 List<OrderItemParameter> orderItemParameters = orderItemParameterRepository.findByOrderItem(orderItem);
                 for (var orderItemParameter : orderItemParameters) {
-                    if(clientType.equals("regular")) {
+                    if (clientType.equals("regular")) {
                         if (orderItemParameter.isMonthly())
                             monthlyCost = monthlyCost.add(orderItemParameter.getParameterDetail().getPriceRegular());
                         else
@@ -169,9 +164,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public ResponseEntity createOrder(String userId) {
-        Long id;
+        long id;
         try {
-            id = Long.valueOf(userId);
+            id = Long.parseLong(userId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }
@@ -194,9 +189,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseEntity changeStatus(String orderId, String status) {
-        Long id;
+        long id;
         try {
-            id = Long.valueOf(orderId);
+            id = Long.parseLong(orderId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }
@@ -212,7 +207,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseEntity getOpenOrder(String userId) {
-        Long id;
+        long id;
         try {
             id = Long.parseLong(userId);
         } catch (NumberFormatException ex) {
@@ -232,5 +227,90 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No open order found");
+    }
+
+    @Override
+    public ResponseEntity getConfigItems(String orderId) {
+        long id;
+        try {
+            id = Long.parseLong(orderId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order.equals(null)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+
+        List<OrderItem> orderItemList = orderItemRepository.findByOrder(order);
+        List<Items> items = new ArrayList<>();
+
+        for (var orderItem : orderItemList) {
+            Product product = productRepository.findByProductName(orderItem.getOrderItemName());
+
+            List<ParameterProduct> parameterProductList = parameterProductRepository.findByProduct(product);
+            List<Parameters> parametersList = new ArrayList<>();
+
+            for (var parameterProduct : parameterProductList) {
+
+                List<String> values = new ArrayList<>();
+                List<BigDecimal> prices = new ArrayList<>();
+
+                for (var parameterDetail : parameterProduct.getParameter().getParameterDetail()) {
+                    values.add(parameterDetail.getValue());
+                    prices.add(parameterDetail.getPriceRegular());
+                }
+
+                Parameters parameters = Parameters.builder()
+                        .id(parameterProduct.getParameter().getId())
+                        .name(parameterProduct.getParameter().getName())
+                        .values(values)
+                        .prices(prices)
+                        .build();
+
+                parametersList.add(parameters);
+            }
+
+            Items item = Items.builder()
+                    .id(orderItem.getId())
+                    .orderItemName(product.getProductName())
+                    .status(orderItem.getStatus())
+                    .oneTimeCharge(BigDecimal.ZERO)
+                    .monthlyCharge(BigDecimal.ZERO)
+                    .parameters(parametersList)
+                    .build();
+            items.add(item);
+        }
+
+        GetConfigItems getConfigItems = GetConfigItems.builder()
+                .id(order.getId())
+                .orderStatus(order.getOrderStatus())
+                .orderStartDate(order.getOrderStartDate())
+                .oneTimeCharge(BigDecimal.ZERO)
+                .monthlyCharge(BigDecimal.ZERO)
+                .items(items)
+                .build();
+
+        return ResponseEntity.ok(getConfigItems);
+    }
+
+    @Override
+    public ResponseEntity putConfigItems(String orderId) {
+        long id;
+        try {
+            id = Long.parseLong(orderId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Order order = orderRepository.findById(id).orElse(null);
+        List<OrderItem> orderItemList = orderItemRepository.findByOrder(order);
+
+        for (var orderItem : orderItemList) {
+            if (orderItem.getId() == 16){
+                System.out.println("Elo");
+                return null;
+            }
+        }
+        return null;
     }
 }
