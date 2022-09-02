@@ -2,6 +2,7 @@ package com.comarch.fiberBilling.repository;
 
 import com.comarch.fiberBilling.model.entity.Address;
 import com.comarch.fiberBilling.repository.AddressRepository;
+import com.comarch.fiberBilling.service.AddressService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
