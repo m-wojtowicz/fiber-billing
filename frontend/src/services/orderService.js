@@ -5,15 +5,21 @@ export const getUserOrders = async (login, pageNo, filter) => {
   const user = await (await axios.get(url)).data;
   const userId = user.id;
 
-  const pageNoInt = parseInt(pageNo.value) - 1;
-  url = `http://localhost:8000/api/order/user/${userId}/${pageNoInt}`;
-  const orders = await (await axios.get(url)).data;
+  url = `http://localhost:8000/api/order/user/${userId}`;
+  const orders = await (
+    await axios.get(url, {
+      params: {
+        pageNo: pageNo-1,
+        filter: filter,
+      },
+    })
+  ).data;
   return orders;
 };
 
 export const getOrderItems = async (orderId) => {
   let url = `http://localhost:8000/api/order/${orderId}/items`;
-  const items = await (await axios.get(url));
+  const items = await await axios.get(url);
   return items;
 };
 

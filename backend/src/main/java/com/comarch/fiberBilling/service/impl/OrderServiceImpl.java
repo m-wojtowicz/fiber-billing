@@ -58,8 +58,8 @@ public class OrderServiceImpl implements OrderService {
         Pageable paging = PageRequest.of(pageNo, 3);
 
         OrderSpecification spec = new OrderSpecification(new SearchCriteria("ORDER_STATUS", ":", filter));
-        List<Order> orders = orderRepository.findByClientData(clientData.get(), paging, spec);
-        int size = orderRepository.findByClientData(clientData.get(), null, spec).size();
+        List<Order> orders = orderRepository.findByClientData(clientData.get(), paging);
+        int size = orderRepository.findByClientData(clientData.get(), null).size();
 
         List<GetAllOrders> allOrders = new ArrayList<>();
         orders.forEach(order -> {
@@ -237,7 +237,7 @@ public class OrderServiceImpl implements OrderService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
 
-        List<Order> orders = orderRepository.findByClientData(clientData.get(), null, null);
+        List<Order> orders = orderRepository.findByClientData(clientData.get(), null);
 
         for (Order order : orders) {
             if (order.getOrderStatus().equals("NEW")) {

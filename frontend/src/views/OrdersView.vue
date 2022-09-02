@@ -21,7 +21,7 @@ const size = ref(null);
 await updateOrders();
 
 async function updateOrders() {
-  await getUserOrders(login.login, current, filter).then((res) => {
+  await getUserOrders(login.login, current.value, filter.value).then((res) => {
     orders.value = res.orders;
     size.value = res.size;
   });

@@ -11,5 +11,6 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findByClientData(ClientData clientData, Pageable paging, Specification filter);
+    List<Order> findByClientData(ClientData clientData, Pageable paging);
+    //List<Order> findByClientDataAndFilter(ClientData clientData, Pageable paging, Specification filter);
 }
