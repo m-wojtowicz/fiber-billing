@@ -10,12 +10,14 @@ import {
 import { getAvailableOffers } from "../services/offerService";
 import { loginStore } from "../stores/loginStore";
 import { useQuasar } from "quasar";
+import ConfigureOrderItems from "../components/ConfigureOrderItems.vue";
 
 const $q = useQuasar();
 const order = ref({ id: "" });
 const offers = ref(null);
 const items = ref(null);
 const user = loginStore();
+const dialog = ref(false);
 
 onBeforeMount(async () => {
   await checkOpenOrder(user.userId).then((resp) => {
@@ -118,10 +120,11 @@ async function removeItemFromOrder(itemId, itemName) {
       </ul>
     </div>
     <div class="q-mt-xl flex justify-end">
-      <q-btn class="configure_button q-mt-xl q-mr-xl">
+      <q-btn class="configure_button q-mt-xl q-mr-xl" @click="dialog = true">
         Configure Products
       </q-btn>
     </div>
+    <ConfigureOrderItems :dialog="dialog" @responseDialog="dialog = false" />
   </div>
 </template>
 

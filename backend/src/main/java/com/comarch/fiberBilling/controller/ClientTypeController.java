@@ -65,7 +65,7 @@ public class ClientTypeController {
             ),
             @ApiResponse(responseCode = "404", description = "ClientType not found", content = @Content)
     })
-    @GetMapping(value="/login/{clientLogin}")
+    @GetMapping(value = "/login/{clientLogin}")
     public ResponseEntity getClientTypeByClientLogin(@PathVariable("clientLogin") String clientLogin) {
         return clientTypeService.getClientTypeByLogin(clientLogin);
     }

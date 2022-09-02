@@ -88,10 +88,7 @@ watch(
                     </q-scroll-area>
                   </div>
                   <div class="col flex justify-center">
-                    <div class="text-h6 self-end" v-if="item.monthly">
-                      {{ item.cost }} zł/mo
-                    </div>
-                    <div class="text-h6 self-end" v-else>
+                    <div class="text-h6 self-end">
                       {{ item.oneTimeCharge }}zł/mo + {{ item.cost }} zł
                     </div>
                   </div>

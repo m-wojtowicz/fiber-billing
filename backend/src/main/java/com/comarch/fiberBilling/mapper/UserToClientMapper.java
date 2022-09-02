@@ -6,7 +6,7 @@ import com.comarch.fiberBilling.model.entity.ClientData;
 
 public class UserToClientMapper {
 
-    public static ClientData UserToClient(PutUserData putUserData, ClientData clientData){
+    public static ClientData UserToClient(PutUserData putUserData, ClientData clientData) {
         Address newAddress = clientData.getAddress();
         newAddress.setCountry(putUserData.getCountry());
         newAddress.setCity(putUserData.getCity());

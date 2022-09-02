@@ -32,9 +32,9 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public ResponseEntity getAddressById(String addressId) {
-        Long id;
+        long id;
         try {
-            id = Long.valueOf(addressId);
+            id = Long.parseLong(addressId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }
@@ -60,9 +60,9 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public ResponseEntity changeAddress(String addressId, AddressDTO addressDTO) {
-        Long id;
+        long id;
         try {
-            id = Long.valueOf(addressId);
+            id = Long.parseLong(addressId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }
@@ -79,9 +79,9 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public ResponseEntity deleteAddressById(String addressId) {
-        Long id;
+        long id;
         try {
-            id = Long.valueOf(addressId);
+            id = Long.parseLong(addressId);
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }

@@ -23,7 +23,7 @@ if (props.order) {
 <template>
   <div class="window column">
     <div class="col-1 row">
-      <div class="col text-h6">Order type: aktywejszyn</div>
+      <div class="col text-h6">Order type: Activation</div>
       <div class="col text-h5 text-center">Order #{{ order.id }}</div>
       <div class="col text-h6 text-right">State: {{ order.orderStatus }}</div>
     </div>

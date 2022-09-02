@@ -1,7 +1,8 @@
 package com.comarch.fiberBilling.model.entity;
 
 import lombok.*;
-import java.util.Date;
+
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -20,4 +21,6 @@ public class Parameter {
     private long id;
     @Column(name = "`NAME`", length = 45, nullable = false)
     private String name;
+    @OneToMany(mappedBy = "parameter")
+    private List<ParameterDetail> parameterDetail;
 }

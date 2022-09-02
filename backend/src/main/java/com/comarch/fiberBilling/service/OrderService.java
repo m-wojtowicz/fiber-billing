@@ -19,4 +19,8 @@ public interface OrderService {
     ResponseEntity changeStatus(String orderId, String status);
 
     ResponseEntity getOpenOrder(String userId);
+
+    ResponseEntity getConfigItems(String orderId);
+
+    ResponseEntity putConfigItems(String orderId);
 }
