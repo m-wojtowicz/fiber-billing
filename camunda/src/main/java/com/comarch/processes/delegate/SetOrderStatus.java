@@ -14,7 +14,7 @@ public class SetOrderStatus implements JavaDelegate {
         try(Connection connection = DriverManager.getConnection(url, user, password);
         Statement statement = connection.createStatement())
         {
-            String query = "UPDATE \"ORDER\" SET \"ORDER_STATUS\" = 'Active' WHERE \"ORDER\".\"ID_ORDER\" = " + delegateExecution.getVariables().get("id").toString() + ";";
+            String query = "UPDATE \"ORDER\" SET \"ORDER_STATUS\" = 'NEW' WHERE \"ORDER\".\"ID_ORDER\" = " + delegateExecution.getVariables().get("id").toString() + ";";
             statement.executeUpdate(query);
         }
     }

@@ -160,7 +160,7 @@ onMounted(() => {
         />
       </q-card-section>
       <div class="row full-width" style="margin: 10px 0 10px 0">
-        <div class="col text-h6 text-left">Creation date: {{ startDate }}</div>
+        <div class="col text-h6 text-left">Creation date: {{ new Date(order.orderStartDate).toLocaleDateString() }}</div>
         <div class="col text-h5 text-center text-bold">
           Order #{{ order.id }}
         </div>
