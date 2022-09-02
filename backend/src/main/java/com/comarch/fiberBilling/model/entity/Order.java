@@ -24,7 +24,7 @@ public class Order {
     private Date orderStartDate;
     @Column(name = "`ORDER_END_DATE`", nullable = false)
     private Date orderEndDate;
-    @Column(name = "`BUSINESS_KEY`", nullable = false)
+    @Column(name = "`BUSINESS_KEY`", nullable = true)
     private String businessKey;
     @JoinColumn(name = "`ID_CLIENT_DATA`", nullable = false)
     @ManyToOne

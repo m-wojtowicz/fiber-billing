@@ -1,20 +1,12 @@
 package com.comarch.fiberBilling.service.impl;
 
 import com.comarch.fiberBilling.mapper.OrderMapper;
-import com.comarch.fiberBilling.model.api.response.GetAllOrders;
-import com.comarch.fiberBilling.model.api.response.GetAllUserOrders;
-import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
+import com.comarch.fiberBilling.model.api.response.*;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
-import com.comarch.fiberBilling.model.entity.ClientData;
-import com.comarch.fiberBilling.model.entity.Order;
-import com.comarch.fiberBilling.model.entity.OrderItem;
-import com.comarch.fiberBilling.model.entity.OrderItemParameter;
+import com.comarch.fiberBilling.model.entity.*;
 import com.comarch.fiberBilling.model.specs.OrderSpecification;
 import com.comarch.fiberBilling.model.specs.SearchCriteria;
-import com.comarch.fiberBilling.repository.ClientDataRepository;
-import com.comarch.fiberBilling.repository.OrderItemParameterRepository;
-import com.comarch.fiberBilling.repository.OrderItemRepository;
-import com.comarch.fiberBilling.repository.OrderRepository;
+import com.comarch.fiberBilling.repository.*;
 import com.comarch.fiberBilling.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
