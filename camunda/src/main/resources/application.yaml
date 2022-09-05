@@ -5,3 +5,5 @@ camunda.bpm:
     id: demo
     password: demo
   .deployment-resource-pattern: classpath:*.bpmn
+
+server.port: 9000
