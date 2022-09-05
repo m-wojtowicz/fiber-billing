@@ -17,9 +17,9 @@ public class ClientData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`ID_CLIENT_DATA`", nullable = false)
     private long id;
-    @Column(name = "`NAME`", length = 45, nullable = true)
+    @Column(name = "`NAME`", length = 45)
     private String name;
-    @Column(name = "`SURNAME`", length = 45, nullable = true)
+    @Column(name = "`SURNAME`", length = 45)
     private String surname;
     @Column(name = "`EMAIL_ADDRESS`", length = 45, nullable = false, unique = true)
     private String emailAddress;

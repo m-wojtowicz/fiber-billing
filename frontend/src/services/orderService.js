@@ -9,7 +9,7 @@ export const getUserOrders = async (login, pageNo, filter) => {
   const orders = await (
     await axios.get(url, {
       params: {
-        pageNo: pageNo-1,
+        pageNo: pageNo - 1,
         filter: filter,
       },
     })
@@ -51,13 +51,18 @@ export const removeItem = async (itemId) => {
   return await axios.delete(url);
 };
 
-export const getConfigData = async (orderId) => {
+export const getConfigData = async (orderId, clientType) => {
   let url = `http://localhost:8000/api/order/configure/${orderId}`;
-  return await axios.get(url);
+  console.log(clientType);
+  return await axios.get(url, {
+    params: {
+      clientType: clientType,
+    },
+  });
 };
 
 export const sendConfigData = async (orderId, data) => {
   console.log(data);
   let url = `http://localhost:8000/api/order/configure/${orderId}`;
-  return await axios.post(url, data);
+  return await axios.put(url, data);
 };

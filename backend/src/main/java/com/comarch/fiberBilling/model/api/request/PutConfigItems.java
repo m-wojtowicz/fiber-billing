@@ -13,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class PutConfigItems {
     Long id;
-    List<PutConfigItems> items;
+    List<Items> items;
 }

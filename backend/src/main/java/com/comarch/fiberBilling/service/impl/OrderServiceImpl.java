@@ -1,6 +1,7 @@
 package com.comarch.fiberBilling.service.impl;
 
 import com.comarch.fiberBilling.mapper.OrderMapper;
+import com.comarch.fiberBilling.model.api.request.PutConfigItems;
 import com.comarch.fiberBilling.model.api.response.*;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
 import com.comarch.fiberBilling.model.entity.*;
@@ -18,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -35,6 +33,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemParameterRepository orderItemParameterRepository;
     private final ParameterProductRepository parameterProductRepository;
     private final ProductRepository productRepository;
+
+    private final ParameterDetailRepository parameterDetailRepository;
 
     @Override
     public ResponseEntity getUserOrders(String userId, int pageNo, String filter) {
@@ -243,7 +243,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity getConfigItems(String orderId) {
+    public ResponseEntity getConfigItems(String orderId, String clientType) {
         long id;
         try {
             id = Long.parseLong(orderId);
@@ -269,11 +269,17 @@ public class OrderServiceImpl implements OrderService {
                 List<String> values = new ArrayList<>();
                 List<BigDecimal> prices = new ArrayList<>();
 
-                for (var parameterDetail : parameterProduct.getParameter().getParameterDetail()) {
-                    values.add(parameterDetail.getValue());
-                    prices.add(parameterDetail.getPriceRegular());
+                if (Objects.equals(clientType, "regular")) {
+                    for (var parameterDetail : parameterProduct.getParameter().getParameterDetail()) {
+                        values.add(parameterDetail.getValue());
+                        prices.add(parameterDetail.getPriceRegular());
+                    }
+                } else {
+                    for (var parameterDetail : parameterProduct.getParameter().getParameterDetail()) {
+                        values.add(parameterDetail.getValue());
+                        prices.add(parameterDetail.getPriceBusiness());
+                    }
                 }
-
                 Parameters parameters = Parameters.builder()
                         .id(parameterProduct.getParameter().getId())
                         .name(parameterProduct.getParameter().getName())
@@ -308,7 +314,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity putConfigItems(String orderId) {
+    public ResponseEntity putConfigItems(String orderId, PutConfigItems data) {
         long id;
         try {
             id = Long.parseLong(orderId);
@@ -319,9 +325,19 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItem> orderItemList = orderItemRepository.findByOrder(order);
 
         for (var orderItem : orderItemList) {
-            if (orderItem.getId() == 16){
-                System.out.println("Elo");
-                return null;
+            for(var d : data.getItems()) {
+                if (orderItem.getId() == d.getId()) {
+                    for(var v : d.getValues()){
+                        ParameterDetail parameterDetail = parameterDetailRepository.findByValue(v);
+                        OrderItemParameter orderItemParameter = OrderItemParameter.builder()
+                                .orderItem(orderItem)
+                                .parameterDetail(parameterDetail)
+                                .monthly(true)
+                                .payed(false)
+                                .build();
+                        orderItemParameterRepository.save(orderItemParameter);
+                    }
+                }
             }
         }
         return null;

@@ -45,7 +45,6 @@ const order = ref({
 const choosenValues = ref(null);
 const prices = ref(null);
 
-let startDate = ref(new Date(order.value.orderStartDate).toLocaleDateString());
 let data = ref(false);
 
 const getOrderId = async () => {
@@ -59,7 +58,7 @@ watch(
     if (props.dialog === true) {
       data.value = true;
       let orderId = await getOrderId();
-      await getConfigData(orderId).then((resp) => {
+      await getConfigData(orderId, user.clientType).then((resp) => {
         order.value = resp.data;
         console.log(resp.data);
       });
@@ -92,7 +91,7 @@ const save = async () => {
   data.id = order.value.id;
   data.items = new Array();
   for (var i = 0; i < order.value.items.length; i++) {
-    let item = new Array();
+    let item = new Object();
     item.id = order.value.items[i].id;
     item.values = toRaw(choosenValues.value[i]);
     data.items.push(item);
@@ -160,7 +159,10 @@ onMounted(() => {
         />
       </q-card-section>
       <div class="row full-width" style="margin: 10px 0 10px 0">
-        <div class="col text-h6 text-left">Creation date: {{ new Date(order.orderStartDate).toLocaleDateString() }}</div>
+        <div class="col text-h6 text-left">
+          Creation date:
+          {{ new Date(order.orderStartDate).toLocaleDateString() }}
+        </div>
         <div class="col text-h5 text-center text-bold">
           Order #{{ order.id }}
         </div>

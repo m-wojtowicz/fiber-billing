@@ -175,8 +175,9 @@ public class OrderController {
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
     })
     @GetMapping(value = "/configure/{orderId}")
-    public ResponseEntity getConfigureOrderData(@PathVariable("orderId") String orderId) {
-        return orderService.getConfigItems(orderId);
+    public ResponseEntity getConfigureOrderData(@PathVariable("orderId") String orderId, @RequestParam("clientType") String clientType) {
+        System.out.println(clientType);
+        return orderService.getConfigItems(orderId, clientType);
     }
 
     @Operation(summary = "Post all data to configure")
@@ -187,9 +188,9 @@ public class OrderController {
             @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
     })
-    @PostMapping(value = "/configure/{orderId}")
+    @PutMapping(value = "/configure/{orderId}")
     public ResponseEntity postConfigItems(@PathVariable("orderId") String orderId, @RequestBody PutConfigItems data) {
-        System.out.println(data);
+        orderService.putConfigItems(orderId, data);
         return ResponseEntity.ok("elo");
     }
 }
