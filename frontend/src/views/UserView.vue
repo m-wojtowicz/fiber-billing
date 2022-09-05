@@ -6,6 +6,7 @@ import {
   getClientType,
 } from "../services/userService";
 import { loginStore } from "../stores/loginStore";
+import { Loading } from "quasar";
 
 const disable = ref(true);
 const isEdited = ref(false);
@@ -28,6 +29,7 @@ const state = ref({
 const login = loginStore();
 
 onMounted(() => {
+  Loading.show();
   getUserData(login.login).then((r) => {
     state.value = r.data;
   });
@@ -36,12 +38,17 @@ onMounted(() => {
     clientType.value = r.data;
     console.log(clientType);
   });
+  Loading.hide();
 });
 
 const edit = () => {
+  Loading.show();
+
   disable.value = !disable.value;
   isEdited.value = !isEdited.value;
   putUserData(state.value);
+
+  Loading.hide();
 };
 
 const save = () => {

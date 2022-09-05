@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import { getItemParameters } from "../services/orderService";
+import { Loading } from "quasar";
 
 const emit = defineEmits(["changeDialog"]);
 
@@ -22,6 +23,7 @@ let startDate = ref(null);
 watch(
   () => props.order,
   async (newVal, oldVal) => {
+    Loading.show();
     if (oldVal) emit("changeDialog");
     if (newVal) {
       console.log(props.order);
@@ -32,6 +34,7 @@ watch(
         item.parameters = await getItemParameters(item.id);
       });
     }
+    Loading.hide();
   }
 );
 </script>
@@ -88,7 +91,10 @@ watch(
                     </q-scroll-area>
                   </div>
                   <div class="col flex justify-center">
-                    <div class="text-h6 self-end">
+                    <div class="text-h6 self-end" v-if="item.monthly">
+                      {{ item.cost }} zł/mo
+                    </div>
+                    <div class="text-h6 self-end" v-else>
                       {{ item.oneTimeCharge }}zł/mo + {{ item.cost }} zł
                     </div>
                   </div>

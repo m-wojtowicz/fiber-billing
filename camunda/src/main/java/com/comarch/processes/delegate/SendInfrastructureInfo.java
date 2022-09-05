@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class SendInfrastructureInfo implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("ReceiveAvailabilityCheck")
+        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("SendInfrastructureStatus")
                 .processInstanceBusinessKey(delegateExecution.getProcessBusinessKey())
                 .setVariables(delegateExecution.getVariables())
                 .correlateWithResult();

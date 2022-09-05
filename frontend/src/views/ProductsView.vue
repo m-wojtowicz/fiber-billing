@@ -4,8 +4,9 @@ import ProductEntry from "../components/ProductEntry.vue";
 import ProductDetails from "../components/ProductDetails.vue";
 import { getAllProducts } from "../services/productService.js";
 import { storeToRefs } from "pinia";
-
 import { loginStore } from "../stores/loginStore";
+import { Loading } from "quasar";
+
 const user = loginStore();
 const { clientType, userId } = storeToRefs(user);
 
@@ -17,12 +18,17 @@ const filter = ref("");
 
 const productList = ref([]);
 onBeforeMount(async () => {
+  Loading.show();
   await getAllProducts(userId.value, clientType.value).then((resp) => {
     productList.value = resp.data;
-    productList.value.forEach((element) => {
-      element.activationDate = new Date(element.activationDate);
-    });
+    if (Array.isArray(productList.value)) {
+      productList.value.forEach((element) => {
+        element.activationDate = new Date(element.activationDate);
+      });
+    }
   });
+
+  Loading.hide();
 });
 
 watch(filter, (newv, oldv) => console.log(newv, oldv));

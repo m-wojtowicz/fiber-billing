@@ -5,6 +5,7 @@ import OrderDetails from "../components/OrderDetails.vue";
 import { getUserOrders } from "../services/orderService";
 import { getUserType } from "../services/loginService";
 import { loginStore } from "../stores/loginStore";
+import { Loading } from "quasar";
 
 const dialog = ref(false);
 const order = ref(null);
@@ -12,10 +13,24 @@ const parameters = ref(null);
 const current = ref(1);
 const filter = ref("");
 
-watch(filter, (newv, oldv) => console.log(newv, oldv));
+watch(filter, () => updateOrders());
 
 const login = loginStore();
-const orders = await getUserOrders(login.login);
+const orders = ref(null);
+const size = ref(null);
+
+await updateOrders();
+
+async function updateOrders() {
+  Loading.show();
+
+  await getUserOrders(login.login, current.value, filter.value).then((res) => {
+    orders.value = res.orders;
+    size.value = res.size;
+  });
+
+  Loading.hide();
+}
 </script>
 
 <template>
@@ -28,6 +43,7 @@ const orders = await getUserOrders(login.login);
         <q-input
           outlined
           v-model="filter"
+          debounce="1000"
           label="Filter"
           style="min-width: 200px; max-width: 300px"
         >
@@ -52,29 +68,29 @@ const orders = await getUserOrders(login.login);
     <div class="col-10 orders column full-width q-gutter-y-md">
       <OrderEntry
         class="col"
-        :order="orders[(current - 1) * 3]"
-        v-if="(current - 1) * 3 < orders.length"
+        :order="orders[0]"
+        v-if="orders.length > 0"
         @click="
-          order = orders[(current - 1) * 3];
+          order = orders[0];
           dialog = !dialog;
         "
       />
 
       <OrderEntry
         class="col"
-        :order="orders[(current - 1) * 3 + 1]"
-        v-if="(current - 1) * 3 + 1 < orders.length"
+        :order="orders[1]"
+        v-if="orders.length > 1"
         @click="
-          order = orders[(current - 1) * 3 + 1];
+          order = orders[1];
           dialog = !dialog;
         "
       />
       <OrderEntry
         class="col"
-        :order="orders[(current - 1) * 3 + 2]"
-        v-if="(current - 1) * 3 + 2 < orders.length"
+        :order="orders[2]"
+        v-if="orders.length > 2"
         @click="
-          order = orders[(current - 1) * 3 + 2];
+          order = orders[2];
           dialog = !dialog;
         "
       />
@@ -82,7 +98,8 @@ const orders = await getUserOrders(login.login);
     <div class="col-1">
       <q-pagination
         v-model="current"
-        :max="Math.ceil(orders.length / 3)"
+        @update:model-value="updateOrders()"
+        :max="Math.ceil(size / 3)"
         :max-pages="5"
         outline
         direction-links

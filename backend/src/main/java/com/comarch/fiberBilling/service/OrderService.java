@@ -4,7 +4,7 @@ import com.comarch.fiberBilling.model.dto.OrderDTO;
 import org.springframework.http.ResponseEntity;
 
 public interface OrderService {
-    ResponseEntity getUserOrders(String userId);
+    ResponseEntity getUserOrders(String userId, int pageNo, String filter);
 
     ResponseEntity getOrder(String orderId);
 
@@ -14,7 +14,7 @@ public interface OrderService {
 
     ResponseEntity deleteOrder(String orderId);
 
-    ResponseEntity createOrder(String userId);
+    ResponseEntity createOrder(String userId, String businessKey);
 
     ResponseEntity changeStatus(String orderId, String status);
 

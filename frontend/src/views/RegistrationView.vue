@@ -12,6 +12,7 @@ import {
   registerAddress,
   registerClientData,
 } from "../services/registerService";
+import { Loading } from "quasar";
 
 const router = useRouter();
 
@@ -64,6 +65,7 @@ const validateUserData = computed(() => {
 });
 
 const registerScript = async () => {
+  Loading.show();
   let clientTypeId = null;
   let addressID = null;
   if (clientType.value == "regular") clientTypeId = 1;
@@ -95,6 +97,7 @@ const registerScript = async () => {
       type: "negative",
     });
   }
+  Loading.hide();
 };
 </script>
 

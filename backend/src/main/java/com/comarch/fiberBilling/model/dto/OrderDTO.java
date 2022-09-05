@@ -16,5 +16,6 @@ public class OrderDTO {
     private String orderStatus;
     private Date orderStartDate;
     private Date orderEndDate;
+    private String businessKey;
     private ClientDataDTO clientData;
 }
