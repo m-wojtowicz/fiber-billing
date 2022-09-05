@@ -1,5 +1,6 @@
 package com.comarch.fiberBilling.service;
 
+import com.comarch.fiberBilling.model.api.request.PutConfigItems;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -20,7 +21,7 @@ public interface OrderService {
 
     ResponseEntity getOpenOrder(String userId);
 
-    ResponseEntity getConfigItems(String orderId);
+    ResponseEntity getConfigItems(String orderId, String clientType);
 
-    ResponseEntity putConfigItems(String orderId);
+    ResponseEntity putConfigItems(String orderId, PutConfigItems data);
 }

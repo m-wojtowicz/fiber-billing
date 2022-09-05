@@ -25,6 +25,6 @@ public class OrderItemParameter {
     private ParameterDetail parameterDetail;
     @Column(name = "`MONTHLY`", nullable = false)
     private boolean monthly;
-    @Column(name = "`PAYED`", nullable = true)
+    @Column(name = "`PAYED`")
     private boolean payed;
 }
