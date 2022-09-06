@@ -34,6 +34,7 @@ const order = ref({
         {
           id: 1,
           name: "",
+          isMonthly: true,
           values: [],
           prices: [],
         },
@@ -105,7 +106,7 @@ const getPrice = (row, col, value) => {
   return order.value.items[row].parameters[col].prices[index];
 };
 
-const getProductPrice = (productIndex) => {
+const getMonthlyProductPrice = (productIndex) => {
   let sum = 0;
   for (var i = 0; i < choosenValues.value[productIndex].length; i++) {
     let index = order.value.items[productIndex].parameters[i].values.indexOf(
@@ -117,7 +118,17 @@ const getProductPrice = (productIndex) => {
   return sum;
 };
 
-const getOrderProduct = () => {
+const getProductPrice = (productIndex) => {
+  let sum = 0;
+  for (var i = 0; i < order.value.items[productIndex].parameters.length; i++) {
+    if (order.value.items[productIndex].parameters[i].isMonthly === false) {
+      sum += order.value.items[productIndex].parameters[i].prices[0];
+    }
+  }
+  return sum;
+};
+
+const getOrderProductPrice = () => {
   let sum = 0;
   for (var i = 0; i < choosenValues.value.length; i++) {
     for (var j = 0; j < choosenValues.value[i].length; j++) {
@@ -126,6 +137,18 @@ const getOrderProduct = () => {
       );
       if (index !== -1) {
         sum += order.value.items[i].parameters[j].prices[index];
+      }
+    }
+  }
+  return sum;
+};
+
+const getMonthlyOrderProductPrice = () => {
+  let sum = 0;
+  for (var i = 0; i < choosenValues.value.length; i++) {
+    for (var j = 0; j < choosenValues.value[i].length; j++) {
+      if (order.value.items[i].parameters[j].isMonthly === false) {
+        sum += order.value.items[i].parameters[j].prices[0];
       }
     }
   }
@@ -198,7 +221,10 @@ onMounted(() => {
                         v-for="(parameter, index) in item.parameters"
                         :key="parameter.id"
                       >
-                        <div class="flex justify-between items-center">
+                        <div
+                          class="flex justify-between items-center"
+                          v-if="parameter.isMonthly === true"
+                        >
                           {{ parameter.name }} :
                           <q-select
                             borderless
@@ -208,13 +234,22 @@ onMounted(() => {
                           />
                           {{ getPrice(ind, index, choosenValues[ind][index]) }}
                         </div>
+                        <div
+                          class="flex items-center"
+                          v-if="parameter.isMonthly === false"
+                        >
+                          {{ parameter.name }} :
+                          <div class="q-my-md" style="margin-left: auto">
+                            {{ parameter.prices[0] }}
+                          </div>
+                        </div>
                       </ui>
                     </div>
                   </div>
                   <div class="col flex justify-center">
                     <div class="text-h6">
-                      {{ item.oneTimeCharge }} zł +
-                      {{ getProductPrice(ind) }} zł/mo
+                      {{ getProductPrice(ind) }} zł +
+                      {{ getMonthlyProductPrice(ind) }} zł/mo
                     </div>
                   </div>
                 </div>
@@ -226,7 +261,8 @@ onMounted(() => {
       <q-card-section class="items-center">
         <div class="flex row justify-between q-mx-md">
           <div class="text-h5 text-bold">
-            Total: {{ order.oneTimeCharge }} zł + {{ getOrderProduct() }} zł/mo
+            Total: {{ getMonthlyOrderProductPrice() }} zł +
+            {{ getOrderProductPrice() }} zł/mo
           </div>
           <q-btn class="save_btn" @click="save"> Save </q-btn>
         </div>

@@ -15,6 +15,7 @@ import java.util.List;
 public class Parameters {
     Long id;
     String name;
+    Boolean isMonthly;
     List<String> values;
     List<BigDecimal> prices;
 }

@@ -32,4 +32,6 @@ public class ParameterDetail {
     private Date activeFrom;
     @Column(name = "`ACTIVE_TO`", nullable = false)
     private Date activeTo;
+    @Column(name = "`MONTHLY`", nullable = false)
+    private boolean monthly;
 }
