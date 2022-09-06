@@ -41,7 +41,7 @@ public class OrderItemServiceImpl implements OrderItemService {
             List<OrderItemParameter> orderItemParameters = orderItemParameterRepository.findByOrderItem(x);
             if (Objects.equals(userType, "regular")) {
                 for (var orderItemParameter : orderItemParameters) {
-                    if (!orderItemParameter.isMonthly())
+                    if (!orderItemParameter.getParameterDetail().isMonthly())
                         cost = cost.add(orderItemParameter.getParameterDetail().getPriceRegular());
                 }
             } else {

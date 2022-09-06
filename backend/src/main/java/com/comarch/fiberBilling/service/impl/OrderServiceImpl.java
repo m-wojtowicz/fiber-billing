@@ -70,12 +70,12 @@ public class OrderServiceImpl implements OrderService {
                 List<OrderItemParameter> orderItemParameters = orderItemParameterRepository.findByOrderItem(orderItem);
                 for (var orderItemParameter : orderItemParameters) {
                     if (clientType.equals("regular")) {
-                        if (orderItemParameter.isMonthly())
+                        if (orderItemParameter.getParameterDetail().isMonthly())
                             monthlyCost = monthlyCost.add(orderItemParameter.getParameterDetail().getPriceRegular());
                         else
                             oneTimeCharge = oneTimeCharge.add(orderItemParameter.getParameterDetail().getPriceRegular());
                     } else {
-                        if (orderItemParameter.isMonthly())
+                        if (orderItemParameter.getParameterDetail().isMonthly())
                             monthlyCost = monthlyCost.add(orderItemParameter.getParameterDetail().getPriceBusiness());
                         else
                             oneTimeCharge = oneTimeCharge.add(orderItemParameter.getParameterDetail().getPriceBusiness());
@@ -268,21 +268,25 @@ public class OrderServiceImpl implements OrderService {
 
                 List<String> values = new ArrayList<>();
                 List<BigDecimal> prices = new ArrayList<>();
+                Boolean monthly = false;
 
                 if (Objects.equals(clientType, "regular")) {
                     for (var parameterDetail : parameterProduct.getParameter().getParameterDetail()) {
                         values.add(parameterDetail.getValue());
                         prices.add(parameterDetail.getPriceRegular());
+                        monthly = parameterDetail.isMonthly();
                     }
                 } else {
                     for (var parameterDetail : parameterProduct.getParameter().getParameterDetail()) {
                         values.add(parameterDetail.getValue());
                         prices.add(parameterDetail.getPriceBusiness());
+                        monthly = parameterDetail.isMonthly();
                     }
                 }
                 Parameters parameters = Parameters.builder()
                         .id(parameterProduct.getParameter().getId())
                         .name(parameterProduct.getParameter().getName())
+                        .isMonthly(monthly)
                         .values(values)
                         .prices(prices)
                         .build();
@@ -332,7 +336,6 @@ public class OrderServiceImpl implements OrderService {
                         OrderItemParameter orderItemParameter = OrderItemParameter.builder()
                                 .orderItem(orderItem)
                                 .parameterDetail(parameterDetail)
-                                .monthly(true)
                                 .payed(false)
                                 .build();
                         orderItemParameterRepository.save(orderItemParameter);

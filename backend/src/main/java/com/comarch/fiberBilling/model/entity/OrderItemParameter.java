@@ -23,8 +23,6 @@ public class OrderItemParameter {
     @JoinColumn(name = "`ID_PARAMETER_DETAIL`")
     @ManyToOne
     private ParameterDetail parameterDetail;
-    @Column(name = "`MONTHLY`", nullable = false)
-    private boolean monthly;
     @Column(name = "`PAYED`")
     private boolean payed;
 }
