@@ -5,7 +5,7 @@ import com.comarch.fiberBilling.model.dto.OrderDTO;
 import org.springframework.http.ResponseEntity;
 
 public interface OrderService {
-    ResponseEntity getUserOrders(String userId, int pageNo, String filter);
+    ResponseEntity getUserOrders(String userId, int pageNo, String filter, String filterType);
 
     ResponseEntity getOrder(String orderId);
 

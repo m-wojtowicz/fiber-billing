@@ -43,8 +43,8 @@ public class OrderController {
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
     })
     @GetMapping(value = "/user/{clientDataId}")
-    public ResponseEntity<List<GetAllOrders>> getAllUserOrders(@PathVariable("clientDataId") String clientDataId, @RequestParam("pageNo") int pageNo, @RequestParam("filter") String filter) {
-        return orderService.getUserOrders(clientDataId, pageNo, filter);
+    public ResponseEntity<List<GetAllOrders>> getAllUserOrders(@PathVariable("clientDataId") String clientDataId, @RequestParam("pageNo") int pageNo, @RequestParam("filter") String filter, @RequestParam("filterType") String filterType) {
+        return orderService.getUserOrders(clientDataId, pageNo, filter, filterType);
     }
 
     @Operation(summary = "Get order by id")

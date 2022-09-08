@@ -11,6 +11,7 @@ import com.comarch.fiberBilling.repository.*;
 import com.comarch.fiberBilling.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -37,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     private final ParameterDetailRepository parameterDetailRepository;
 
     @Override
-    public ResponseEntity getUserOrders(String userId, int pageNo, String filter) {
+    public ResponseEntity getUserOrders(String userId, int pageNo, String filter, String filterType) {
         long id;
         try {
             id = Long.parseLong(userId);
@@ -51,12 +57,43 @@ public class OrderServiceImpl implements OrderService {
 
         Pageable paging = PageRequest.of(pageNo, 3);
 
-        OrderSpecification spec = new OrderSpecification(new SearchCriteria("ORDER_STATUS", ":", filter));
-        List<Order> orders = orderRepository.findByClientData(clientData.get(), paging);
-        int size = orderRepository.findByClientData(clientData.get(), null).size();
+        Page<Order> pages = null;
+        if (filter == "") {
+            pages = orderRepository.findByClientData(clientData.get(), paging);
+        } else if (filterType.equalsIgnoreCase("id")) {
+            long orderId;
+            try {
+                orderId = Long.parseLong(filter);
+                // TODO
+                pages = orderRepository.findByClientDataAndId(clientData.get(), orderId, paging);
+            } catch (Exception ex) {
+                // TODO return err
+                System.out.println(ex.getMessage());
+            }
+        } else if (filterType.equalsIgnoreCase("status")) {
+            pages = orderRepository.findByClientDataAndOrderStatusContainingIgnoreCase(clientData.get(), filter, paging);
+        } else if (filterType.equalsIgnoreCase("creation date")) {
+            try {
+                LocalDate date = LocalDate.parse(filter.replace("/", ""), DateTimeFormatter.BASIC_ISO_DATE);
+                pages = orderRepository.findByClientDataAndOrderStartDateBetween(
+                        clientData.get(),
+                        Date.from(date.atStartOfDay().toInstant(ZoneOffset.UTC)),
+                        Date.from(date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)),
+                        paging);
+            } catch (Exception ex) {
+                // TODO return err
+                System.out.println(ex.getMessage());
+            }
+        } else {
+            pages = orderRepository.findByClientData(clientData.get(), paging);
+        }
+        if (pages == null) {
+            return ResponseEntity.noContent().build();
+        }
 
         List<GetAllOrders> allOrders = new ArrayList<>();
-        orders.forEach(order -> {
+
+        pages.getContent().forEach(order -> {
             String clientType = order.getClientData().getClientType().getType();
             List<OrderItem> orderItems = orderItemRepository.findByOrder(order);
             List<GetAllUserProducts> items = new ArrayList<>();
@@ -103,9 +140,10 @@ public class OrderServiceImpl implements OrderService {
                     .items(items)
                     .build());
         });
+
         GetAllUserOrders response = new GetAllUserOrders();
         response.setOrders(allOrders);
-        response.setSize(size);
+        response.setTotal(pages.getTotalElements());
         return ResponseEntity.ok(response);
     }
 
@@ -231,7 +269,7 @@ public class OrderServiceImpl implements OrderService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
 
-        List<Order> orders = orderRepository.findByClientData(clientData.get(), null);
+        Page<Order> orders = orderRepository.findByClientData(clientData.get(), null);
 
         for (Order order : orders) {
             if (order.getOrderStatus().equals("NEW")) {
