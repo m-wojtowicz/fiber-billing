@@ -1,11 +1,15 @@
 package com.comarch.fiberBilling.repository;
 
+import com.comarch.fiberBilling.model.entity.ClientData;
 import com.comarch.fiberBilling.model.entity.Order;
 import com.comarch.fiberBilling.model.entity.OrderItem;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,4 +27,14 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     Optional<List<OrderItem>> getAllUserProducts(Long id);
 
     List<OrderItem> findByOrder(Order order);
+
+//    Page<OrderItem> findByClientData(ClientData clientData, Pageable paging);
+//
+//    Page<OrderItem> findByClientDataAndId(ClientData clientData, long orderItemId, Pageable paging);
+//
+//    Page<OrderItem> findByClientDataAndStatusContainingIgnoreCase(ClientData clientData, String filter, Pageable paging);
+//
+//    Page<OrderItem> findByClientDataAndActivationDateBetween(ClientData clientData, Date from, Date from1, Pageable paging);
+//
+//    Page<OrderItem> findByClientDataAndOrderItemNameContainingIgnoreCase(ClientData clientData, String filter, Pageable paging);
 }

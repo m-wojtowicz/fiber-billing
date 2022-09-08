@@ -2,6 +2,7 @@ package com.comarch.fiberBilling.service.impl;
 
 import com.comarch.fiberBilling.mapper.OrderItemMapper;
 import com.comarch.fiberBilling.model.api.response.GetAllOrderItems;
+import com.comarch.fiberBilling.model.api.response.GetAllOrders;
 import com.comarch.fiberBilling.model.api.response.GetAllProductParameters;
 import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
 import com.comarch.fiberBilling.model.dto.OrderItemDTO;
@@ -10,19 +11,26 @@ import com.comarch.fiberBilling.repository.*;
 import com.comarch.fiberBilling.service.OrderItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderItemServiceImpl implements OrderItemService {
-
+    private final ClientDataRepository clientDataRepository;
     private final OrderRepository orderRepository;
     private final OfferRepository offerRepository;
     private final OrderItemRepository orderItemRepository;
@@ -30,16 +38,70 @@ public class OrderItemServiceImpl implements OrderItemService {
     private final OrderItemMapper orderItemMapper = OrderItemMapper.INSTANCE;
 
     @Override
-    public ResponseEntity getAllUserProducts(Long id, String userType) {
+    public ResponseEntity getUserProducts(String userId, int pageNo, String filter, String filterType) {
+        long id;
+        try {
+            id = Long.parseLong(userId);
+        } catch (NumberFormatException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+        }
+        Optional<ClientData> clientData = clientDataRepository.findById(id);
+        if (clientData.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+
         List<OrderItem> orderItemList = orderItemRepository.getAllUserProducts(id).orElse(null);
         if (orderItemList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No content");
         }
+
+        Pageable paging = PageRequest.of(pageNo, 3);
+        Page<OrderItem> pages = null;
+
+        if (Objects.equals(filter, "")) {
+            pages = new PageImpl<>(orderItemList, paging, orderItemList.size());
+        } else if (filterType.equalsIgnoreCase("id")) {
+            long orderItemId;
+            try {
+                orderItemId = Long.parseLong(filter);
+                // TODO filtrowanie
+                // pages = orderItemRepository.findByClientDataAndId(clientData.get(), orderItemId, paging);
+            } catch (Exception ex) {
+                // TODO return err
+                System.out.println(ex.getMessage());
+            }
+        } else if (filterType.equalsIgnoreCase("status")) {
+            // TODO filtrowanie
+            // pages = orderItemRepository.findByClientDataAndStatusContainingIgnoreCase(clientData.get(), filter, paging);
+        } else if (filterType.equalsIgnoreCase("creation date")) {
+            try {
+                LocalDate date = LocalDate.parse(filter.replace("/", ""), DateTimeFormatter.BASIC_ISO_DATE);
+                // TODO filtrowanie
+//                pages = orderItemRepository.findByClientDataAndActivationDateBetween(
+//                        clientData.get(),
+//                        Date.from(date.atStartOfDay().toInstant(ZoneOffset.UTC)),
+//                        Date.from(date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)),
+//                        paging);
+            } catch (Exception ex) {
+                // TODO return err
+                System.out.println(ex.getMessage());
+            }
+        } else if (filterType.equalsIgnoreCase("name")) {
+            // TODO filtrowanie
+
+            // pages = orderItemRepository.findByClientDataAndOrderItemNameContainingIgnoreCase(clientData.get(), filter, paging);
+        } else {
+            // pages = orderItemRepository.findByClientData(clientData.get(), paging);
+        }
+        if (pages == null) {
+            return ResponseEntity.noContent().build();
+        }
+
         List<GetAllUserProducts> allUserProducts = new ArrayList<>();
-        orderItemList.forEach(x -> {
+        pages.getContent().forEach(orderItem -> {
             BigDecimal cost = new BigDecimal("0");
-            List<OrderItemParameter> orderItemParameters = orderItemParameterRepository.findByOrderItem(x);
-            if (Objects.equals(userType, "regular")) {
+            List<OrderItemParameter> orderItemParameters = orderItemParameterRepository.findByOrderItem(orderItem);
+            if (Objects.equals(clientData.get().getClientType().getType(), "regular")) {
                 for (var orderItemParameter : orderItemParameters) {
                     if (!orderItemParameter.isMonthly())
                         cost = cost.add(orderItemParameter.getParameterDetail().getPriceRegular());
@@ -50,10 +112,10 @@ public class OrderItemServiceImpl implements OrderItemService {
                 }
             }
             allUserProducts.add(GetAllUserProducts.builder()
-                    .id(x.getId())
-                    .orderItemName(x.getOrderItemName())
-                    .activationDate(x.getActivationDate())
-                    .status(x.getStatus())
+                    .id(orderItem.getId())
+                    .orderItemName(orderItem.getOrderItemName())
+                    .activationDate(orderItem.getActivationDate())
+                    .status(orderItem.getStatus())
                     .cost(cost)
                     .build());
         });

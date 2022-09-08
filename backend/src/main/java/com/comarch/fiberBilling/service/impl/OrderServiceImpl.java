@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
         Pageable paging = PageRequest.of(pageNo, 3);
 
         Page<Order> pages = null;
-        if (filter == "") {
+        if (Objects.equals(filter, "")) {
             pages = orderRepository.findByClientData(clientData.get(), paging);
         } else if (filterType.equalsIgnoreCase("id")) {
             long orderId;

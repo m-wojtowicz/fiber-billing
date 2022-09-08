@@ -1,8 +1,21 @@
 import axios from "axios";
 
-export const getAllProducts = async (id, userType) => {
-  const url = `http://localhost:8000/api/orderItem/all/${id}`;
-  return await axios.get(url, { params: { userType: userType } });
+export const getUserProducts = async (login, pageNo, filter, filterType) => {
+  let url = `http://localhost:8000/api/client-data/user/${login}`;
+  const user = await (await axios.get(url)).data;
+  const userId = user.id;
+
+  url = `http://localhost:8000/api/orderItem/user/${userId}`;
+  const products = await (
+    await axios.get(url, {
+      params: {
+        pageNo: pageNo - 1,
+        filter: filter,
+        filterType: filterType,
+      },
+    })
+  ).data;
+  return products;
 };
 
 export const getAllProductParameters = async (id) => {
