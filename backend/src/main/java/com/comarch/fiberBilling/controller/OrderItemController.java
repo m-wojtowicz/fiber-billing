@@ -1,9 +1,8 @@
 package com.comarch.fiberBilling.controller;
 
-import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
+import com.comarch.fiberBilling.model.api.response.GetAllProducts;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
 import com.comarch.fiberBilling.model.dto.OrderItemDTO;
-import com.comarch.fiberBilling.model.entity.OrderItem;
 import com.comarch.fiberBilling.service.impl.OrderItemServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,7 +32,7 @@ public class OrderItemController {
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
     })
     @GetMapping(value = "/user/{clientDataId}")
-    public ResponseEntity<List<GetAllUserProducts>> getUserProducts(@PathVariable("clientDataId") String clientDataId, @RequestParam("pageNo") int pageNo, @RequestParam("filter") String filter, @RequestParam("filterType") String filterType) {
+    public ResponseEntity<List<GetAllProducts>> getUserProducts(@PathVariable("clientDataId") String clientDataId, @RequestParam("pageNo") int pageNo, @RequestParam("filter") String filter, @RequestParam("filterType") String filterType) {
         return orderItemService.getUserProducts(clientDataId, pageNo, filter, filterType);
     }
 

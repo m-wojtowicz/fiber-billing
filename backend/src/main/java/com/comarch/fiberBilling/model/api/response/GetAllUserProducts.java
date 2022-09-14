@@ -5,19 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class GetAllUserProducts {
-    private Long id;
-    private String orderItemName;
-    private Date activationDate;
-    private String status;
-    private BigDecimal cost;
-    private BigDecimal oneTimeCharge;
+    List<GetAllProducts> products;
+    Long total;
 }

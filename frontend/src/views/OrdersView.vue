@@ -18,7 +18,7 @@ const currDate = new Date();
 let date = currDate.getDate().toString();
 let month = (currDate.getMonth() + 1).toString();
 let year = currDate.getFullYear().toString();
-if (date.length < 2) date = 0 + date; 
+if (date.length < 2) date = 0 + date;
 if (month.length < 2) month = 0 + month;
 const filterDate = ref(year + "/" + month + "/" + date);
 const filterTypes = ["ID", "Status", "Creation date"];
@@ -63,7 +63,7 @@ async function updateOrders() {
 <template>
   <div
     class="column items-center q-gutter-y-md"
-    style="min-width: 60%; max-width: 100%; min-height: inherit;"
+    style="min-width: 60%; max-width: 100%; min-height: inherit"
   >
     <div class="col-1 row full-width">
       <div class="col self-start flex q-gutter-xs">
@@ -76,7 +76,9 @@ async function updateOrders() {
           v-if="filterType !== 'Creation date'"
         >
           <template v-slot:append>
-            <q-icon name="search" />
+            <q-btn flat padding="xs" @click="updateOrders()">
+              <q-icon name="search" />
+            </q-btn>
           </template>
         </q-input>
 
@@ -203,4 +205,5 @@ async function updateOrders() {
   text-align: center
   display: table-cell
   vertical-align: middle
+  padding: 10px
 </style>

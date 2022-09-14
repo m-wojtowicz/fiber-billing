@@ -2,15 +2,15 @@ package com.comarch.fiberBilling.service.impl;
 
 import com.comarch.fiberBilling.mapper.OrderItemMapper;
 import com.comarch.fiberBilling.model.api.response.GetAllOrderItems;
-import com.comarch.fiberBilling.model.api.response.GetAllOrders;
 import com.comarch.fiberBilling.model.api.response.GetAllProductParameters;
+import com.comarch.fiberBilling.model.api.response.GetAllProducts;
 import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
-import com.comarch.fiberBilling.model.dto.OrderItemDTO;
 import com.comarch.fiberBilling.model.entity.*;
 import com.comarch.fiberBilling.repository.*;
 import com.comarch.fiberBilling.service.OrderItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -50,55 +50,56 @@ public class OrderItemServiceImpl implements OrderItemService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
 
-        List<OrderItem> orderItemList = orderItemRepository.getAllUserProducts(id).orElse(null);
-        if (orderItemList.isEmpty()) {
+        List<OrderItem> unfilteredItems = orderItemRepository.getAllUserProducts(id).orElse(null);
+        if (unfilteredItems.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No content");
         }
 
-        Pageable paging = PageRequest.of(pageNo, 3);
-        Page<OrderItem> pages = null;
+        List<OrderItem> filteredItems = new ArrayList<>();
+        List<OrderItem> finalList = null;
 
         if (Objects.equals(filter, "")) {
-            pages = new PageImpl<>(orderItemList, paging, orderItemList.size());
+            finalList = unfilteredItems;
         } else if (filterType.equalsIgnoreCase("id")) {
-            long orderItemId;
-            try {
-                orderItemId = Long.parseLong(filter);
-                // TODO filtrowanie
-                // pages = orderItemRepository.findByClientDataAndId(clientData.get(), orderItemId, paging);
-            } catch (Exception ex) {
-                // TODO return err
-                System.out.println(ex.getMessage());
-            }
+            unfilteredItems.forEach(item -> {
+                if (String.valueOf(item.getId()).contains(filter)) filteredItems.add(item);
+            });
         } else if (filterType.equalsIgnoreCase("status")) {
-            // TODO filtrowanie
-            // pages = orderItemRepository.findByClientDataAndStatusContainingIgnoreCase(clientData.get(), filter, paging);
+            unfilteredItems.forEach(item -> {
+                if (item.getStatus().toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) filteredItems.add(item);
+            });
         } else if (filterType.equalsIgnoreCase("creation date")) {
             try {
                 LocalDate date = LocalDate.parse(filter.replace("/", ""), DateTimeFormatter.BASIC_ISO_DATE);
-                // TODO filtrowanie
-//                pages = orderItemRepository.findByClientDataAndActivationDateBetween(
-//                        clientData.get(),
-//                        Date.from(date.atStartOfDay().toInstant(ZoneOffset.UTC)),
-//                        Date.from(date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)),
-//                        paging);
+                unfilteredItems.forEach(item -> {
+                    LocalDate orderItemDate = LocalDate.ofInstant(item.getActivationDate().toInstant(), ZoneOffset.UTC);
+                    if (orderItemDate.isEqual(date)) filteredItems.add(item);
+                });
             } catch (Exception ex) {
-                // TODO return err
                 System.out.println(ex.getMessage());
             }
         } else if (filterType.equalsIgnoreCase("name")) {
-            // TODO filtrowanie
-
-            // pages = orderItemRepository.findByClientDataAndOrderItemNameContainingIgnoreCase(clientData.get(), filter, paging);
+            unfilteredItems.forEach(item -> {
+                if (item.getOrderItemName().toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) filteredItems.add(item);
+            });
         } else {
-            // pages = orderItemRepository.findByClientData(clientData.get(), paging);
+            finalList = unfilteredItems;
         }
-        if (pages == null) {
+
+        if (finalList == null) {
+            finalList = filteredItems;
+        }
+
+        if (finalList.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        List<GetAllUserProducts> allUserProducts = new ArrayList<>();
-        pages.getContent().forEach(orderItem -> {
+        PagedListHolder<OrderItem> page = new PagedListHolder<OrderItem>(finalList);
+        page.setPageSize(3);
+        page.setPage(pageNo);
+
+        List<GetAllProducts> allUserProducts = new ArrayList<>();
+        page.getPageList().forEach(orderItem -> {
             BigDecimal cost = new BigDecimal("0");
             List<OrderItemParameter> orderItemParameters = orderItemParameterRepository.findByOrderItem(orderItem);
             if (Objects.equals(clientData.get().getClientType().getType(), "regular")) {
@@ -111,7 +112,7 @@ public class OrderItemServiceImpl implements OrderItemService {
                     cost = cost.add(orderItemParameter.getParameterDetail().getPriceBusiness());
                 }
             }
-            allUserProducts.add(GetAllUserProducts.builder()
+            allUserProducts.add(GetAllProducts.builder()
                     .id(orderItem.getId())
                     .orderItemName(orderItem.getOrderItemName())
                     .activationDate(orderItem.getActivationDate())
@@ -119,7 +120,11 @@ public class OrderItemServiceImpl implements OrderItemService {
                     .cost(cost)
                     .build());
         });
-        return ResponseEntity.ok(allUserProducts);
+
+        GetAllUserProducts response = new GetAllUserProducts();
+        response.setProducts(allUserProducts);
+        response.setTotal(Long.valueOf(page.getPageCount()));
+        return ResponseEntity.ok(response);
     }
 
     @Override

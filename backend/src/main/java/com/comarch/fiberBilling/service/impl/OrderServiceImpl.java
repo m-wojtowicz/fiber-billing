@@ -5,12 +5,11 @@ import com.comarch.fiberBilling.model.api.request.PutConfigItems;
 import com.comarch.fiberBilling.model.api.response.*;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
 import com.comarch.fiberBilling.model.entity.*;
-import com.comarch.fiberBilling.model.specs.OrderSpecification;
-import com.comarch.fiberBilling.model.specs.SearchCriteria;
 import com.comarch.fiberBilling.repository.*;
 import com.comarch.fiberBilling.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -55,48 +52,57 @@ public class OrderServiceImpl implements OrderService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
 
-        Pageable paging = PageRequest.of(pageNo, 3);
+        List<Order> unfilteredOrders = orderRepository.findByClientData(clientData.get()).orElse(null);
+        if (unfilteredOrders.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No content");
+        }
 
-        Page<Order> pages = null;
+        List<Order> filteredOrders = new ArrayList<>();
+        List<Order> finalList = null;
+
         if (Objects.equals(filter, "")) {
-            pages = orderRepository.findByClientData(clientData.get(), paging);
+            finalList = unfilteredOrders;
         } else if (filterType.equalsIgnoreCase("id")) {
-            long orderId;
-            try {
-                orderId = Long.parseLong(filter);
-                // TODO
-                pages = orderRepository.findByClientDataAndId(clientData.get(), orderId, paging);
-            } catch (Exception ex) {
-                // TODO return err
-                System.out.println(ex.getMessage());
-            }
+            unfilteredOrders.forEach(order -> {
+                if (String.valueOf(order.getId()).contains(filter)) filteredOrders.add(order);
+            });
         } else if (filterType.equalsIgnoreCase("status")) {
-            pages = orderRepository.findByClientDataAndOrderStatusContainingIgnoreCase(clientData.get(), filter, paging);
+            unfilteredOrders.forEach(order -> {
+                if (order.getOrderStatus().toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) filteredOrders.add(order);
+            });
         } else if (filterType.equalsIgnoreCase("creation date")) {
             try {
                 LocalDate date = LocalDate.parse(filter.replace("/", ""), DateTimeFormatter.BASIC_ISO_DATE);
-                pages = orderRepository.findByClientDataAndOrderStartDateBetween(
-                        clientData.get(),
-                        Date.from(date.atStartOfDay().toInstant(ZoneOffset.UTC)),
-                        Date.from(date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)),
-                        paging);
+                unfilteredOrders.forEach(order -> {
+                    LocalDate orderStartDate = LocalDate.ofInstant(order.getOrderStartDate().toInstant(), ZoneOffset.UTC);
+                    LocalDate orderEndDate = LocalDate.ofInstant(order.getOrderEndDate().toInstant(), ZoneOffset.UTC);
+                    if (orderStartDate.isEqual(date) || orderEndDate.isEqual(date)) filteredOrders.add(order);
+                });
             } catch (Exception ex) {
-                // TODO return err
                 System.out.println(ex.getMessage());
             }
         } else {
-            pages = orderRepository.findByClientData(clientData.get(), paging);
+            finalList = unfilteredOrders;
         }
-        if (pages == null) {
+
+        if (finalList == null) {
+            finalList = filteredOrders;
+        }
+
+        if (finalList.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        List<GetAllOrders> allOrders = new ArrayList<>();
+        PagedListHolder<Order> page = new PagedListHolder<Order>(finalList);
+        page.setPageSize(3);
+        page.setPage(pageNo);
 
-        pages.getContent().forEach(order -> {
+
+        List<GetAllOrders> allUserOrders = new ArrayList<>();
+        page.getPageList().forEach(order -> {
             String clientType = order.getClientData().getClientType().getType();
             List<OrderItem> orderItems = orderItemRepository.findByOrder(order);
-            List<GetAllUserProducts> items = new ArrayList<>();
+            List<GetAllProducts> items = new ArrayList<>();
             BigDecimal monthlyCost;
             BigDecimal oneTimeCharge;
             BigDecimal totalMonthlyCost = BigDecimal.ZERO;
@@ -119,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
                     }
 
                 }
-                items.add(GetAllUserProducts.builder()
+                items.add(GetAllProducts.builder()
                         .id(orderItem.getId())
                         .orderItemName(orderItem.getOrderItemName())
                         .activationDate(orderItem.getActivationDate())
@@ -130,7 +136,7 @@ public class OrderServiceImpl implements OrderService {
                 totalMonthlyCost = totalMonthlyCost.add(monthlyCost);
                 totalOneTimeCharge = totalOneTimeCharge.add(oneTimeCharge);
             }
-            allOrders.add(GetAllOrders.builder()
+            allUserOrders.add(GetAllOrders.builder()
                     .id(order.getId())
                     .orderStatus(order.getOrderStatus())
                     .orderStartDate(order.getOrderStartDate())
@@ -142,8 +148,8 @@ public class OrderServiceImpl implements OrderService {
         });
 
         GetAllUserOrders response = new GetAllUserOrders();
-        response.setOrders(allOrders);
-        response.setTotal(pages.getTotalElements());
+        response.setOrders(allUserOrders);
+        response.setTotal(Long.valueOf(page.getPageCount()));
         return ResponseEntity.ok(response);
     }
 
@@ -269,10 +275,10 @@ public class OrderServiceImpl implements OrderService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
 
-        Page<Order> orders = orderRepository.findByClientData(clientData.get(), null);
+        List<Order> orders = orderRepository.findByClientData(clientData.get()).orElse(null);
 
         for (Order order : orders) {
-            if (order.getOrderStatus().equals("NEW")) {
+            if (order.getOrderStatus().toLowerCase(Locale.ROOT).equals("new")) {
                 return ResponseEntity.ok(order.getId());
             }
         }
