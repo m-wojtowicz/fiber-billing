@@ -202,7 +202,7 @@ public class OrderItemServiceImpl implements OrderItemService {
                 order(order.get()).
                 orderItemName(offer.get().getProduct().getProductName()).
                 activationDate(new Date()).
-                status("NEW").
+                status("New").
                 build();
         OrderItem savedOrderItem = orderItemRepository.save(orderItem);
 

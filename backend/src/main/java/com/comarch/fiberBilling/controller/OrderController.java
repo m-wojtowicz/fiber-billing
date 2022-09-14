@@ -4,9 +4,10 @@ import com.comarch.fiberBilling.model.api.request.PutConfigItems;
 import com.comarch.fiberBilling.model.api.response.GetAllOrders;
 import com.comarch.fiberBilling.model.api.response.GetConfigItems;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
+import com.comarch.fiberBilling.model.entity.Order;
+import com.comarch.fiberBilling.repository.OrderRepository;
 import com.comarch.fiberBilling.service.OrderItemService;
 import com.comarch.fiberBilling.service.OrderService;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,6 +34,8 @@ public class OrderController {
 
     private final OrderService orderService;
     private final OrderItemService orderItemService;
+
+    private final OrderRepository  orderRepository;
 
     @Operation(summary = "Get all user orders")
     @ApiResponses(value = {
@@ -121,23 +124,24 @@ public class OrderController {
     @PostMapping(value = "/user/{userId}")
     public ResponseEntity createOrder(@PathVariable("userId") String userId) {
         String businessKey;
+        Order order = orderService.createOrder(userId);
+        if (order == null) return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().
-                uri(URI.create("http://localhost:9000/camunda/process/new")).
+                uri(URI.create("http://localhost:9000/camunda/process/new/" + order.getId())).
                 POST(HttpRequest.BodyPublishers.ofString("")).
                 build();
-
-        ResponseEntity retVal;
 
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             JSONObject jsonObject = new JSONObject(response.body());
             businessKey = jsonObject.getString("businessKey");
-            retVal = orderService.createOrder(userId, businessKey);
+            order.setBusinessKey(businessKey);
+            orderRepository.save(order);
         } catch (IOException | InterruptedException ex) {
-            retVal = new ResponseEntity("Camunda error", HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Camunda error");
         }
-        return retVal;
+        return ResponseEntity.ok(order.getId());
     }
 
     @Operation(summary = "Update order status")
@@ -176,7 +180,6 @@ public class OrderController {
     })
     @GetMapping(value = "/configure/{orderId}")
     public ResponseEntity getConfigureOrderData(@PathVariable("orderId") String orderId, @RequestParam("clientType") String clientType) {
-        System.out.println(clientType);
         return orderService.getConfigItems(orderId, clientType);
     }
 
@@ -190,7 +193,29 @@ public class OrderController {
     })
     @PutMapping(value = "/configure/{orderId}")
     public ResponseEntity postConfigItems(@PathVariable("orderId") String orderId, @RequestBody PutConfigItems data) {
-        orderService.putConfigItems(orderId, data);
-        return ResponseEntity.ok("elo");
+        return orderService.putConfigItems(orderId, data);
+    }
+
+    @GetMapping(value = "/process/{orderId}")
+    public ResponseEntity updateProcess(@PathVariable("orderId") Long orderId) {
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order == null) return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+
+        String processRequest = new JSONObject()
+                .put("businessKey", order.getBusinessKey())
+                .toString();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:9000/camunda/process/complete"))
+                .POST(HttpRequest.BodyPublishers.ofString(processRequest))
+                .header("Content-Type", "application/json")
+                .build();
+        try {
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            java.lang.System.out.println(e);
+        }
+        return ResponseEntity.ok("Success");
     }
 }

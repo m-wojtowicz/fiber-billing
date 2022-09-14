@@ -2,6 +2,7 @@ package com.comarch.fiberBilling.service;
 
 import com.comarch.fiberBilling.model.api.request.PutConfigItems;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
+import com.comarch.fiberBilling.model.entity.Order;
 import org.springframework.http.ResponseEntity;
 
 public interface OrderService {
@@ -15,7 +16,7 @@ public interface OrderService {
 
     ResponseEntity deleteOrder(String orderId);
 
-    ResponseEntity createOrder(String userId, String businessKey);
+    Order createOrder(String userId);
 
     ResponseEntity changeStatus(String orderId, String status);
 

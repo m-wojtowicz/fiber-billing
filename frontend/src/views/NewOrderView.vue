@@ -1,17 +1,24 @@
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, watch } from "vue";
 import OfferCard from "../components/OfferCard.vue";
 import {
   checkOpenOrder,
   createOrder,
   getOrderItems,
   removeItem,
+  sendProcessUpdate,
 } from "../services/orderService";
 import { getAvailableOffers } from "../services/offerService";
 import { loginStore } from "../stores/loginStore";
 import { useQuasar } from "quasar";
 import ConfigureOrderItems from "../components/ConfigureOrderItems.vue";
 import { Loading } from "quasar";
+import { useRouter } from "vue-router";
+import { orderStore } from "../stores/orderStore";
+
+const orderId = orderStore();
+
+const router = useRouter();
 
 const $q = useQuasar();
 const order = ref({ id: "" });
@@ -64,6 +71,7 @@ onBeforeMount(async () => {
 
   await updateItems();
 
+  orderId.id = order.value.id;
   Loading.hide();
 });
 
@@ -99,6 +107,22 @@ async function removeItemFromOrder(itemId, itemName) {
       });
     });
 }
+
+const clickConfigItems = () => {
+  dialog.value = true;
+  sendProcessUpdate(order.value.id);
+};
+
+const saveData = ref({});
+
+watch(
+  () => dialog.value,
+  () => {
+    if (saveData.value.fiberExist === true) {
+      router.push({ name: "calendar" });
+    }
+  }
+);
 </script>
 
 <template class="flex items-start">
@@ -147,11 +171,22 @@ async function removeItemFromOrder(itemId, itemName) {
       </ul>
     </div>
     <div class="q-mt-xl flex justify-end">
-      <q-btn class="configure_button q-mt-xl q-mr-xl" @click="dialog = true">
+      <q-btn
+        class="configure_button q-mt-xl q-mr-xl"
+        @click="clickConfigItems()"
+      >
         Configure Products
       </q-btn>
     </div>
-    <ConfigureOrderItems :dialog="dialog" @responseDialog="dialog = false" />
+    <ConfigureOrderItems
+      :dialog="dialog"
+      @responseDialog="
+        (responseDialog) => {
+          dialog = false;
+          saveData = responseDialog.dataAfterSave;
+        }
+      "
+    />
   </div>
 </template>
 
