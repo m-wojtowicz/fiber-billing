@@ -19,4 +19,5 @@ public class GetAllProductParameters {
     private String value;
     private BigDecimal priceRegular;
     private BigDecimal priceBusiness;
+    private boolean monthly;
 }
