@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface OrderItemService {
-    public ResponseEntity<List<OrderItem>> getAllUserProducts(Long id, String userType);
+    ResponseEntity getUserProducts(String userId, int pageNo, String filter, String filterType);
 
     public ResponseEntity<List<GetAllProductParameters>> getAllProductParameters(Long id);
 

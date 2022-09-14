@@ -13,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class GetAllUserOrders {
     List<GetAllOrders> orders;
-    int size;
+    Long total;
 }

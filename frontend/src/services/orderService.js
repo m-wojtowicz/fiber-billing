@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const getUserOrders = async (login, pageNo, filter) => {
+export const getUserOrders = async (login, pageNo, filter, filterType) => {
   let url = `http://localhost:8000/api/client-data/user/${login}`;
   const user = await (await axios.get(url)).data;
   const userId = user.id;
@@ -11,6 +11,7 @@ export const getUserOrders = async (login, pageNo, filter) => {
       params: {
         pageNo: pageNo - 1,
         filter: filter,
+        filterType: filterType,
       },
     })
   ).data;

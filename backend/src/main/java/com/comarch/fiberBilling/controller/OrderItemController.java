@@ -1,9 +1,8 @@
 package com.comarch.fiberBilling.controller;
 
-import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
+import com.comarch.fiberBilling.model.api.response.GetAllProducts;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
 import com.comarch.fiberBilling.model.dto.OrderItemDTO;
-import com.comarch.fiberBilling.model.entity.OrderItem;
 import com.comarch.fiberBilling.service.impl.OrderItemServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,9 +31,9 @@ public class OrderItemController {
             @ApiResponse(responseCode = "204", description = "ID not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid ID", content = @Content),
     })
-    @GetMapping(value = "/all/{id}", params = {"userType"})
-    public ResponseEntity<List<GetAllUserProducts>> getAllUserProducts(@PathVariable Long id, @RequestParam("userType") String userType) {
-        return orderItemService.getAllUserProducts(id, userType);
+    @GetMapping(value = "/user/{clientDataId}")
+    public ResponseEntity<List<GetAllProducts>> getUserProducts(@PathVariable("clientDataId") String clientDataId, @RequestParam("pageNo") int pageNo, @RequestParam("filter") String filter, @RequestParam("filterType") String filterType) {
+        return orderItemService.getUserProducts(clientDataId, pageNo, filter, filterType);
     }
 
     @Operation(summary = "Get all parameters of product")

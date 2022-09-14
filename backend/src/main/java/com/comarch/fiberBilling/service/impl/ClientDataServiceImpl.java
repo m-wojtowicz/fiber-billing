@@ -76,8 +76,9 @@ public class ClientDataServiceImpl implements ClientDataService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
         putUserData.setId(id);
-        clientDataRepository.save(UserToClientMapper.UserToClient(putUserData, clientData));
-        return ResponseEntity.status(HttpStatus.CREATED).body(clientDataMapper.clientDataToClientDataDto(clientData));
+        ClientData newClientData = UserToClientMapper.UserToClient(putUserData, clientData);
+        clientDataRepository.save(newClientData);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientDataMapper.clientDataToClientDataDto(newClientData));
     }
 
     @Override
