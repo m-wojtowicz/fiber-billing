@@ -109,20 +109,29 @@ async function removeItemFromOrder(itemId, itemName) {
 }
 
 const clickConfigItems = () => {
-  dialog.value = true;
+  dialog.value = !dialog.value;
   sendProcessUpdate(order.value.id);
 };
 
 const saveData = ref({});
 
+async function changePath(value) {
+  console.log(value);
+  if (value.fiberExist) {
+    router.push({ name: "calendar" });
+  }
+}
+
 watch(
-  () => dialog.value,
-  () => {
-    if (saveData.value.fiberExist === true) {
+  () => saveData.value,
+  async (newVal) => {
+    console.log(newVal);
+    if (newVal.fiberExist) {
       router.push({ name: "calendar" });
     }
   }
 );
+
 </script>
 
 <template class="flex items-start">
@@ -180,12 +189,9 @@ watch(
     </div>
     <ConfigureOrderItems
       :dialog="dialog"
-      @responseDialog="
-        (responseDialog) => {
-          dialog = false;
-          saveData = responseDialog.dataAfterSave;
-        }
-      "
+      :order-id="order.id"
+      @response-dialog="(value) => changePath(value)"
+      @change-dialog="dialog = false"
     />
   </div>
 </template>

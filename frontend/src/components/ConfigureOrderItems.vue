@@ -6,6 +6,10 @@ import {
   getConfigData,
   sendConfigData,
 } from "../services/orderService";
+import { useQuasar } from "quasar";
+import { Loading } from "quasar";
+
+const $q = useQuasar();
 
 const user = loginStore();
 
@@ -13,9 +17,10 @@ const isSizeChanged = ref(false);
 
 const props = defineProps({
   dialog: Boolean,
+  orderId: Number,
 });
 
-const emit = defineEmits(["responseDialog"]);
+const emit = defineEmits(["responseDialog", "changeDialog"]);
 
 const order = ref({
   id: 1,
@@ -50,20 +55,13 @@ const prices = ref(null);
 
 let data = ref(false);
 
-const getOrderId = async () => {
-  let data = await checkOpenOrder(user.userId);
-  return data.data;
-};
-
 watch(
   () => props.dialog,
-  async () => {
-    if (props.dialog === true) {
+  async (newVal) => {
+    if (newVal) {
       data.value = true;
-      let orderId = await getOrderId();
-      await getConfigData(orderId, user.clientType).then((resp) => {
+      await getConfigData(props.orderId, user.clientType).then((resp) => {
         order.value = resp.data;
-        console.log(resp.data);
       });
       choosenValues.value = new Array(order.value.items.length).fill("");
       prices.value = new Array(order.value.items.length).fill(0);
@@ -80,19 +78,8 @@ watch(
   }
 );
 
-watch(
-  () => data.value,
-  () => {
-    if (data.value === false) {
-      emit("responseDialog", {
-        dialog: props.dialog,
-        dataAfterSave: saveData.value,
-      });
-    }
-  }
-);
-
 const save = async () => {
+  Loading.show();
   let data = new Object();
   data.id = order.value.id;
   data.items = new Array();
@@ -102,10 +89,26 @@ const save = async () => {
     item.values = toRaw(choosenValues.value[i]);
     data.items.push(item);
   }
-  await sendConfigData(order.value.id, data).then((resp) => {
-    saveData.value = resp.data;
-  });
+  await sendConfigData(order.value.id, data)
+    .then((resp) => {
+      if (resp.status === 200) {
+        saveData.value = resp.data;
+        $q.notify({
+          message: `Config data saved`,
+          color: "green",
+        });
+      }
+    })
+    .catch((err) => {
+      $q.notify({
+        message: "Error",
+        color: "red",
+      });
+    });
   data.value = false;
+  emit("changeDialog");
+  emit("responseDialog", saveData.value);
+  Loading.hide();
 };
 
 const getPrice = (row, col, value) => {
@@ -176,11 +179,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <q-dialog v-model="data" persistent>
+  <q-dialog v-model="dialog" persistent>
     <q-card id="window">
       <q-card-section class="row items-center q-pb-none">
         <q-space />
-        <q-btn icon="close" flat round dense @click="dialog" v-close-popup />
+        <q-btn
+          icon="close"
+          flat
+          round
+          dense
+          @click="$emit('changeDialog')"
+          v-close-popup
+        />
       </q-card-section>
       <div class="row full-width" style="margin: 10px 0 10px 0">
         <div class="col text-h6 text-left">
@@ -218,7 +228,7 @@ onMounted(() => {
                 <div class="row justify-between">
                   <div class="col-9 parameters-section">
                     <div class="text-left">
-                      <ui
+                      <div
                         v-for="(parameter, index) in item.parameters"
                         :key="parameter.id"
                       >
@@ -244,7 +254,7 @@ onMounted(() => {
                             {{ parameter.prices[0] }}
                           </div>
                         </div>
-                      </ui>
+                      </div>
                     </div>
                   </div>
                   <div class="col flex justify-center">
@@ -265,7 +275,7 @@ onMounted(() => {
             Total: {{ getMonthlyOrderProductPrice() }} zł +
             {{ getOrderProductPrice() }} zł/mo
           </div>
-          <q-btn class="save_btn" @click="save"> Save </q-btn>
+          <q-btn class="save_btn" @click="save()"> Save </q-btn>
         </div>
       </q-card-section>
     </q-card>
