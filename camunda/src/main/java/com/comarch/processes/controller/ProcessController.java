@@ -5,10 +5,7 @@ import com.comarch.processes.dto.ProcessDTO;
 import com.comarch.processes.service.CamundaService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,9 +15,9 @@ public class ProcessController {
 
     @Operation(summary = "Start new process instance")
     @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping(value = "/camunda/process/new")
-    public ProcessDTO createProcess() {
-        return camundaService.create();
+    @PostMapping(value = "/camunda/process/new/{orderId}")
+    public ProcessDTO createProcess(@PathVariable("orderId") long orderId) {
+        return camundaService.create(orderId);
     }
 
     @Operation(summary = "Complete user task")

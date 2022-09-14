@@ -5,12 +5,14 @@ import com.comarch.fiberBilling.model.api.request.PutConfigItems;
 import com.comarch.fiberBilling.model.api.response.*;
 import com.comarch.fiberBilling.model.dto.OrderDTO;
 import com.comarch.fiberBilling.model.entity.*;
+import com.comarch.fiberBilling.model.entity.System;
 import com.comarch.fiberBilling.model.specs.OrderSpecification;
 import com.comarch.fiberBilling.model.specs.SearchCriteria;
 import com.comarch.fiberBilling.repository.*;
 import com.comarch.fiberBilling.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.*;
 
 @Slf4j
@@ -175,29 +182,28 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public ResponseEntity createOrder(String userId, String businessKey) {
+    public Order createOrder(String userId) {
         Long id;
         try {
             id = Long.parseLong(userId);
         } catch (NumberFormatException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
+            return null;
         }
         Optional<ClientData> clientData = clientDataRepository.findById(id);
         if (clientData.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+            return null;
         }
 
         Order newOrder = Order.builder().
                 clientData(clientData.get()).
-                orderStatus("NEW").
+                orderStatus("New").
                 orderStartDate(new Date()).
                 orderEndDate(new Date()).
-                businessKey(businessKey).
+                system(new System()).
                 build();
 
         orderRepository.flush();
-        Order order = orderRepository.save(newOrder);
-        return ResponseEntity.ok(order.getId());
+        return orderRepository.save(newOrder);
     }
 
     @Override
@@ -208,14 +214,13 @@ public class OrderServiceImpl implements OrderService {
         } catch (NumberFormatException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }
-        Optional<Order> order = orderRepository.findById(id);
-        if (order.isEmpty()) {
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
         }
-        Order newOrder = order.get();
-        newOrder.setOrderStatus(status);
-        orderRepository.save(newOrder);
-        return ResponseEntity.ok(newOrder);
+        order.setOrderStatus(status);
+        orderRepository.save(order);
+        return ResponseEntity.ok(orderMapper.orderToOrderDto(order));
     }
 
     @Override
@@ -234,7 +239,7 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findByClientData(clientData.get(), null);
 
         for (Order order : orders) {
-            if (order.getOrderStatus().equals("NEW")) {
+            if (order.getOrderStatus().equals("New")) {
                 return ResponseEntity.ok(order.getId());
             }
         }
@@ -326,6 +331,29 @@ public class OrderServiceImpl implements OrderService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID NaN");
         }
         Order order = orderRepository.findById(id).orElse(null);
+
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ID not found");
+        }
+        String processRequest = new JSONObject()
+                .put("businessKey", order.getBusinessKey())
+                .toString();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:9000/camunda/process/complete"))
+                .POST(HttpRequest.BodyPublishers.ofString(processRequest))
+                .header("Content-Type", "application/json")
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            java.lang.System.out.println(e);
+        }
+
+
         List<OrderItem> orderItemList = orderItemRepository.findByOrder(order);
 
         for (var orderItem : orderItemList) {
@@ -333,6 +361,8 @@ public class OrderServiceImpl implements OrderService {
                 if (orderItem.getId() == d.getId()) {
                     for(var v : d.getValues()){
                         ParameterDetail parameterDetail = parameterDetailRepository.findByValue(v);
+                        if (parameterDetail == null)
+                            parameterDetail = parameterDetailRepository.findByValue("Activation");
                         OrderItemParameter orderItemParameter = OrderItemParameter.builder()
                                 .orderItem(orderItem)
                                 .parameterDetail(parameterDetail)
@@ -343,6 +373,7 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
         }
-        return null;
+        System system = order.getSystem();
+        return ResponseEntity.ok(system);
     }
 }

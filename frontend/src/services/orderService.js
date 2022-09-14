@@ -62,7 +62,13 @@ export const getConfigData = async (orderId, clientType) => {
 };
 
 export const sendConfigData = async (orderId, data) => {
-  console.log(data);
   let url = `http://localhost:8000/api/order/configure/${orderId}`;
-  return await axios.put(url, data);
+  let d = await axios.put(url, data);
+  console.log(d.data);
+  return d;
+};
+
+export const sendProcessUpdate = async (orderId) => {
+  let url = `http://localhost:8000/api/order/process/${orderId}`;
+  return await axios.get(url);
 };

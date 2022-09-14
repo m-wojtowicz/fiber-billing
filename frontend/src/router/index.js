@@ -62,6 +62,12 @@ const router = createRouter({
       path: "/change",
       name: "change",
     },
+    {
+      path: "/calendar",
+      name: "calendar",
+      component: () => import("../views/CalendarView.vue"),
+      meta: { requiresAuth: true },
+    },
   ],
 });
 

@@ -4,7 +4,6 @@ import com.comarch.fiberBilling.mapper.OrderItemMapper;
 import com.comarch.fiberBilling.model.api.response.GetAllOrderItems;
 import com.comarch.fiberBilling.model.api.response.GetAllProductParameters;
 import com.comarch.fiberBilling.model.api.response.GetAllUserProducts;
-import com.comarch.fiberBilling.model.dto.OrderItemDTO;
 import com.comarch.fiberBilling.model.entity.*;
 import com.comarch.fiberBilling.repository.*;
 import com.comarch.fiberBilling.service.OrderItemService;
@@ -135,7 +134,7 @@ public class OrderItemServiceImpl implements OrderItemService {
                 order(order.get()).
                 orderItemName(offer.get().getProduct().getProductName()).
                 activationDate(new Date()).
-                status("NEW").
+                status("New").
                 build();
         OrderItem savedOrderItem = orderItemRepository.save(orderItem);
 

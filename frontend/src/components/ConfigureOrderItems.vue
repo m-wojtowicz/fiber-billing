@@ -43,6 +43,8 @@ const order = ref({
   ],
 });
 
+const saveData = ref(null);
+
 const choosenValues = ref(null);
 const prices = ref(null);
 
@@ -82,7 +84,10 @@ watch(
   () => data.value,
   () => {
     if (data.value === false) {
-      emit("responseDialog", props.dialog);
+      emit("responseDialog", {
+        dialog: props.dialog,
+        dataAfterSave: saveData.value,
+      });
     }
   }
 );
@@ -97,7 +102,10 @@ const save = async () => {
     item.values = toRaw(choosenValues.value[i]);
     data.items.push(item);
   }
-  await sendConfigData(order.value.id, data);
+  await sendConfigData(order.value.id, data).then((resp) => {
+    saveData.value = resp.data;
+  });
+  data.value = false;
 };
 
 const getPrice = (row, col, value) => {
@@ -172,14 +180,7 @@ onMounted(() => {
     <q-card id="window">
       <q-card-section class="row items-center q-pb-none">
         <q-space />
-        <q-btn
-          icon="close"
-          flat
-          round
-          dense
-          @click="console.log(dialog)"
-          v-close-popup
-        />
+        <q-btn icon="close" flat round dense @click="dialog" v-close-popup />
       </q-card-section>
       <div class="row full-width" style="margin: 10px 0 10px 0">
         <div class="col text-h6 text-left">

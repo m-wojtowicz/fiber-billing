@@ -29,4 +29,7 @@ public class Order {
     @JoinColumn(name = "`ID_CLIENT_DATA`", nullable = false)
     @ManyToOne
     private ClientData clientData;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "`SYSTEM_ID`")
+    private System system;
 }
