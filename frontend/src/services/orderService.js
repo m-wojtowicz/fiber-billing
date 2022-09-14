@@ -54,7 +54,6 @@ export const removeItem = async (itemId) => {
 
 export const getConfigData = async (orderId, clientType) => {
   let url = `http://localhost:8000/api/order/configure/${orderId}`;
-  console.log(clientType);
   return await axios.get(url, {
     params: {
       clientType: clientType,
@@ -65,7 +64,6 @@ export const getConfigData = async (orderId, clientType) => {
 export const sendConfigData = async (orderId, data) => {
   let url = `http://localhost:8000/api/order/configure/${orderId}`;
   let d = await axios.put(url, data);
-  console.log(d.data);
   return d;
 };
 

@@ -13,6 +13,7 @@ import com.comarch.fiberBilling.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -88,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
                     if (orderStartDate.isEqual(date) || orderEndDate.isEqual(date)) filteredOrders.add(order);
                 });
             } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+                java.lang.System.out.println(ex.getMessage());
             }
         } else {
             finalList = unfilteredOrders;
@@ -103,9 +104,11 @@ public class OrderServiceImpl implements OrderService {
         }
 
         PagedListHolder<Order> page = new PagedListHolder<Order>(finalList);
+        MutableSortDefinition sortDefinition = new MutableSortDefinition("id", true, true);
+        page.setSort(sortDefinition);
+        page.resort();
         page.setPageSize(3);
         page.setPage(pageNo);
-
 
         List<GetAllOrders> allUserOrders = new ArrayList<>();
         page.getPageList().forEach(order -> {
