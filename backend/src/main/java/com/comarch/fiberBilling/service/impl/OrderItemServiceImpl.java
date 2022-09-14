@@ -104,12 +104,13 @@ public class OrderItemServiceImpl implements OrderItemService {
             List<OrderItemParameter> orderItemParameters = orderItemParameterRepository.findByOrderItem(orderItem);
             if (Objects.equals(clientData.get().getClientType().getType(), "regular")) {
                 for (var orderItemParameter : orderItemParameters) {
-                    if (!orderItemParameter.getParameterDetail().isMonthly())
+                    if (orderItemParameter.getParameterDetail().isMonthly())
                         cost = cost.add(orderItemParameter.getParameterDetail().getPriceRegular());
                 }
             } else {
                 for (var orderItemParameter : orderItemParameters) {
-                    cost = cost.add(orderItemParameter.getParameterDetail().getPriceBusiness());
+                    if (orderItemParameter.getParameterDetail().isMonthly())
+                        cost = cost.add(orderItemParameter.getParameterDetail().getPriceBusiness());
                 }
             }
             allUserProducts.add(GetAllProducts.builder()
