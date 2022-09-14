@@ -144,6 +144,7 @@ public class OrderItemServiceImpl implements OrderItemService {
                     .value(x.getParameterDetail().getValue())
                     .priceBusiness(x.getParameterDetail().getPriceBusiness())
                     .priceRegular(x.getParameterDetail().getPriceRegular())
+                    .monthly(x.getParameterDetail().isMonthly())
                     .build());
         });
         return ResponseEntity.ok(getAllProductParameters);

@@ -20,6 +20,7 @@ const user = loginStore();
 
 const params = ref(null);
 const totalCost = ref(0);
+const totalMonthlyCost = ref(0);
 
 const passDataToEntry = async (id) => {
   let res = await getAllProductParameters(id);
@@ -35,7 +36,12 @@ watch(
       totalCost.value = 0;
       if (user.clientType === "regular") {
         params.value.forEach((parm) => {
-          totalCost.value += parm.priceRegular;
+          console.log(parm);
+          if (parm.monthly) {
+            totalMonthlyCost.value += parm.priceRegular;
+          } else {
+            totalCost.value += parm.priceRegular;
+          }
         });
       }
     }
@@ -90,9 +96,16 @@ watch(
               <div
                 class="col"
                 style="text-align: right"
-                v-if="user.clientType === 'regular'"
+                v-if="user.clientType === 'regular' && parameter.monthly"
               >
                 {{ parameter.priceRegular }} zł/mo
+              </div>
+              <div
+                class="col"
+                style="text-align: right"
+                v-if="user.clientType === 'regular' && !parameter.monthly"
+              >
+                {{ parameter.priceRegular }} zł
               </div>
               <div
                 class="col"
@@ -104,7 +117,7 @@ watch(
             </div>
             <div class="bar" style="margin-top: 30px">
               <div class="text-weight-bold text-h5">TOTAL</div>
-              <div class="text-weight-bold text-h5">{{ totalCost }} zł/mo</div>
+              <div class="text-weight-bold text-h5">{{ totalMonthlyCost }} zł/mo</div>
             </div>
           </q-card>
           <div style="padding: 10px 0 10px 0; float: right">
