@@ -1,5 +1,5 @@
 <script setup>
-defineProps({
+const props = defineProps({
   product: {
     id: Number,
     orderItemName: String,
@@ -23,7 +23,7 @@ defineProps({
     <div class="row col">
       <div class="col text-h6 text-left" style="align-self: flex-end">
         Active from:
-        {{ product.activationDate.toLocaleDateString() }}
+        {{ new Date(product.activationDate).toLocaleDateString() }}
       </div>
       <div class="col text-h6 text-right" style="align-self: flex-end">
         {{ product.cost }} zł/mo
