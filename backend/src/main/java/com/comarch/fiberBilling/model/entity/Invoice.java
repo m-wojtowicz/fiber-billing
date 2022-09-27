@@ -19,7 +19,7 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`ID_INVOICE`", length = 20, nullable = false)
     private long id;
-    @Column(name = "`PAYMENT_DATE`", nullable = false)
+    @Column(name = "`PAYMENT_DATE`")
     private Date paymentDate;
     @Column(name = "`INVOICE_DATE`", nullable = false)
     private Timestamp invoiceDate;
