@@ -2,10 +2,10 @@
 import { ref, watch } from "vue";
 import { getUserInvoices } from "../services/invoiceService";
 import { loginStore } from "../stores/loginStore";
-import { Loading } from "quasar";
+import OrderDetails from "../components/OrderDetails.vue";
 
-const dialog = ref(false);
-const invoice = ref(null);
+const orderDialog = ref(false);
+const order = ref(null);
 
 const login = loginStore();
 const invoices = ref(null);
@@ -20,49 +20,6 @@ const pagination = ref({
 
 const pagesNumber = ref(0);
 const loading = ref(false);
-
-await updateInvoices({
-  pagination: {
-    sortBy: "id",
-    descending: false,
-    page: 1,
-    rowsPerPage: 5,
-  },
-});
-
-async function updateInvoices(props) {
-  loading.value = true;
-
-  const { page, rowsPerPage, sortBy, descending } = props.pagination;
-
-  pagination.value.page = page;
-  pagination.value.rowsPerPage = rowsPerPage;
-  pagination.value.sortBy = sortBy;
-  pagination.value.descending = descending;
-
-  const fetchCount = rowsPerPage === 0 ? pagination.value.rowsNumber : rowsPerPage
-
-  await getUserInvoices(
-    login.login,
-    page,
-    fetchCount
-  ).then((res) => {
-    if (res.invoices !== undefined && res.total !== undefined) {
-      invoices.value = res.invoices;
-      pagination.value.rowsNumber = res.total;
-      pagesNumber.value = Math.ceil(
-        pagination.value.rowsNumber / pagination.value.rowsPerPage
-      );
-      console.log(pagination.value);
-    } else {
-      invoices.value = [];
-      pagination.value.rowsNumber = 0;
-      pagesNumber.value = 0;
-    }
-  });
-
-  loading.value = false;
-}
 
 const columns = [
   {
@@ -138,8 +95,57 @@ const columns = [
   },
 ];
 
+await updateInvoices({
+  pagination: {
+    sortBy: "id",
+    descending: false,
+    page: 1,
+    rowsPerPage: 5,
+  },
+});
+
+async function updateInvoices(props) {
+  loading.value = true;
+
+  const { page, rowsPerPage, sortBy, descending } = props.pagination;
+
+  pagination.value.page = page;
+  pagination.value.rowsPerPage = rowsPerPage;
+  pagination.value.sortBy = sortBy;
+  pagination.value.descending = descending;
+
+  const fetchCount = rowsPerPage === 0 ? pagination.value.rowsNumber : rowsPerPage
+
+  await getUserInvoices(
+    login.login,
+    page,
+    fetchCount
+  ).then((res) => {
+    if (res.invoices !== undefined && res.total !== undefined) {
+      invoices.value = res.invoices;
+      pagination.value.rowsNumber = res.total;
+      pagesNumber.value = Math.ceil(
+        pagination.value.rowsNumber / pagination.value.rowsPerPage
+      );
+      console.log(pagination.value);
+    } else {
+      invoices.value = [];
+      pagination.value.rowsNumber = 0;
+      pagesNumber.value = 0;
+    }
+  });
+
+  loading.value = false;
+}
+
 function logging(value) {
   console.log(value);
+}
+
+function openOrderDialog(invoice) {
+  order.value = invoice.order;
+  orderDialog.value = !orderDialog.value;
+  console.log(orderDialog.value);
 }
 </script>
 
@@ -159,7 +165,7 @@ function logging(value) {
     >
       <template v-slot:body-cell-order="props">
         <q-td :props="props">
-          <q-btn @click="logging(props.value)"> Order </q-btn>
+          <q-btn @click="openOrderDialog(props.row)"> Order </q-btn>
         </q-td>
       </template>
       <template v-slot:body-cell-provider="props">
@@ -181,6 +187,12 @@ function logging(value) {
       </template>
     </q-table>
   </div>
+
+  <OrderDetails
+    :dialog="orderDialog"
+    :order="order"
+    @change-dialog="orderDialog = false"
+  />
 </template>
 
 <style scoped lang="sass">
