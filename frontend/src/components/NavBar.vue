@@ -29,7 +29,7 @@ const logout = () => {
 
       <div class="col text-center q-ma-auto">
         <q-btn flat dense :to="{ name: 'home' }">
-          <img src="@/assets/logo1.png" height="50" />
+          <img src="@/assets/logo1.png" height="50" alt="Application logo" />
         </q-btn>
       </div>
 

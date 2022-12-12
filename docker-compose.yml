@@ -45,6 +45,14 @@ services:
       - 8000:8000
     depends_on:
       - fiber-billing-db
+  
+  fiber-billing-camunda:
+    build: ./camunda
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+    depends_on:
+      - fiber-billing-backend
 
   fiber-billing-frontend:
     build: ./frontend

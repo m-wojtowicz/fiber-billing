@@ -213,6 +213,7 @@ public class OrderController {
         try {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
+            System.out.println(response);
         } catch (Exception e) {
             java.lang.System.out.println(e);
         }

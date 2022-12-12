@@ -1,30 +1,3 @@
-<script setup>
-import { useQuasar } from "quasar";
-import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
-import NavBar from "./components/NavBar.vue";
-
-const route = useRoute();
-const drawer = ref(false);
-const link = ref("");
-
-function showhidedrawer() {
-  drawer.value = !drawer.value;
-}
-
-watch(route, (n) => {
-  link.value = n.name;
-});
-
-const $q = useQuasar();
-$q.notify.setDefaults({
-  position: "top-right",
-  timeout: 2000,
-  textColor: "white",
-  actions: [{ icon: "close", color: "white" }],
-});
-</script>
-
 <template>
   <q-layout view="hHh LpR lff" container>
     <q-header elevated>
@@ -133,7 +106,61 @@ $q.notify.setDefaults({
       <q-img src="@/assets/weaves.svg" />
     </q-footer>
   </q-layout>
+  
+  <q-dialog v-model="cookiesDialog" position="bottom" persistent>
+    <q-card>
+      <q-card-section class="column items-center no-wrap">
+        <div>
+          Witryna korzysta z plików cookies. Dalsze korzystanie ze strony oznacza zgodę na ich użycie.
+        </div>
+      </q-card-section>
+      <q-separator />
+      <q-card-section>
+        <q-btn label="Zaakceptuj pliki cookies" color="primary" @click="consentOk()" />
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
+
+<script setup>
+  import { useQuasar } from "quasar";
+  import { ref, watch } from "vue";
+  import { useRoute } from "vue-router";
+  import NavBar from "./components/NavBar.vue";
+  import { useCookies } from "vue3-cookies";
+  
+  const route = useRoute();
+  const drawer = ref(false);
+  const { cookies } = useCookies();
+  const cookiesDialog = ref(true);
+  const link = ref("");
+
+  if (cookies.get("consent") === "True") {
+    cookiesDialog.value = false;
+  }
+  
+  function showhidedrawer() {
+    drawer.value = !drawer.value;
+  };
+  
+  function consentOk() {
+    cookies.set("consent", "True");
+    cookiesDialog.value = false;
+  };
+  
+  watch(route, (n) => {
+    link.value = n.name;
+  });
+  
+  const $q = useQuasar();
+  $q.notify.setDefaults({
+    position: "bottom-right",
+    timeout: 2000,
+    textColor: "white",
+    actions: [{ icon: "close", color: "white" }],
+  });
+  </script>
+  
 
 <style lang="sass">
 @import "@/assets/base.css"
