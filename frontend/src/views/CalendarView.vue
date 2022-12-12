@@ -15,14 +15,14 @@ const submit = async () => {
   await updateOrderStatus(orderId.id);
   router.push({ name: "home" });
   $q.notify({
-          message: `Order submitted succesfully`,
+          message: `Order placed`,
           color: "green",
         });
 };
 </script>
 
 <template>
-  <h6>Gratulacje twoje zamówienie zostało pomyślnie złożone</h6>
+  <h6>Order has been placed successfuly</h6>
   <q-btn class="submit_btn" @click="submit">Submit order</q-btn>
 </template>
 

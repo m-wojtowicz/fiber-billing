@@ -33,6 +33,7 @@ watch(
   async (newVal, oldVal) => {
     if (props.dialog) {
       params.value = await passDataToEntry(props.product.id);
+      totalMonthlyCost.value = 0;
       totalCost.value = 0;
       if (user.clientType === "regular") {
         params.value.forEach((parm) => {

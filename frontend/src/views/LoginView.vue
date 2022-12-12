@@ -8,6 +8,7 @@ import { loginStore } from "../stores/loginStore";
 import { useRouter } from "vue-router";
 import { getUserData } from "../services/userService";
 import { Loading } from "quasar";
+import { VueRecaptcha } from "vue-recaptcha";
 
 const router = useRouter();
 
@@ -21,9 +22,19 @@ onMounted(() => {
 
 const isPwd = ref(true);
 const $q = useQuasar();
+const siteKey = "6Lct-nIjAAAAAKgSHivR0xRFjfz8rSQVLXCjshzn";
+const captcha = ref(false);
+
+function handleSuccess() {
+  captcha.value = true;
+};
+
+function handleError() {
+  captcha.value = false;
+};
 
 $q.notify.setDefaults({
-  position: "top-right",
+  position: "bottom-right",
   timeout: 2000,
   textColor: "white",
   actions: [{ icon: "close", color: "white" }],
@@ -99,11 +110,23 @@ watch(token, async () => {
       </template>
     </q-input>
 
+    <center>
+      <VueRecaptcha
+        class = "loggin-input"
+        :sitekey="siteKey"
+        :load-recaptcha-script="true"
+        @verify="handleSuccess"
+        @error="handleError"
+        @expired="handleError"
+      />
+    </center>
+
     <q-btn
       label="Login"
       rounded
       class="logging-button shadow-5"
       @click="checkData(loginInput, passwordInput)"
+      :disable="!captcha"
     />
 
     <div style="padding: 5% 15% 3% 15%">

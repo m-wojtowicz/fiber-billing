@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { Quasar, Notify } from "quasar";
+import { globalCookiesConfig } from "vue3-cookies";
 
 import "@quasar/extras/material-icons/material-icons.css";
 
@@ -20,6 +21,14 @@ app.use(Quasar, {
   plugins: {
     Notify,
   },
+});
+
+globalCookiesConfig({
+  expireTimes: "30d",
+  path: "/",
+  domain: "",
+  secure: true,
+  sameSite: "None",
 });
 
 app.mount("#app");

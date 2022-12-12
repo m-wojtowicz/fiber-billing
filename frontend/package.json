@@ -14,7 +14,9 @@
     "pinia-plugin-persistedstate": "^2.1.0",
     "quasar": "^2.7.5",
     "vue": "^3.2.37",
-    "vue-router": "^4.0.16"
+    "vue-recaptcha": "^2.0.3",
+    "vue-router": "^4.0.16",
+    "vue3-cookies": "^1.0.6"
   },
   "devDependencies": {
     "@quasar/vite-plugin": "^1.0.10",
