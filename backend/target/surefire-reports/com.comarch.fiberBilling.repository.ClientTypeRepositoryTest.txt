@@ -1,0 +1,19 @@
+-------------------------------------------------------------------------------
+Test set: com.comarch.fiberBilling.repository.ClientTypeRepositoryTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 5, Skipped: 0, Time elapsed: 0.001 s <<< FAILURE! - in com.comarch.fiberBilling.repository.ClientTypeRepositoryTest
+saveClientTypeTest  Time elapsed: 0 s  <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [final com.comarch.fiberBilling.service.OfferService offerService] in constructor [public com.comarch.fiberBilling.repository.ClientTypeRepositoryTest(com.comarch.fiberBilling.service.OfferService)].
+
+getClientTypeTest  Time elapsed: 0 s  <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [final com.comarch.fiberBilling.service.OfferService offerService] in constructor [public com.comarch.fiberBilling.repository.ClientTypeRepositoryTest(com.comarch.fiberBilling.service.OfferService)].
+
+getListOfClientTypesTest  Time elapsed: 0.001 s  <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [final com.comarch.fiberBilling.service.OfferService offerService] in constructor [public com.comarch.fiberBilling.repository.ClientTypeRepositoryTest(com.comarch.fiberBilling.service.OfferService)].
+
+updateClientTypeTest  Time elapsed: 0 s  <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [final com.comarch.fiberBilling.service.OfferService offerService] in constructor [public com.comarch.fiberBilling.repository.ClientTypeRepositoryTest(com.comarch.fiberBilling.service.OfferService)].
+
+deleteClientTypeTest  Time elapsed: 0 s  <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [final com.comarch.fiberBilling.service.OfferService offerService] in constructor [public com.comarch.fiberBilling.repository.ClientTypeRepositoryTest(com.comarch.fiberBilling.service.OfferService)].
+

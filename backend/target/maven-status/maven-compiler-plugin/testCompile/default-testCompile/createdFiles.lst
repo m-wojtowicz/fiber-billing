@@ -1,0 +1,5 @@
+com\comarch\fiberBilling\FiberBillingApplicationTests.class
+com\comarch\fiberBilling\repository\ClientTypeRepositoryTest.class
+com\comarch\fiberBilling\repository\AddressRepositoryTest.class
+com\comarch\fiberBilling\repository\ClientDataRepositoryTest.class
+com\comarch\fiberBilling\repository\OfferServiceTest.class
